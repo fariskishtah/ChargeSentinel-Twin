@@ -1,12 +1,12 @@
 """Digital Twin interface placeholder."""
 
-from typing import Any, Mapping
+from collections.abc import Mapping
 
 from src.integration.adapters.base import ModelNotReadyError
 
 
-def simulate(payload: Mapping[str, Any]) -> dict[str, Any]:
+def simulate(payload: Mapping[str, object]) -> dict[str, object]:
     """Run a bounded what-if scenario after its contract is implemented."""
 
     del payload
-    raise ModelNotReadyError("Digital Twin simulator is not ready.")
+    raise ModelNotReadyError("digital_twin")

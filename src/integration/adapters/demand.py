@@ -1,12 +1,12 @@
 """Demand model adapter contract."""
 
-from typing import Any, Mapping
+from collections.abc import Mapping
 
 from src.integration.adapters.base import ModelNotReadyError
 
 
-def predict_demand(payload: Mapping[str, Any]) -> dict[str, Any]:
+def predict_demand(payload: Mapping[str, object]) -> dict[str, object]:
     """Return an EV demand forecast after the validated model is connected."""
 
     del payload
-    raise ModelNotReadyError("EV demand forecasting model is not ready.")
+    raise ModelNotReadyError("demand")

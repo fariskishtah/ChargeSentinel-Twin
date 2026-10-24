@@ -1,73 +1,133 @@
-"""Minimal API schema placeholders pending model-owner handoffs."""
+"""Version 1 API contracts shared by the integration layer and model owners."""
 
-from pydantic import BaseModel
+from typing import Annotated, Literal, TypeAlias
 
+from pydantic import (
+    AwareDatetime,
+    BaseModel,
+    ConfigDict,
+    Field,
+    field_validator,
+)
 
-class SolarForecastRequest(BaseModel):
-    # TODO: confirm exact forecast-origin, horizon, weather, and feature field names.
-    pass
-
-
-class SolarForecastResponse(BaseModel):
-    timestamp: str
-    horizon_hours: int
-    forecast_kw: float
-    model_version: str
-
-
-class DemandForecastRequest(BaseModel):
-    # TODO: confirm exact forecast-origin, history, and horizon field names.
-    pass
+Identifier: TypeAlias = Annotated[str, Field(min_length=1, max_length=128)]
+TextValue: TypeAlias = Annotated[str, Field(min_length=1)]
+FeatureValue: TypeAlias = str | int | float | bool | None
 
 
-class DemandForecastResponse(BaseModel):
-    timestamp: str
-    expected_energy_kwh: float
-    expected_sessions: int
-    model_version: str
+class APIModel(BaseModel):
+    """Strict base model for the public v1 contract."""
+
+    model_config = ConfigDict(
+        allow_inf_nan=False,
+        extra="forbid",
+        str_strip_whitespace=True,
+    )
 
 
-class AnomalyRequest(BaseModel):
-    # TODO: confirm the leakage-audited online feature names.
-    pass
+class SolarForecastRequest(APIModel):
+    forecast_origin: AwareDatetime
+    horizon_hours: Literal[24, 48]
+    # TODO(Mazen): confirm any client-supplied weather fields after feature review.
 
 
-class AnomalyResponse(BaseModel):
-    charger_id: str
+class SolarForecastResponse(APIModel):
+    timestamp: AwareDatetime
+    horizon_hours: Literal[24, 48]
+    forecast_kw: float = Field(ge=0)
+    model_version: Identifier
+
+
+class DemandForecastRequest(APIModel):
+    forecast_origin: AwareDatetime
+    # TODO(Waseem): confirm whether the client needs any additional inputs.
+
+
+class DemandForecastResponse(APIModel):
+    timestamp: AwareDatetime
+    expected_energy_kwh: float = Field(ge=0)
+    expected_sessions: int = Field(ge=0)
+    model_version: Identifier
+
+
+class AnomalyRequest(APIModel):
+    charger_id: Identifier
+    features: dict[str, FeatureValue] = Field(min_length=1)
+    # TODO(Fatima): replace this extensible map with the leakage-audited safe schema.
+
+    @field_validator("features")
+    @classmethod
+    def reject_outcome_fields(
+        cls, features: dict[str, FeatureValue]
+    ) -> dict[str, FeatureValue]:
+        forbidden = {"end_cause", "label", "is_abnormal"}
+        supplied = {key.strip().lower().replace(" ", "_") for key in features}
+        if "" in supplied:
+            raise ValueError("Feature names must not be blank")
+        leaked = sorted(forbidden & supplied)
+        if leaked:
+            raise ValueError(f"Outcome fields are not allowed: {', '.join(leaked)}")
+        return features
+
+
+class AnomalyResponse(APIModel):
+    charger_id: Identifier
     anomaly: bool
-    score: float
-    reason: list[str]
-    model_version: str
+    score: float = Field(ge=0, le=1)
+    reason: list[TextValue]
+    model_version: Identifier
 
 
-class AvailabilityRequest(BaseModel):
-    # TODO: confirm safe session/history inputs; End Time must never be included.
-    pass
+class AvailabilityRequest(APIModel):
+    charger_id: Identifier
+    query_time: AwareDatetime
+    # End Time is deliberately excluded because it is target-derived information.
 
 
-class AvailabilityResponse(BaseModel):
-    # TODO: confirm the standalone availability response with the model owner.
-    pass
+class AvailabilityResponse(APIModel):
+    charger_id: Identifier
+    expected_free_time: AwareDatetime
+    expected_wait_minutes: float = Field(ge=0)
+    model_version: Identifier
 
 
-class RecommendationRequest(BaseModel):
-    # TODO: confirm ETA and upstream model-output field names.
-    pass
+class RecommendationRequest(APIModel):
+    user_eta: AwareDatetime
+    preferred_charger_id: Identifier | None = None
+    # TODO(Mariam): confirm which versioned upstream outputs the ranker accepts.
 
 
-class RecommendationResponse(BaseModel):
-    recommended_charger: str
-    expected_free_time: str
-    expected_wait_minutes: float
-    recommended_slot: str
-    model_version: str
+class RecommendationResponse(APIModel):
+    recommended_charger: Identifier
+    recommended_slot: TextValue
+    expected_wait_minutes: float = Field(ge=0)
+    alternatives: list[Identifier]
+    model_version: Identifier
 
 
-class DigitalTwinRequest(BaseModel):
-    # TODO: confirm scenario and station-state fields before implementation.
-    pass
+class DigitalTwinRequest(APIModel):
+    demand_multiplier: float = Field(default=1.0, gt=0)
+    solar_multiplier: float = Field(default=1.0, ge=0)
+    offline_chargers: list[Identifier] = Field(default_factory=list)
+
+    @field_validator("offline_chargers")
+    @classmethod
+    def require_unique_chargers(cls, chargers: list[str]) -> list[str]:
+        if len(chargers) != len(set(chargers)):
+            raise ValueError("offline_chargers must contain unique identifiers")
+        return chargers
 
 
-class DigitalTwinResponse(BaseModel):
-    # TODO: confirm simulated KPI and assumption fields before implementation.
-    pass
+class DigitalTwinResponse(APIModel):
+    output_type: Literal["SIMULATION"] = "SIMULATION"
+    supply_demand_balance: float
+    estimated_utilization: float = Field(ge=0)
+    estimated_wait_impact: float
+    recommendation: TextValue
+    simulation_version: Identifier
+
+
+class HealthResponse(APIModel):
+    status: Literal["ok"] = "ok"
+    service: Literal["ChargeSentinel API"] = "ChargeSentinel API"
+    api_version: Literal["v1"] = "v1"

@@ -41,6 +41,7 @@ temp/
 mlruns/
 mlartifacts/
 .mlflow/
+mlflow.db
 
 # Local datasets; retain repository placeholders only
 data/raw/*

@@ -1,8 +1,6 @@
 """Charger availability and recommendation routes."""
 
-from typing import Annotated
-
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 
 from app.api.schemas import (
     AvailabilityRequest,
@@ -16,10 +14,8 @@ from src.integration.adapters.availability import predict_availability, recommen
 router = APIRouter(prefix="/chargers", tags=["chargers"])
 
 
-@router.get("/availability", response_model=AvailabilityResponse)
-def charger_availability(
-    request: Annotated[AvailabilityRequest, Depends()],
-) -> AvailabilityResponse:
+@router.post("/availability", response_model=AvailabilityResponse)
+def charger_availability(request: AvailabilityRequest) -> AvailabilityResponse:
     return AvailabilityResponse(**predict_availability(schema_to_payload(request)))
 
 
