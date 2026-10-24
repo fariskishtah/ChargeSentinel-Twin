@@ -1,0 +1,78 @@
+# Secrets and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Python
+__pycache__/
+pycache/
+*.py[cod]
+*.so
+.Python
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs and local runtime state
+*.log
+logs/
+tmp/
+temp/
+
+# MLflow and experiment artifacts
+mlruns/
+mlartifacts/
+.mlflow/
+
+# Local datasets; retain repository placeholders only
+data/raw/*
+!data/raw/.gitkeep
+!data/raw/README.md
+data/processed/*
+!data/processed/.gitkeep
+!data/processed/README.md
+
+# Root model and artifact stores; retain policy files only
+models/*
+!models/README.md
+artifacts/*
+!artifacts/README.md
+
+# Team-local generated artifacts; retain placeholders only
+team/*/artifacts/*
+!team/*/artifacts/.gitkeep
+
+# Trained model and serialized binary formats
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.onnx
+*.h5
+*.hdf5
+*.joblib
+*.pkl
+*.pickle
+
+# Large data formats should be referenced, not committed
+*.parquet
+*.feather
+*.arrow
