@@ -1,0 +1,1 @@
+"""ChargeSentinel shared source package."""
