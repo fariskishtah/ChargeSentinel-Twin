@@ -84,6 +84,11 @@ def test_client_methods_target_the_versioned_api_routes() -> None:
     client.get_recommendation({"user_eta": origin})
     client.simulate_digital_twin(
         {
+            "baseline_solar_kw": 60,
+            "baseline_demand_kw": 100,
+            "total_chargers": 10,
+            "active_chargers": 10,
+            "average_session_minutes": 60,
             "demand_multiplier": 1,
             "solar_multiplier": 1,
             "offline_chargers": [],
@@ -154,6 +159,42 @@ def test_invalid_success_payload_is_not_presented_as_ready() -> None:
 
     assert result.status is ResultStatus.BACKEND_ERROR
     assert result.data is None
+
+
+def test_client_parses_deterministic_simulation_response() -> None:
+    simulation = {
+        "scenario_solar_kw": 60.0,
+        "scenario_demand_kw": 100.0,
+        "supply_demand_balance_kw": -40.0,
+        "renewable_coverage_ratio": 0.6,
+        "scenario_active_chargers": 10,
+        "estimated_utilization": 0.5,
+        "estimated_wait_impact_minutes": 0.0,
+        "severity": "LOW",
+        "recommendation": "System operating within normal simulated range.",
+        "simulation_version": "1.0.0",
+        "is_simulation": True,
+    }
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        assert request.url.path == "/api/v1/digital-twin/simulate"
+        return httpx.Response(200, json=simulation)
+
+    result = _client(httpx.MockTransport(handler)).simulate_digital_twin(
+        {
+            "baseline_solar_kw": 60,
+            "baseline_demand_kw": 100,
+            "total_chargers": 10,
+            "active_chargers": 10,
+            "average_session_minutes": 60,
+            "demand_multiplier": 1,
+            "solar_multiplier": 1,
+            "offline_chargers": [],
+        }
+    )
+
+    assert result.status is ResultStatus.READY
+    assert result.data == simulation
 
 
 def test_base_url_uses_environment(monkeypatch: pytest.MonkeyPatch) -> None:

@@ -16,7 +16,7 @@ NOT_READY_MESSAGES = {
     "anomaly": "Anomaly model is not integrated yet.",
     "availability": "Availability model is not integrated yet.",
     "recommendation": "Recommendation component is not integrated yet.",
-    "digital_twin": "Digital Twin component is not integrated yet.",
+    "digital_twin": "Digital Twin service is not available.",
 }
 
 
@@ -202,11 +202,36 @@ def _render_twin(client: ChargeSentinelAPIClient) -> None:
     with st.container(border=True):
         st.subheader("Digital Twin")
         st.warning("SIMULATION ONLY — No live charger or grid control.")
+        st.caption(
+            "Scenario values are user-provided simulation inputs, not live "
+            "station measurements or model forecasts."
+        )
         with st.form("digital_twin_form"):
-            demand_multiplier = st.number_input(
+            solar_col, demand_col = st.columns(2)
+            baseline_solar_kw = solar_col.number_input(
+                "Baseline solar (kW)", min_value=0.0, value=0.0, step=1.0
+            )
+            baseline_demand_kw = demand_col.number_input(
+                "Baseline demand (kW)", min_value=0.0, value=0.0, step=1.0
+            )
+            total_col, active_col, session_col = st.columns(3)
+            total_chargers = total_col.number_input(
+                "Total chargers", min_value=1, value=10, step=1
+            )
+            active_chargers = active_col.number_input(
+                "Active chargers",
+                min_value=0,
+                value=total_chargers,
+                step=1,
+            )
+            average_session_minutes = session_col.number_input(
+                "Average session (minutes)", min_value=1.0, value=60.0, step=5.0
+            )
+            demand_col, solar_col = st.columns(2)
+            demand_multiplier = demand_col.number_input(
                 "Demand multiplier", min_value=0.1, value=1.0, step=0.1
             )
-            solar_multiplier = st.number_input(
+            solar_multiplier = solar_col.number_input(
                 "Solar multiplier", min_value=0.0, value=1.0, step=0.1
             )
             offline_raw = st.text_input(
@@ -220,6 +245,11 @@ def _render_twin(client: ChargeSentinelAPIClient) -> None:
             ]
             result = client.simulate_digital_twin(
                 {
+                    "baseline_solar_kw": baseline_solar_kw,
+                    "baseline_demand_kw": baseline_demand_kw,
+                    "total_chargers": total_chargers,
+                    "active_chargers": active_chargers,
+                    "average_session_minutes": average_session_minutes,
                     "demand_multiplier": demand_multiplier,
                     "solar_multiplier": solar_multiplier,
                     "offline_chargers": offline_chargers,
@@ -227,19 +257,41 @@ def _render_twin(client: ChargeSentinelAPIClient) -> None:
             )
 
             def show(data: dict[str, object]) -> None:
-                st.info("SIMULATION")
+                st.info("SIMULATION — Deterministic what-if result")
+                solar_demand = st.columns(2)
+                solar_demand[0].metric(
+                    "Scenario solar", f"{_value(data, 'scenario_solar_kw')} kW"
+                )
+                solar_demand[1].metric(
+                    "Scenario demand", f"{_value(data, 'scenario_demand_kw')} kW"
+                )
                 cols = st.columns(3)
                 cols[0].metric(
-                    "Supply-demand balance", _value(data, "supply_demand_balance")
+                    "Renewable balance",
+                    f"{_value(data, 'supply_demand_balance_kw')} kW",
                 )
                 cols[1].metric(
-                    "Estimated utilization", _value(data, "estimated_utilization")
+                    "Renewable coverage",
+                    _value(data, "renewable_coverage_ratio"),
                 )
                 cols[2].metric(
-                    "Estimated wait impact", _value(data, "estimated_wait_impact")
+                    "Active chargers", _value(data, "scenario_active_chargers")
                 )
+                impact_cols = st.columns(3)
+                impact_cols[0].metric(
+                    "Normalized utilization",
+                    _value(data, "estimated_utilization"),
+                )
+                impact_cols[1].metric(
+                    "Simulated wait impact",
+                    f"{_value(data, 'estimated_wait_impact_minutes')} min",
+                )
+                impact_cols[2].metric("Severity", _value(data, "severity"))
                 st.write("Recommendation:", _value(data, "recommendation"))
-                st.caption(f"Simulation version: {_value(data, 'simulation_version')}")
+                st.caption(
+                    f"Simulation version: {_value(data, 'simulation_version')} · "
+                    "This is not a live grid-control decision."
+                )
 
             _render_result(result, "digital_twin", show)
 

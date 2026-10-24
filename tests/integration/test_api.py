@@ -47,15 +47,6 @@ def test_health() -> None:
             {"user_eta": FORECAST_ORIGIN},
             "recommendation",
         ),
-        (
-            "/api/v1/digital-twin/simulate",
-            {
-                "demand_multiplier": 1.2,
-                "solar_multiplier": 0.8,
-                "offline_chargers": ["charger-1"],
-            },
-            "digital_twin",
-        ),
     ],
 )
 def test_unconnected_endpoints_return_sanitized_503(
@@ -108,7 +99,18 @@ def test_anomaly_outcome_field_is_rejected() -> None:
     ],
 )
 def test_digital_twin_multiplier_validation(payload: dict[str, float]) -> None:
-    response = client.post("/api/v1/digital-twin/simulate", json=payload)
+    response = client.post(
+        "/api/v1/digital-twin/simulate",
+        json={
+            "baseline_solar_kw": 60,
+            "baseline_demand_kw": 100,
+            "total_chargers": 10,
+            "active_chargers": 10,
+            "average_session_minutes": 60,
+            "offline_chargers": [],
+            **payload,
+        },
+    )
 
     assert response.status_code == 422
     assert response.json()["error"] == "invalid_payload"

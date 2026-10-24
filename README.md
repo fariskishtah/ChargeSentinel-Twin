@@ -34,7 +34,7 @@ Digital Twin -> FastAPI -> Dashboard
 
 Shared code lives under `app/` and `src/`; owner modules remain under `team/`. Model handoffs enter the platform only through stable adapters in `src/integration/adapters/`.
 
-See [branch rules](docs/BRANCH_STRATEGY.md), the [model handoff contract](docs/MODEL_HANDOFF_CONTRACT.md), [team status](docs/TEAM_STATUS.md), and the [MLflow guide](docs/MLFLOW_GUIDE.md). Datasets and large model artifacts remain local and are excluded from Git.
+See [branch rules](docs/BRANCH_STRATEGY.md), the [model handoff contract](docs/MODEL_HANDOFF_CONTRACT.md), [team status](docs/TEAM_STATUS.md), the [MLflow guide](docs/MLFLOW_GUIDE.md), and the [Digital Twin definition](docs/DIGITAL_TWIN.md). Datasets and large model artifacts remain local and are excluded from Git.
 
 ## Run the integration shell
 

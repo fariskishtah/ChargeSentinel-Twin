@@ -29,6 +29,11 @@ def test_valid_requests() -> None:
     assert AvailabilityRequest(charger_id="charger-1", query_time=NOW)
     assert RecommendationRequest(user_eta=NOW)
     assert DigitalTwinRequest(
+        baseline_solar_kw=60,
+        baseline_demand_kw=100,
+        total_chargers=10,
+        active_chargers=10,
+        average_session_minutes=60,
         demand_multiplier=1.2,
         solar_multiplier=0.7,
         offline_chargers=["charger-1"],
@@ -89,6 +94,11 @@ def test_invalid_digital_twin_multipliers_are_rejected(
 ) -> None:
     with pytest.raises(ValidationError):
         DigitalTwinRequest(
+            baseline_solar_kw=60,
+            baseline_demand_kw=100,
+            total_chargers=10,
+            active_chargers=10,
+            average_session_minutes=60,
             demand_multiplier=demand_multiplier,
             solar_multiplier=solar_multiplier,
         )

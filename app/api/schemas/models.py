@@ -8,6 +8,7 @@ from pydantic import (
     ConfigDict,
     Field,
     field_validator,
+    model_validator,
 )
 
 Identifier: TypeAlias = Annotated[str, Field(min_length=1, max_length=128)]
@@ -106,6 +107,11 @@ class RecommendationResponse(APIModel):
 
 
 class DigitalTwinRequest(APIModel):
+    baseline_solar_kw: float = Field(ge=0)
+    baseline_demand_kw: float = Field(ge=0)
+    total_chargers: int = Field(gt=0)
+    active_chargers: int = Field(ge=0)
+    average_session_minutes: float = Field(gt=0)
     demand_multiplier: float = Field(default=1.0, gt=0)
     solar_multiplier: float = Field(default=1.0, ge=0)
     offline_chargers: list[Identifier] = Field(default_factory=list)
@@ -117,14 +123,29 @@ class DigitalTwinRequest(APIModel):
             raise ValueError("offline_chargers must contain unique identifiers")
         return chargers
 
+    @model_validator(mode="after")
+    def validate_charger_counts(self) -> "DigitalTwinRequest":
+        if self.active_chargers > self.total_chargers:
+            raise ValueError("active_chargers must not exceed total_chargers")
+        if len(self.offline_chargers) > self.active_chargers:
+            raise ValueError(
+                "offline_chargers count must not exceed active_chargers"
+            )
+        return self
+
 
 class DigitalTwinResponse(APIModel):
-    output_type: Literal["SIMULATION"] = "SIMULATION"
-    supply_demand_balance: float
-    estimated_utilization: float = Field(ge=0)
-    estimated_wait_impact: float
+    scenario_solar_kw: float = Field(ge=0)
+    scenario_demand_kw: float = Field(ge=0)
+    supply_demand_balance_kw: float
+    renewable_coverage_ratio: float | None = Field(default=None, ge=0)
+    scenario_active_chargers: int = Field(ge=0)
+    estimated_utilization: float = Field(ge=0, le=1)
+    estimated_wait_impact_minutes: float = Field(ge=0)
+    severity: Literal["LOW", "MEDIUM", "HIGH", "CRITICAL"]
     recommendation: TextValue
     simulation_version: Identifier
+    is_simulation: Literal[True] = True
 
 
 class HealthResponse(APIModel):
