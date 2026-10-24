@@ -35,3 +35,15 @@ Digital Twin -> FastAPI -> Dashboard
 Shared code lives under `app/` and `src/`; owner modules remain under `team/`. Model handoffs enter the platform only through stable adapters in `src/integration/adapters/`.
 
 See [branch rules](docs/BRANCH_STRATEGY.md), the [model handoff contract](docs/MODEL_HANDOFF_CONTRACT.md), [team status](docs/TEAM_STATUS.md), and the [MLflow guide](docs/MLFLOW_GUIDE.md). Datasets and large model artifacts remain local and are excluded from Git.
+
+## Run the integration shell
+
+```bash
+# Terminal 1
+uvicorn app.api.main:app --reload --host 0.0.0.0 --port 8000
+
+# Terminal 2
+streamlit run app/ui/streamlit_app.py
+```
+
+The dashboard calls FastAPI through `CHARGESENTINEL_API_URL` and shows unavailable components without generating placeholder predictions.
