@@ -1,0 +1,21 @@
+FROM python:3.12-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+WORKDIR /app
+
+COPY requirements/ui.txt /tmp/requirements.txt
+RUN python -m pip install --upgrade pip \
+    && python -m pip install -r /tmp/requirements.txt \
+    && groupadd --system chargesentinel \
+    && useradd --system --gid chargesentinel --home-dir /app chargesentinel
+
+COPY --chown=chargesentinel:chargesentinel app ./app
+
+USER chargesentinel
+
+EXPOSE 8501
+
+CMD ["streamlit", "run", "app/ui/streamlit_app.py", "--server.address=0.0.0.0", "--server.port=8501"]

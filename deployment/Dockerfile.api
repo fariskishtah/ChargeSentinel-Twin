@@ -1,0 +1,22 @@
+FROM python:3.12-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+WORKDIR /app
+
+COPY requirements/api.txt /tmp/requirements.txt
+RUN python -m pip install --upgrade pip \
+    && python -m pip install -r /tmp/requirements.txt \
+    && groupadd --system chargesentinel \
+    && useradd --system --gid chargesentinel --home-dir /app chargesentinel
+
+COPY --chown=chargesentinel:chargesentinel app ./app
+COPY --chown=chargesentinel:chargesentinel src ./src
+
+USER chargesentinel
+
+EXPOSE 8000
+
+CMD ["uvicorn", "app.api.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -47,3 +47,21 @@ streamlit run app/ui/streamlit_app.py
 ```
 
 The dashboard calls FastAPI through `CHARGESENTINEL_API_URL` and shows unavailable components without generating placeholder predictions.
+
+## Docker Quick Start
+
+```bash
+docker compose build
+docker compose up -d
+docker compose ps
+```
+
+- API: <http://localhost:8000>
+- API Docs: <http://localhost:8000/docs>
+- Dashboard: <http://localhost:8501>
+- MLflow: <http://localhost:5000>
+
+```bash
+docker compose logs -f
+docker compose down
+```
