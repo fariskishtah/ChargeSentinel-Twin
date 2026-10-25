@@ -17,6 +17,7 @@ RUN python -m pip install --upgrade pip \
         --home-dir /home/chargesentinel chargesentinel
 
 COPY --chown=chargesentinel:chargesentinel app ./app
+COPY --chown=chargesentinel:chargesentinel .streamlit ./.streamlit
 
 USER chargesentinel
 
