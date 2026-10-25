@@ -6,7 +6,15 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
-from app.api.routers import anomaly, chargers, demand, digital_twin, health, solar
+from app.api.routers import (
+    anomaly,
+    chargers,
+    demand,
+    digital_twin,
+    health,
+    simulator,
+    solar,
+)
 from src.integration.adapters.base import ModelNotReadyError
 
 API_V1_PREFIX = "/api/v1"
@@ -74,3 +82,4 @@ app.include_router(demand.router, prefix=API_V1_PREFIX)
 app.include_router(anomaly.router, prefix=API_V1_PREFIX)
 app.include_router(chargers.router, prefix=API_V1_PREFIX)
 app.include_router(digital_twin.router, prefix=API_V1_PREFIX)
+app.include_router(simulator.router, prefix=API_V1_PREFIX)

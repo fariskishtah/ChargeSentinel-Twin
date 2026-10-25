@@ -80,6 +80,7 @@ def test_openapi_endpoint_responds() -> None:
     assert status == 200
     assert docs_status == 200
     assert "/api/v1/digital-twin/simulate" in json.loads(body)["paths"]
+    assert "/api/v1/simulator/state" in json.loads(body)["paths"]
 
 
 def test_ui_health_endpoint_responds() -> None:
@@ -104,6 +105,41 @@ def test_digital_twin_works_through_containerized_api() -> None:
     assert status == 200
     assert result["is_simulation"] is True
     assert result["simulation_version"] == "1.0.0"
+
+
+def test_charging_station_simulator_works_through_containerized_api() -> None:
+    reset_status, reset_body = _request(
+        f"{API_URL}/api/v1/simulator/reset",
+        payload={
+            "charger_count": 2,
+            "charger_power_kw": 22,
+            "current_solar_kw": 10,
+            "current_station_demand_kw": 20,
+        },
+    )
+    add_status, _ = _request(
+        f"{API_URL}/api/v1/simulator/ev",
+        payload={
+            "ev_id": "DOCKER-EV-1",
+            "initial_soc_percent": 20,
+            "target_soc_percent": 80,
+            "battery_capacity_kwh": 60,
+            "max_charge_power_kw": 11,
+        },
+    )
+    advance_status, advance_body = _request(
+        f"{API_URL}/api/v1/simulator/advance",
+        payload={"minutes": 5},
+    )
+
+    reset_state = json.loads(reset_body)
+    advanced_state = json.loads(advance_body)
+    assert reset_status == 200
+    assert reset_state["station_summary"]["total_chargers"] == 2
+    assert add_status == 200
+    assert advance_status == 200
+    assert advanced_state["simulation_time"] == 5
+    assert advanced_state["is_simulation"] is True
 
 
 @pytest.mark.parametrize(
@@ -231,6 +267,33 @@ def test_streamlit_digital_twin_form_calls_api() -> None:
             "raise SystemExit(0 if not app.exception "
             "and any('Deterministic what-if result' in value for value in info) "
             "else 1)"
+        ),
+    )
+
+    assert result.returncode == 0, result.stderr
+
+
+def test_streamlit_charging_station_simulator_calls_api() -> None:
+    result = _compose(
+        "exec",
+        "-T",
+        "--workdir",
+        "/tmp",
+        "ui",
+        "python",
+        "-c",
+        (
+            "from streamlit.testing.v1 import AppTest; "
+            "app=AppTest.from_file('/app/app/ui/streamlit_app.py').run(timeout=15); "
+            "assert any(item.value == 'Charging Station Live Simulator' "
+            "for item in app.subheader); "
+            "assert not any('cs-charger-card' in item.value for item in app.code); "
+            "next(item for item in app.button "
+            "if item.label == 'Advance 1 min').click().run(timeout=15); "
+            "success=[item.value for item in app.success]; "
+            "raise SystemExit(0 if not app.exception "
+            "and any('Simulation advanced by 1 minute(s).' in value "
+            "for value in success) else 1)"
         ),
     )
 

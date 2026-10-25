@@ -10,6 +10,7 @@ from html import escape
 import streamlit as st
 
 from app.ui.api_client import APIResult, ChargeSentinelAPIClient, ResultStatus
+from app.ui.simulator_view import render_station_simulator
 
 NOT_READY_MESSAGES = {
     "solar": "Solar forecasting model is awaiting integration.",
@@ -386,6 +387,7 @@ def render_operator_view(
     _render_demand(client)
     _render_anomaly(client)
     _render_operator_availability(client)
+    render_station_simulator(client)
     _render_twin(client)
 
 

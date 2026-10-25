@@ -148,6 +148,83 @@ class DigitalTwinResponse(APIModel):
     is_simulation: Literal[True] = True
 
 
+class SimulatorResetRequest(APIModel):
+    charger_count: int = Field(default=6, ge=1, le=100)
+    charger_power_kw: float = Field(default=22.0, gt=0, le=1000)
+    current_solar_kw: float = Field(default=0.0, ge=0)
+    current_station_demand_kw: float = Field(default=0.0, ge=0)
+
+
+class SimulatorEVRequest(APIModel):
+    ev_id: Identifier
+    initial_soc_percent: float = Field(ge=0, lt=100)
+    target_soc_percent: float = Field(gt=0, le=100)
+    battery_capacity_kwh: float = Field(gt=0)
+    max_charge_power_kw: float = Field(gt=0)
+
+    @model_validator(mode="after")
+    def validate_soc_range(self) -> "SimulatorEVRequest":
+        if self.target_soc_percent <= self.initial_soc_percent:
+            raise ValueError("target_soc_percent must exceed initial_soc_percent")
+        return self
+
+
+class SimulatorAdvanceRequest(APIModel):
+    minutes: int = Field(gt=0, le=1440)
+
+
+class SimulatorSessionState(APIModel):
+    ev_id: Identifier
+    arrival_time: float = Field(ge=0)
+    initial_soc_percent: float = Field(ge=0, lt=100)
+    target_soc_percent: float = Field(gt=0, le=100)
+    current_soc_percent: float = Field(ge=0, le=100)
+    battery_capacity_kwh: float = Field(gt=0)
+    max_charge_power_kw: float = Field(gt=0)
+    assigned_charger_id: Identifier | None = None
+    session_start_time: float | None = Field(default=None, ge=0)
+    session_end_time: float | None = Field(default=None, ge=0)
+    status: Literal["WAITING", "CHARGING", "COMPLETED", "CANCELLED"]
+    energy_delivered_kwh: float = Field(ge=0)
+
+
+class SimulatorChargerState(APIModel):
+    charger_id: Identifier
+    status: Literal["AVAILABLE", "RESERVED", "CHARGING", "FAULT", "OFFLINE"]
+    max_power_kw: float = Field(gt=0)
+    current_ev_id: Identifier | None = None
+    current_power_kw: float = Field(ge=0)
+    energy_delivered_kwh: float = Field(ge=0)
+    session_elapsed_minutes: float = Field(ge=0)
+    soc_percent: float | None = Field(default=None, ge=0, le=100)
+    estimated_minutes_remaining: float | None = Field(default=None, ge=0)
+    anomaly_active: bool
+
+
+class SimulatorStationSummary(APIModel):
+    total_chargers: int = Field(ge=1)
+    available_chargers: int = Field(ge=0)
+    charging_chargers: int = Field(ge=0)
+    reserved_chargers: int = Field(ge=0)
+    faulted_chargers: int = Field(ge=0)
+    offline_chargers: int = Field(ge=0)
+    queue_length: int = Field(ge=0)
+    current_station_power_kw: float = Field(ge=0)
+    current_solar_kw: float = Field(ge=0)
+    current_station_demand_kw: float = Field(ge=0)
+
+
+class SimulatorStateResponse(APIModel):
+    simulation_time: float = Field(ge=0)
+    chargers: list[SimulatorChargerState]
+    queue: list[Identifier]
+    sessions: list[SimulatorSessionState]
+    completed_sessions: list[SimulatorSessionState]
+    station_summary: SimulatorStationSummary
+    simulation_version: Identifier
+    is_simulation: Literal[True] = True
+
+
 class HealthResponse(APIModel):
     status: Literal["ok"] = "ok"
     service: Literal["ChargeSentinel API"] = "ChargeSentinel API"

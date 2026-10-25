@@ -130,6 +130,14 @@ def test_openapi_contract_and_docs() -> None:
         "/api/v1/chargers/availability",
         "/api/v1/chargers/recommend",
         "/api/v1/digital-twin/simulate",
+        "/api/v1/simulator/reset",
+        "/api/v1/simulator/state",
+        "/api/v1/simulator/ev",
+        "/api/v1/simulator/advance",
+        "/api/v1/simulator/chargers/{charger_id}/fault",
+        "/api/v1/simulator/chargers/{charger_id}/clear-fault",
+        "/api/v1/simulator/chargers/{charger_id}/offline",
+        "/api/v1/simulator/chargers/{charger_id}/restore",
     }
     assert {
         "SolarForecastRequest",

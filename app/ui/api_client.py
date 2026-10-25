@@ -7,6 +7,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from enum import Enum
 from typing import TypeVar
+from urllib.parse import quote
 
 import httpx
 from pydantic import BaseModel, ValidationError
@@ -18,6 +19,7 @@ from app.api.schemas import (
     DigitalTwinResponse,
     HealthResponse,
     RecommendationResponse,
+    SimulatorStateResponse,
     SolarForecastResponse,
 )
 
@@ -38,6 +40,7 @@ class APIResult:
     status: ResultStatus
     data: dict[str, object] | None = None
     component: str | None = None
+    message: str | None = None
 
     @property
     def is_ready(self) -> bool:
@@ -67,6 +70,7 @@ class ChargeSentinelAPIClient:
         path: str,
         response_model: type[ResponseModel],
         payload: Mapping[str, object] | None = None,
+        user_error_statuses: frozenset[int] = frozenset(),
     ) -> APIResult:
         try:
             with httpx.Client(
@@ -95,6 +99,15 @@ class ChargeSentinelAPIClient:
 
         if response.status_code == 422:
             return APIResult(status=ResultStatus.INVALID_INPUT)
+
+        if response.status_code in user_error_statuses:
+            message = None
+            if isinstance(body, dict) and isinstance(body.get("detail"), str):
+                message = body["detail"]
+            return APIResult(
+                status=ResultStatus.INVALID_INPUT,
+                message=message,
+            )
 
         if response.status_code == 503:
             component = None
@@ -138,4 +151,51 @@ class ChargeSentinelAPIClient:
     def simulate_digital_twin(self, payload: Mapping[str, object]) -> APIResult:
         return self._request(
             "POST", "/api/v1/digital-twin/simulate", DigitalTwinResponse, payload
+        )
+
+    def get_simulator_state(self) -> APIResult:
+        return self._request(
+            "GET", "/api/v1/simulator/state", SimulatorStateResponse
+        )
+
+    def reset_simulator(self, payload: Mapping[str, object]) -> APIResult:
+        return self._simulator_request("/api/v1/simulator/reset", payload)
+
+    def add_simulated_ev(self, payload: Mapping[str, object]) -> APIResult:
+        return self._simulator_request("/api/v1/simulator/ev", payload)
+
+    def advance_simulator(self, minutes: int) -> APIResult:
+        return self._simulator_request(
+            "/api/v1/simulator/advance", {"minutes": minutes}
+        )
+
+    def inject_simulated_fault(self, charger_id: str) -> APIResult:
+        return self._simulator_charger_action(charger_id, "fault")
+
+    def clear_simulated_fault(self, charger_id: str) -> APIResult:
+        return self._simulator_charger_action(charger_id, "clear-fault")
+
+    def take_simulated_charger_offline(self, charger_id: str) -> APIResult:
+        return self._simulator_charger_action(charger_id, "offline")
+
+    def restore_simulated_charger(self, charger_id: str) -> APIResult:
+        return self._simulator_charger_action(charger_id, "restore")
+
+    def _simulator_request(
+        self, path: str, payload: Mapping[str, object]
+    ) -> APIResult:
+        return self._request(
+            "POST",
+            path,
+            SimulatorStateResponse,
+            payload,
+            user_error_statuses=frozenset({404, 409}),
+        )
+
+    def _simulator_charger_action(
+        self, charger_id: str, action: str
+    ) -> APIResult:
+        encoded_id = quote(charger_id, safe="")
+        return self._simulator_request(
+            f"/api/v1/simulator/chargers/{encoded_id}/{action}", {}
         )

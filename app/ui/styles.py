@@ -193,6 +193,142 @@ def apply_global_styles() -> None:
             color: var(--cs-error);
         }
 
+        .cs-charger-grid {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            margin: 0.4rem 0 1.25rem;
+        }
+
+        .cs-charger-card {
+            background: var(--cs-surface);
+            border: 1px solid var(--cs-border);
+            border-inline-start: 4px solid var(--cs-muted);
+            border-radius: 0.65rem;
+            min-width: 0;
+            padding: 1rem;
+        }
+
+        .cs-charger-available {
+            border-inline-start-color: var(--cs-success);
+        }
+
+        .cs-charger-charging {
+            border-inline-start-color: var(--cs-blue);
+        }
+
+        .cs-charger-reserved {
+            border-inline-start-color: var(--cs-warning);
+        }
+
+        .cs-charger-fault {
+            border-inline-start-color: var(--cs-error);
+        }
+
+        .cs-charger-card-header {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem;
+            justify-content: space-between;
+            margin-bottom: 0.85rem;
+        }
+
+        .cs-charger-card-header strong {
+            color: var(--cs-navy);
+            font-size: 1.02rem;
+        }
+
+        .cs-charger-state {
+            background: #EEF1F5;
+            border: 1px solid #CBD3DF;
+            border-radius: 999px;
+            color: #344258;
+            font-size: 0.72rem;
+            font-weight: 750;
+            letter-spacing: 0.045em;
+            padding: 0.38rem 0.55rem;
+            white-space: nowrap;
+        }
+
+        .cs-charger-available .cs-charger-state {
+            background: var(--cs-success-bg);
+            border-color: #AED8BE;
+            color: var(--cs-success);
+        }
+
+        .cs-charger-charging .cs-charger-state {
+            background: var(--cs-surface-blue);
+            border-color: #B9C8EA;
+            color: var(--cs-blue);
+        }
+
+        .cs-charger-reserved .cs-charger-state {
+            background: var(--cs-warning-bg);
+            border-color: #E7CB8B;
+            color: var(--cs-warning);
+        }
+
+        .cs-charger-fault .cs-charger-state {
+            background: var(--cs-error-bg);
+            border-color: #EABBBB;
+            color: var(--cs-error);
+        }
+
+        .cs-charger-card dl {
+            display: grid;
+            gap: 0.55rem;
+            margin: 0;
+        }
+
+        .cs-charger-card dl div {
+            align-items: baseline;
+            display: flex;
+            gap: 0.75rem;
+            justify-content: space-between;
+            min-width: 0;
+        }
+
+        .cs-charger-card dt {
+            color: var(--cs-muted);
+            font-size: 0.82rem;
+        }
+
+        .cs-charger-card dd {
+            color: var(--cs-navy);
+            font-size: 0.88rem;
+            font-variant-numeric: tabular-nums;
+            font-weight: 680;
+            margin: 0;
+            overflow-wrap: break-word;
+            text-align: end;
+        }
+
+        .cs-fault-label {
+            border-top: 1px solid var(--cs-border);
+            color: var(--cs-muted);
+            font-size: 0.78rem;
+            font-weight: 650;
+            margin: 0.8rem 0 0;
+            padding-top: 0.7rem;
+        }
+
+        .cs-fault-label.cs-fault-active {
+            color: var(--cs-error);
+        }
+
+        .cs-queue-list {
+            background: var(--cs-surface-blue);
+            border: 1px solid #CFDBF2;
+            border-radius: 0.55rem;
+            margin: 0 0 1.25rem;
+            padding: 0.8rem 1rem 0.8rem 2.3rem;
+        }
+
+        .cs-queue-list li {
+            padding: 0.2rem 0;
+        }
+
         div[data-testid="stVerticalBlockBorderWrapper"] {
             background: var(--cs-surface);
             border-color: var(--cs-border);
@@ -306,6 +442,12 @@ def apply_global_styles() -> None:
             color: var(--cs-text);
         }
 
+        @media (max-width: 64rem) {
+            .cs-charger-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
         @media (max-width: 48rem) {
             [data-testid="stMainBlockContainer"] {
                 padding-left: 1rem;
@@ -329,6 +471,10 @@ def apply_global_styles() -> None:
 
             input, textarea, select {
                 font-size: 1rem !important;
+            }
+
+            .cs-charger-grid {
+                grid-template-columns: minmax(0, 1fr);
             }
         }
 
