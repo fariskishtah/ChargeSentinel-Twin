@@ -170,16 +170,37 @@ def test_ui_container_resolves_api_service_hostname() -> None:
     assert result.returncode == 0, result.stderr
 
 
+def test_ui_package_imports_outside_project_workdir() -> None:
+    result = _compose(
+        "exec",
+        "-T",
+        "--workdir",
+        "/tmp",
+        "ui",
+        "python",
+        "-c",
+        (
+            "import app; "
+            "from app.ui.api_client import ChargeSentinelAPIClient; "
+            "assert ChargeSentinelAPIClient"
+        ),
+    )
+
+    assert result.returncode == 0, result.stderr
+
+
 def test_streamlit_renders_online_and_model_not_ready_states() -> None:
     result = _compose(
         "exec",
         "-T",
+        "--workdir",
+        "/tmp",
         "ui",
         "python",
         "-c",
         (
             "from streamlit.testing.v1 import AppTest; "
-            "app=AppTest.from_file('app/ui/streamlit_app.py').run(timeout=15); "
+            "app=AppTest.from_file('/app/app/ui/streamlit_app.py').run(timeout=15); "
             "next(item for item in app.button "
             "if item.label == 'Run Solar Forecast').click().run(timeout=15); "
             "success=[item.value for item in app.success]; "
@@ -196,12 +217,14 @@ def test_streamlit_digital_twin_form_calls_api() -> None:
     result = _compose(
         "exec",
         "-T",
+        "--workdir",
+        "/tmp",
         "ui",
         "python",
         "-c",
         (
             "from streamlit.testing.v1 import AppTest; "
-            "app=AppTest.from_file('app/ui/streamlit_app.py').run(timeout=15); "
+            "app=AppTest.from_file('/app/app/ui/streamlit_app.py').run(timeout=15); "
             "next(item for item in app.button "
             "if item.label == 'Run Simulation').click().run(timeout=15); "
             "info=[item.value for item in app.info]; "
@@ -212,6 +235,19 @@ def test_streamlit_digital_twin_form_calls_api() -> None:
     )
 
     assert result.returncode == 0, result.stderr
+
+
+def test_ui_logs_have_no_application_startup_import_failure() -> None:
+    result = _compose("logs", "--no-color", "ui")
+
+    assert result.returncode == 0, result.stderr
+    for marker in (
+        "ModuleNotFoundError",
+        "ImportError",
+        "PermissionError",
+        "Traceback",
+    ):
+        assert marker not in result.stdout
 
 
 def test_services_are_running_without_restarts() -> None:

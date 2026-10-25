@@ -78,6 +78,57 @@ def check_internal_api_connection() -> None:
     print("PASS: UI resolves API at http://api:8000")
 
 
+def check_ui_application_startup() -> None:
+    import_check = subprocess.run(
+        [
+            "docker",
+            "compose",
+            "exec",
+            "-T",
+            "--workdir",
+            "/tmp",
+            "ui",
+            "python",
+            "-c",
+            (
+                "import app; "
+                "from app.ui.api_client import ChargeSentinelAPIClient; "
+                "print('IMPORT_OK'); print('CLIENT_IMPORT_OK')"
+            ),
+        ],
+        cwd=PROJECT_ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    if import_check.returncode != 0:
+        raise RuntimeError(f"UI application imports failed: {import_check.stderr.strip()}")
+
+    logs = subprocess.run(
+        ["docker", "compose", "logs", "--no-color", "ui"],
+        cwd=PROJECT_ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    if logs.returncode != 0:
+        raise RuntimeError(f"Could not inspect UI logs: {logs.stderr.strip()}")
+    startup_failures = (
+        "ModuleNotFoundError",
+        "ImportError",
+        "PermissionError",
+        "Traceback",
+    )
+    found = [marker for marker in startup_failures if marker in logs.stdout]
+    if found:
+        raise RuntimeError(f"UI logs contain startup failure markers: {', '.join(found)}")
+
+    print("PASS: UI package imports from outside the project root")
+    print("PASS: UI logs contain no import traceback")
+
+
 def main() -> int:
     try:
         request("API health", f"{API_URL}/health")
@@ -85,6 +136,7 @@ def main() -> int:
         request("API documentation", f"{API_URL}/docs")
         request("Streamlit health", f"{UI_URL}/_stcore/health")
         request("MLflow health", f"{MLFLOW_URL}/health")
+        check_ui_application_startup()
         twin = request(
             "Digital Twin simulation",
             f"{API_URL}/api/v1/digital-twin/simulate",
