@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SolarForecastingInputPayload",
+  "description": "Input schema for New Cairo Solar Power Forecasting pipeline (24h or 48h horizon)",
+  "type": "object",
+  "properties": {
+    "forecast_origin": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp representing forecast origin T_0 (e.g. '2024-06-15T00:00:00')"
+    },
+    "horizon": {
+      "type": "integer",
+      "enum": [24, 48],
+      "description": "Forecast horizon in hours (24 or 48)"
+    },
+    "historical_power": {
+      "type": "array",
+      "description": "Hourly historical PV power observations strictly up to and including forecast origin T_0",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "power_kw": {
+            "type": "number",
+            "minimum": 0.0
+          }
+        },
+        "required": ["timestamp", "power_kw"]
+      }
+    },
+    "weather_forecast": {
+      "type": "array",
+      "description": "Hourly NWP weather forecasts from Open-Meteo for horizons h=1..horizon",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "temperature_2m_previous_day1": { "type": "number" },
+          "temperature_2m_previous_day2": { "type": "number" },
+          "cloud_cover_previous_day1": { "type": "number" },
+          "cloud_cover_previous_day2": { "type": "number" },
+          "direct_normal_irradiance_previous_day1": { "type": "number" },
+          "direct_normal_irradiance_previous_day2": { "type": "number" },
+          "shortwave_radiation_previous_day1": { "type": "number" },
+          "shortwave_radiation_previous_day2": { "type": "number" },
+          "wind_speed_10m_previous_day1": { "type": "number" },
+          "wind_speed_10m_previous_day2": { "type": "number" }
+        },
+        "required": [
+          "timestamp",
+          "shortwave_radiation_previous_day1",
+          "temperature_2m_previous_day1"
+        ]
+      }
+    }
+  },
+  "required": ["forecast_origin", "horizon", "weather_forecast"]
+}

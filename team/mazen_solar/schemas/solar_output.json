@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SolarForecastingOutputPayload",
+  "description": "Output schema for New Cairo Solar Power Forecast predictions",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "timestamp": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Forecasted target hour in ISO-8601 format"
+      },
+      "horizon": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 48,
+        "description": "Lead time in hours ahead of forecast origin"
+      },
+      "forecast_kw": {
+        "type": "number",
+        "minimum": 0.0,
+        "description": "Forecasted PV power output in kilowatts (kW)"
+      }
+    },
+    "required": ["timestamp", "horizon", "forecast_kw"]
+  }
+}
