@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DemandForecastOutput",
+  "description": "Standardized output contract for Person 2 EV demand prediction.",
+  "type": "object",
+  "required": [
+    "timestamp",
+    "expected_energy_kwh",
+    "expected_sessions"
+  ],
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "description": "Target forecast hour in ISO 8601 format (e.g. '2022-01-01T14:00:00')"
+    },
+    "expected_energy_kwh": {
+      "type": "number",
+      "minimum": 0.0,
+      "description": "Next-hour expected EV charging energy in kilowatt-hours (kWh)"
+    },
+    "expected_sessions": {
+      "type": "number",
+      "minimum": 0.0,
+      "description": "Next-hour expected total charging sessions count"
+    },
+    "model_name": {
+      "type": "string",
+      "description": "Champion model family utilized (e.g. 'XGBoost_Champion', 'Compact_LSTM', 'Seasonal_Baseline')"
+    },
+    "model_version": {
+      "type": "string",
+      "description": "MLflow model version or artifact URI identifier"
+    },
+    "horizon": {
+      "type": "string",
+      "default": "1h",
+      "description": "Forecast horizon step"
+    }
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "champion_model": "XGBoost",
+  "energy_model_file": "models/xgboost_energy.json",
+  "sessions_model_file": "models/xgboost_sessions.json",
+  "feature_pipeline_file": "models/feature_pipeline.pkl",
+  "mlflow_model_uri": "runs:/8bf6a21eef3449e39fbf662ed4405679/model_energy",
+  "feature_columns": [
+    "energy_lag_1h",
+    "energy_lag_2h",
+    "energy_lag_3h",
+    "energy_lag_24h",
+    "energy_lag_48h",
+    "energy_lag_168h",
+    "sessions_lag_1h",
+    "sessions_lag_2h",
+    "sessions_lag_3h",
+    "sessions_lag_24h",
+    "sessions_lag_48h",
+    "sessions_lag_168h",
+    "energy_rolling_mean_6h",
+    "energy_rolling_std_6h",
+    "energy_rolling_mean_24h",
+    "energy_rolling_std_24h",
+    "sessions_rolling_mean_6h",
+    "sessions_rolling_std_6h",
+    "sessions_rolling_mean_24h",
+    "sessions_rolling_std_24h",
+    "target_hour",
+    "target_dayofweek",
+    "target_is_weekend",
+    "target_month",
+    "sin_hour",
+    "cos_hour",
+    "sin_dayofweek",
+    "cos_dayofweek",
+    "sin_month",
+    "cos_month",
+    "temp_c",
+    "humidity",
+    "precip_mm"
+  ],
+  "comparison_results": {
+    "Baseline": {
+      "energy": {
+        "MAE": 145.1375,
+        "RMSE": 184.4897,
+        "sMAPE": 30.1208,
+        "R2": 0.6526
+      },
+      "sessions": {
+        "MAE": 8.6159,
+        "RMSE": 11.3455,
+        "sMAPE": 29.8223,
+        "R2": 0.6816
+      },
+      "run_id": "0e1c534eaa90457fa4e2a46a9470435d"
+    },
+    "LSTM": {
+      "energy": {
+        "MAE": 135.0411,
+        "RMSE": 177.7998,
+        "sMAPE": 26.7138,
+        "R2": 0.6774
+      },
+      "sessions": {
+        "MAE": 8.0514,
+        "RMSE": 11.024,
+        "sMAPE": 26.6239,
+        "R2": 0.6994
+      },
+      "run_id": "b04e25a259e3476396dbe41429305480"
+    },
+    "XGBoost": {
+      "energy": {
+        "MAE": 110.3906,
+        "RMSE": 143.5668,
+        "sMAPE": 22.0501,
+        "R2": 0.7896
+      },
+      "sessions": {
+        "MAE": 6.2989,
+        "RMSE": 8.2952,
+        "sMAPE": 21.3408,
+        "R2": 0.8298
+      },
+      "run_id": "8bf6a21eef3449e39fbf662ed4405679",
+      "mlflow_model_uri": "runs:/8bf6a21eef3449e39fbf662ed4405679/model_energy"
+    }
+  }
+}

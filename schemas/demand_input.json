@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DemandForecastInput",
+  "description": "Input payload for next-hour EV demand forecasting conforming to Person 2 - Person 5 interface.",
+  "type": "object",
+  "required": ["timestamp"],
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "description": "Target hour for prediction in ISO 8601 format (e.g. '2022-01-01T14:00:00')"
+    },
+    "energy_lag_1h": {
+      "type": "number",
+      "minimum": 0.0,
+      "description": "Total energy delivered in the previous hour (t)"
+    },
+    "energy_lag_2h": {
+      "type": "number",
+      "minimum": 0.0,
+      "description": "Total energy delivered 2 hours prior (t-1)"
+    },
+    "energy_lag_24h": {
+      "type": "number",
+      "minimum": 0.0,
+      "description": "Total energy delivered at the same hour yesterday (t-23)"
+    },
+    "energy_lag_168h": {
+      "type": "number",
+      "minimum": 0.0,
+      "description": "Total energy delivered at the same hour last week (t-167)"
+    },
+    "sessions_lag_1h": {
+      "type": "number",
+      "minimum": 0.0,
+      "description": "Charging sessions count in the previous hour (t)"
+    },
+    "sessions_lag_2h": {
+      "type": "number",
+      "minimum": 0.0,
+      "description": "Charging sessions count 2 hours prior (t-1)"
+    },
+    "sessions_lag_24h": {
+      "type": "number",
+      "minimum": 0.0,
+      "description": "Charging sessions count at the same hour yesterday (t-23)"
+    },
+    "sessions_lag_168h": {
+      "type": "number",
+      "minimum": 0.0,
+      "description": "Charging sessions count at the same hour last week (t-167)"
+    },
+    "energy_rolling_mean_24h": {
+      "type": "number",
+      "minimum": 0.0,
+      "description": "Rolling mean of energy over the past 24 hours"
+    },
+    "sessions_rolling_mean_24h": {
+      "type": "number",
+      "minimum": 0.0,
+      "description": "Rolling mean of sessions over the past 24 hours"
+    },
+    "temp_c": {
+      "type": "number",
+      "description": "Forecasted or current ambient temperature in Celsius"
+    },
+    "humidity": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 100.0,
+      "description": "Relative humidity percentage"
+    },
+    "precip_mm": {
+      "type": "number",
+      "minimum": 0.0,
+      "description": "Precipitation in millimeters"
+    },
+    "history": {
+      "type": "array",
+      "description": "Alternative raw recent historical hourly series (at least 24-168 records)",
+      "items": {
+        "type": "object",
+        "required": ["timestamp", "energy_kwh", "sessions"],
+        "properties": {
+          "timestamp": {"type": "string"},
+          "energy_kwh": {"type": "number"},
+          "sessions": {"type": "number"}
+        }
+      }
+    }
+  }
+}

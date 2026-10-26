@@ -1,0 +1,134 @@
+{
+  "Seasonal_Baseline": {
+    "energy_kwh": {
+      "MSE": 34036.44,
+      "MAE": 145.14,
+      "RMSE": 184.49,
+      "sMAPE_percent": 30.12,
+      "R2_Score": 0.6526,
+      "Forecast_Accuracy_percent": 69.88,
+      "Peak_Demand_Classification": {
+        "threshold_kwh": 500.0,
+        "Accuracy_percent": 89.9,
+        "Precision_percent": 95.63,
+        "Recall_percent": 87.48,
+        "F1_Score_percent": 91.37,
+        "Confusion_Matrix_TN_FP_FN_TP": {
+          "True_Negative": 803,
+          "False_Positive": 54,
+          "False_Negative": 169,
+          "True_Positive": 1181
+        }
+      }
+    },
+    "sessions_count": {
+      "MSE": 128.72,
+      "MAE": 8.62,
+      "RMSE": 11.35,
+      "sMAPE_percent": 29.82,
+      "R2_Score": 0.6816,
+      "Forecast_Accuracy_percent": 70.18,
+      "Peak_Demand_Classification": {
+        "threshold_sessions": 30.0,
+        "Accuracy_percent": 91.44,
+        "Precision_percent": 97.21,
+        "Recall_percent": 88.44,
+        "F1_Score_percent": 92.62,
+        "Confusion_Matrix_TN_FP_FN_TP": {
+          "True_Negative": 832,
+          "False_Positive": 34,
+          "False_Negative": 155,
+          "True_Positive": 1186
+        }
+      }
+    }
+  },
+  "Compact_LSTM": {
+    "energy_kwh": {
+      "MSE": 31612.77,
+      "MAE": 135.04,
+      "RMSE": 177.8,
+      "sMAPE_percent": 26.71,
+      "R2_Score": 0.6774,
+      "Forecast_Accuracy_percent": 73.29,
+      "Peak_Demand_Classification": {
+        "threshold_kwh": 500.0,
+        "Accuracy_percent": 91.84,
+        "Precision_percent": 91.31,
+        "Recall_percent": 95.78,
+        "F1_Score_percent": 93.49,
+        "Confusion_Matrix_TN_FP_FN_TP": {
+          "True_Negative": 734,
+          "False_Positive": 123,
+          "False_Negative": 57,
+          "True_Positive": 1293
+        }
+      }
+    },
+    "sessions_count": {
+      "MSE": 121.53,
+      "MAE": 8.05,
+      "RMSE": 11.02,
+      "sMAPE_percent": 26.62,
+      "R2_Score": 0.6994,
+      "Forecast_Accuracy_percent": 73.38,
+      "Peak_Demand_Classification": {
+        "threshold_sessions": 30.0,
+        "Accuracy_percent": 92.75,
+        "Precision_percent": 91.97,
+        "Recall_percent": 96.5,
+        "F1_Score_percent": 94.18,
+        "Confusion_Matrix_TN_FP_FN_TP": {
+          "True_Negative": 753,
+          "False_Positive": 113,
+          "False_Negative": 47,
+          "True_Positive": 1294
+        }
+      }
+    }
+  },
+  "XGBoost_Champion": {
+    "energy_kwh": {
+      "MSE": 20611.43,
+      "MAE": 110.39,
+      "RMSE": 143.57,
+      "sMAPE_percent": 22.05,
+      "R2_Score": 0.7896,
+      "Forecast_Accuracy_percent": 77.95,
+      "Peak_Demand_Classification": {
+        "threshold_kwh": 500.0,
+        "Accuracy_percent": 92.43,
+        "Precision_percent": 92.22,
+        "Recall_percent": 95.7,
+        "F1_Score_percent": 93.93,
+        "Confusion_Matrix_TN_FP_FN_TP": {
+          "True_Negative": 748,
+          "False_Positive": 109,
+          "False_Negative": 58,
+          "True_Positive": 1292
+        }
+      }
+    },
+    "sessions_count": {
+      "MSE": 68.81,
+      "MAE": 6.3,
+      "RMSE": 8.3,
+      "sMAPE_percent": 21.34,
+      "R2_Score": 0.8298,
+      "Forecast_Accuracy_percent": 78.66,
+      "Peak_Demand_Classification": {
+        "threshold_sessions": 30.0,
+        "Accuracy_percent": 94.06,
+        "Precision_percent": 93.71,
+        "Recall_percent": 96.72,
+        "F1_Score_percent": 95.19,
+        "Confusion_Matrix_TN_FP_FN_TP": {
+          "True_Negative": 779,
+          "False_Positive": 87,
+          "False_Negative": 44,
+          "True_Positive": 1297
+        }
+      }
+    }
+  }
+}
