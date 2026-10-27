@@ -1,0 +1,25 @@
+feature,importance
+Transaction Amount/Yuan,21.195800485003414
+Charging Post ID,11.477322963989016
+Location Information,10.294550156821348
+Actual Payment/Yuan,8.416420035099414
+UserID,7.0792265842123205
+energy_per_hour,6.662448796443486
+Transaction power/kwh,5.818185053636742
+session_duration_minutes,5.256052875340059
+start_month,4.426364769279806
+Service charge/Yuan,3.987229076774662
+Electricity cost/Yuan,3.075573159454028
+Temperature(℃),2.7933791280122264
+Relative Humidity(%),1.9075065786813181
+District Name,1.687094210803569
+Payment time,1.219685117362184
+start_hour_sin,0.9565656269099193
+Precipitation(mm),0.9534091045498223
+start_hour_cos,0.8978165385370355
+start_hour,0.7451029234970106
+start_day_sin,0.5355495932942014
+start_dayofweek,0.3229600739210392
+start_day_cos,0.21116308395160924
+start_is_weekend,0.040680741302383416
+Order creation time,0.03991332312323344

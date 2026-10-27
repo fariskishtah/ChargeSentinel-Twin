@@ -1,0 +1,36 @@
+{
+    "threshold": 0.41,
+    "target": "is_abnormal",
+    "features": [
+        "UserID",
+        "Charging Post ID",
+        "Location Information",
+        "District Name",
+        "Order creation time",
+        "Transaction power/kwh",
+        "Electricity cost/Yuan",
+        "Service charge/Yuan",
+        "Transaction Amount/Yuan",
+        "Actual Payment/Yuan",
+        "Payment time",
+        "Temperature(℃)",
+        "Relative Humidity(%)",
+        "Precipitation(mm)",
+        "start_hour",
+        "start_dayofweek",
+        "start_month",
+        "start_is_weekend",
+        "start_hour_sin",
+        "start_hour_cos",
+        "start_day_sin",
+        "start_day_cos",
+        "session_duration_minutes",
+        "energy_per_hour"
+    ],
+    "categorical_features": [
+        "Location Information",
+        "District Name",
+        "Order creation time",
+        "Payment time"
+    ]
+}
