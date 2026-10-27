@@ -31,7 +31,7 @@ def test_missing_model_raises_clear_error(tmp_path):
 def test_output_contract_with_mocked_model(monkeypatch):
     class FakeModel:
         def predict_proba(self, X):
-            return [[0.1, 0.9] for _ in range(len(X))]
+            return __import__("numpy").array([[0.1, 0.9] for _ in range(len(X))])
 
         def get_feature_importance(self, data, type):
             return [[0.5, 0.2, 0.1]]
@@ -77,7 +77,7 @@ def test_output_contract_with_mocked_model(monkeypatch):
 def test_batch_payload_returns_list(monkeypatch):
     class FakeModel:
         def predict_proba(self, X):
-            return [[0.1, 0.9] for _ in range(len(X))]
+            return __import__("numpy").array([[0.1, 0.9] for _ in range(len(X))])
 
         def get_feature_importance(self, data, type):
             return [[0.5, 0.2, 0.1]]
