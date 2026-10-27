@@ -89,6 +89,36 @@ def test_real_demand_works_inside_docker() -> None:
     assert check.returncode == 0, check.stderr
 
 
+@pytest.mark.parametrize("horizon,family", [(24, "Seasonal Persistence"), (48, "Ridge Regression")])
+def test_real_solar_works_inside_docker(horizon: int, family: str) -> None:
+    status, body = _request(f"{API_URL}/api/v1/solar/forecast",
+                            payload={"forecast_origin":"2024-06-15T00:00:00+00:00", "horizon_hours":horizon})
+    result = json.loads(body)
+    assert status == 200 and result["model_family"] == family
+    assert len(result["points"]) == horizon
+    assert all(0 <= p["forecast_kw"] <= 100 for p in result["points"])
+
+
+def test_real_anomaly_works_inside_docker() -> None:
+    status, body = _request(f"{API_URL}/api/v1/anomaly/predict",
+        payload={"charger_id":"12", "features":{"location":"Financial Industrial Park", "district":"Nanhu",
+                                               "start_time":"2021-10-16T12:02:44"}})
+    result = json.loads(body)
+    assert status == 200 and result["model_version"] == "anomaly-v1"
+    assert result["threshold"] == 0.4 and result["reason"]
+
+
+def test_solar_and_anomaly_handoffs_load_without_host_paths() -> None:
+    check = _compose("exec", "-T", "--workdir", "/tmp", "api", "python", "-c",
+        "import json; from team.mazen_solar.integration.inference import predict_solar, load_bundle; "
+        "from team.fatima_anomaly.integration.inference import predict_anomaly, BUNDLE; "
+        "assert load_bundle(24)[0]['family']=='Seasonal Persistence'; "
+        "assert load_bundle(48)[0]['family']=='Ridge Regression'; "
+        "assert len(predict_solar({'forecast_origin':'2024-06-15T00:00:00+00:00','horizon_hours':48})['points'])==48; "
+        "assert predict_anomaly(json.loads((BUNDLE/'real_test_fixture.json').read_text()))['reason']")
+    assert check.returncode == 0, check.stderr
+
+
 def test_streamlit_displays_real_demand_from_api() -> None:
     result = _compose("exec", "-T", "--workdir", "/tmp", "ui", "python", "-c",
         "from streamlit.testing.v1 import AppTest; "
@@ -99,6 +129,21 @@ def test_streamlit_displays_real_demand_from_api() -> None:
         "assert any(m.label=='Expected Sessions' and m.value=='43.7' for m in a.metric); "
         "assert any(m.value=='demand-completion-v1' for m in a.metric); "
         "assert not any('demand' in w.value.lower() and 'MODEL NOT READY' in w.value for w in a.warning)")
+    assert result.returncode == 0, result.stderr
+
+
+def test_streamlit_displays_real_solar_and_anomaly_from_api() -> None:
+    result = _compose("exec", "-T", "--workdir", "/tmp", "ui", "python", "-c",
+        "from streamlit.testing.v1 import AppTest; "
+        "a=AppTest.from_file('/app/app/ui/streamlit_app.py').run(timeout=30); "
+        "next(b for b in a.button if b.label=='Run Solar Forecast').click().run(timeout=30); "
+        "assert not a.exception; "
+        "assert any(m.label=='Model Family' and m.value=='Seasonal Persistence' for m in a.metric); "
+        "assert any(m.label=='Horizon' and m.value=='24 h' for m in a.metric); "
+        "next(b for b in a.button if b.label=='Check for Anomalies').click().run(timeout=30); "
+        "assert not a.exception; "
+        "assert any(m.label=='Model Version' and m.value=='anomaly-v1' for m in a.metric); "
+        "assert any(m.label=='Threshold' and m.value=='40.0%' for m in a.metric)")
     assert result.returncode == 0, result.stderr
 
 
@@ -175,19 +220,6 @@ def test_charging_station_simulator_works_through_containerized_api() -> None:
     ("path", "payload", "component"),
     [
         (
-            "/api/v1/solar/forecast",
-            {
-                "forecast_origin": "2026-10-24T12:00:00+02:00",
-                "horizon_hours": 24,
-            },
-            "solar",
-        ),
-        (
-            "/api/v1/anomaly/predict",
-            {"charger_id": "scenario-charger-1", "features": {"power_kw": 7}},
-            "anomaly",
-        ),
-        (
             "/api/v1/chargers/availability",
             {
                 "charger_id": "scenario-charger-1",
@@ -261,8 +293,9 @@ def test_streamlit_renders_online_and_model_not_ready_states() -> None:
         (
             "from streamlit.testing.v1 import AppTest; "
             "app=AppTest.from_file('/app/app/ui/streamlit_app.py').run(timeout=15); "
+            "next(item for item in app.text_input if item.key=='operator_availability_charger').set_value('CHG-01'); "
             "next(item for item in app.button "
-            "if item.label == 'Run Solar Forecast').click().run(timeout=15); "
+            "if item.key == 'FormSubmitter:operator_availability-Check Availability').click().run(timeout=15); "
             "success=[item.value for item in app.success]; "
             "warnings=[item.value for item in app.warning]; "
             "raise SystemExit(0 if not app.exception and 'API Online' in success "

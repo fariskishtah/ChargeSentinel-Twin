@@ -1,0 +1,8 @@
+feature,mean_abs_shap
+district,0.14248319001728468
+charger_id,0.12791800004861484
+location,0.11311180738610577
+start_month,0.032471915508655955
+start_hour,0.0
+start_dayofweek,0.0
+start_is_weekend,0.0

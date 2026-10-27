@@ -159,17 +159,17 @@ def main() -> int:
         )
         if not twin or twin.get("is_simulation") is not True:
             raise RuntimeError("Digital Twin response is not labeled as simulation")
-        solar = request(
-            "Unavailable solar model",
-            f"{API_URL}/api/v1/solar/forecast",
-            payload={
-                "forecast_origin": "2026-10-24T12:00:00+02:00",
-                "horizon_hours": 24,
-            },
-            expected_status=503,
-        )
-        if not solar or solar.get("component") != "solar":
-            raise RuntimeError("Solar endpoint did not preserve model-not-ready state")
+        for horizon in (24, 48):
+            solar = request(f"Real solar {horizon}h inference",
+                f"{API_URL}/api/v1/solar/forecast",
+                payload={"forecast_origin":"2024-06-15T00:00:00+00:00", "horizon_hours":horizon})
+            if not solar or len(solar.get("points", [])) != horizon:
+                raise RuntimeError(f"Solar {horizon}h output length mismatch")
+        anomaly = request("Real anomaly inference", f"{API_URL}/api/v1/anomaly/predict",
+            payload={"charger_id":"12", "features":{"location":"Financial Industrial Park",
+                "district":"Nanhu", "start_time":"2021-10-16T12:02:44"}})
+        if not anomaly or anomaly.get("model_version") != "anomaly-v1" or not anomaly.get("reason"):
+            raise RuntimeError("Anomaly model or explanation unavailable")
         check_internal_api_connection()
     except (OSError, RuntimeError, subprocess.SubprocessError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)

@@ -25,7 +25,9 @@ def test_valid_requests() -> None:
     assert SolarForecastRequest(forecast_origin=NOW, horizon_hours=24)
     assert SolarForecastRequest(forecast_origin=NOW, horizon_hours=48)
     assert DemandForecastRequest(forecast_origin=datetime(2021, 10, 1))
-    assert AnomalyRequest(charger_id="charger-1", features={"feature_1": 1.0})
+    assert AnomalyRequest(charger_id="charger-1", features={
+        "location": "Financial Industrial Park", "district": "Nanhu",
+        "start_time": "2021-10-16T12:02:44"})
     assert AvailabilityRequest(charger_id="charger-1", query_time=NOW)
     assert RecommendationRequest(user_eta=NOW)
     assert DigitalTwinRequest(

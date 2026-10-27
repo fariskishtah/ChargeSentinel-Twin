@@ -7,15 +7,16 @@ from collections.abc import Callable
 from datetime import UTC, date, datetime, time
 from html import escape
 
+import pandas as pd
 import streamlit as st
 
 from app.ui.api_client import APIResult, ChargeSentinelAPIClient, ResultStatus
 from app.ui.simulator_view import render_station_simulator
 
 NOT_READY_MESSAGES = {
-    "solar": "Solar forecasting model is awaiting integration.",
+    "solar": "Solar service is temporarily unavailable.",
     "demand": "Demand service is temporarily unavailable.",
-    "anomaly": "Anomaly detection model is awaiting integration.",
+    "anomaly": "Anomaly service is temporarily unavailable.",
     "availability": "Charger availability model is awaiting integration.",
     "recommendation": "Smart charger recommendation model is awaiting integration.",
     "digital_twin": "Digital Twin service is temporarily unavailable.",
@@ -111,10 +112,14 @@ def _render_solar(client: ChargeSentinelAPIClient) -> None:
     with st.container(border=True):
         st.subheader("Solar Forecast")
         st.caption(
-            "Request an hourly renewable generation forecast for the selected horizon."
+            "Reference/modelled PV generation forecast for a 100 kWp New Cairo system. "
+            "2024 H1 historical demonstration; values are not measured station output."
         )
         with st.form("solar_form"):
-            forecast_origin = _datetime_fields("Forecast Origin", "solar_origin")
+            dcol, tcol = st.columns(2)
+            selected_date = dcol.date_input("Forecast Origin — Date (UTC)", value=date(2024, 6, 15), key="solar_origin_date")
+            selected_time = tcol.time_input("Forecast Origin — Hour (UTC)", value=time(0), step=3600, key="solar_origin_time")
+            forecast_origin = _iso_utc(selected_date, selected_time)
             horizon_label = st.radio(
                 "Forecast Horizon", ["24 Hours", "48 Hours"], horizontal=True
             )
@@ -127,13 +132,14 @@ def _render_solar(client: ChargeSentinelAPIClient) -> None:
 
             def show(data: dict[str, object]) -> None:
                 cols = st.columns(3)
-                cols[0].metric("Forecast timestamp", _value(data, "timestamp"))
-                cols[1].metric("Horizon", f"{_value(data, 'horizon_hours')} h")
-                cols[2].metric("Model version", _value(data, "model_version"))
-                st.caption(
-                    "Hourly forecast points will be visualized when the integrated "
-                    "model supplies the selected horizon."
-                )
+                cols[0].metric("Horizon", f"{data['horizon_hours']} h")
+                cols[1].metric("Model Family", _value(data, "model_family"))
+                cols[2].metric("Model Version", _value(data, "model_version"))
+                points = data["points"]
+                curve = pd.DataFrame(points).set_index("timestamp").rename(columns={"forecast_kw": "Reference PV (kW)"})
+                curve.index = pd.to_datetime(curve.index, utc=True)
+                st.line_chart(curve)
+                st.caption("Forecast uses only source history and forecast runs available at the selected origin.")
 
             _render_result(result, "solar", show)
 
@@ -174,40 +180,32 @@ def _render_demand(client: ChargeSentinelAPIClient) -> None:
 
 def _render_anomaly(client: ChargeSentinelAPIClient) -> None:
     with st.container(border=True):
-        st.subheader("Operational Charging Anomaly Detection")
+        st.subheader("Anomaly Alert")
         st.caption(
-            "Evaluate session-level charging behavior using only leakage-audited "
-            "features."
+            "Start-of-session estimate of abnormal end-cause risk on Jiaxing data. "
+            "This is an investigation flag, not a confirmed live fault."
         )
         with st.form("anomaly_form"):
-            charger_id = st.text_input("Charger ID", key="anomaly_charger")
-            raw_features = st.text_area(
-                "Approved Session Features (JSON)",
-                value="{}",
-                help=(
-                    "Use only final feature names confirmed by the anomaly-model owner."
-                ),
-            )
+            charger_id = st.text_input("Charger ID", value="12", key="anomaly_charger")
+            location = st.text_input("Location", value="Financial Industrial Park", key="anomaly_location")
+            district = st.text_input("District", value="Nanhu", key="anomaly_district")
+            dcol, tcol = st.columns(2)
+            start_date = dcol.date_input("Session Start — Date (source operational time)", value=date(2021, 10, 16), key="anomaly_start_date")
+            start_time = tcol.time_input("Session Start — Time (source operational time)", value=time(12, 2, 44), step=1, key="anomaly_start_time")
             submitted = st.form_submit_button("Check for Anomalies")
         if submitted:
-            features = _parse_feature_payload(raw_features)
-            if not charger_id.strip() or features is None:
-                st.error(
-                    "INVALID INPUT — Enter a charger ID and a non-empty JSON object "
-                    "containing only confirmed safe features."
-                )
-                return
             result = client.predict_anomaly(
-                {"charger_id": charger_id.strip(), "features": features}
+                {"charger_id": charger_id.strip(), "features": {"location": location.strip(),
+                 "district": district.strip(), "start_time": datetime.combine(start_date, start_time).isoformat()}}
             )
 
             def show(data: dict[str, object]) -> None:
                 cols = st.columns(4)
-                cols[0].metric("Charger", _value(data, "charger_id"))
-                cols[1].metric("Anomaly", _value(data, "anomaly"))
-                cols[2].metric("Score", _value(data, "score"))
-                cols[3].metric("Model version", _value(data, "model_version"))
-                st.write("Reasons", _value(data, "reason"))
+                cols[0].metric("Status", "Investigate" if data["anomaly"] else "Lower risk")
+                cols[1].metric("Probability", f"{data['score']:.1%}")
+                cols[2].metric("Threshold", f"{data['threshold']:.1%}")
+                cols[3].metric("Model Version", _value(data, "model_version"))
+                st.write("Top contributing features", data["reason"])
 
             _render_result(result, "anomaly", show)
 

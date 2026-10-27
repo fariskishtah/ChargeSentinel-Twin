@@ -30,7 +30,18 @@ class APIModel(BaseModel):
 class SolarForecastRequest(APIModel):
     forecast_origin: AwareDatetime
     horizon_hours: Literal[24, 48]
-    # TODO(Mazen): confirm any client-supplied weather fields after feature review.
+
+    @field_validator("forecast_origin")
+    @classmethod
+    def require_utc_whole_hour(cls, value):
+        if value.utcoffset().total_seconds() != 0 or value.minute or value.second or value.microsecond:
+            raise ValueError("Solar forecast_origin must be a whole UTC hour")
+        return value
+
+
+class SolarForecastPoint(APIModel):
+    timestamp: AwareDatetime
+    forecast_kw: float = Field(ge=0, le=100)
 
 
 class SolarForecastResponse(APIModel):
@@ -38,6 +49,8 @@ class SolarForecastResponse(APIModel):
     horizon_hours: Literal[24, 48]
     forecast_kw: float = Field(ge=0)
     model_version: Identifier
+    model_family: Identifier | None = None
+    points: list[SolarForecastPoint] = Field(default_factory=list)
 
 
 class DemandForecastRequest(APIModel):
@@ -58,30 +71,22 @@ class DemandForecastResponse(APIModel):
     model_version: Identifier
 
 
+class AnomalyStartFeatures(APIModel):
+    location: Identifier
+    district: Identifier
+    start_time: NaiveDatetime = Field(description="Session start in source operational time; timezone unverified")
+
+
 class AnomalyRequest(APIModel):
     charger_id: Identifier
-    features: dict[str, FeatureValue] = Field(min_length=1)
-    # TODO(Fatima): replace this extensible map with the leakage-audited safe schema.
-
-    @field_validator("features")
-    @classmethod
-    def reject_outcome_fields(
-        cls, features: dict[str, FeatureValue]
-    ) -> dict[str, FeatureValue]:
-        forbidden = {"end_cause", "label", "is_abnormal"}
-        supplied = {key.strip().lower().replace(" ", "_") for key in features}
-        if "" in supplied:
-            raise ValueError("Feature names must not be blank")
-        leaked = sorted(forbidden & supplied)
-        if leaked:
-            raise ValueError(f"Outcome fields are not allowed: {', '.join(leaked)}")
-        return features
+    features: AnomalyStartFeatures
 
 
 class AnomalyResponse(APIModel):
     charger_id: Identifier
     anomaly: bool
     score: float = Field(ge=0, le=1)
+    threshold: float | None = Field(default=None, ge=0, le=1)
     reason: list[TextValue]
     model_version: Identifier
 

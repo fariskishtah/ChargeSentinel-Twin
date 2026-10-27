@@ -23,16 +23,6 @@ def test_health() -> None:
     ("path", "payload", "component"),
     [
         (
-            "/api/v1/solar/forecast",
-            {"forecast_origin": FORECAST_ORIGIN, "horizon_hours": 24},
-            "solar",
-        ),
-        (
-            "/api/v1/anomaly/predict",
-            {"charger_id": "charger-1", "features": {"feature_1": 1.0}},
-            "anomaly",
-        ),
-        (
             "/api/v1/chargers/availability",
             {"charger_id": "charger-1", "query_time": FORECAST_ORIGIN},
             "availability",
@@ -64,14 +54,14 @@ def test_unconnected_endpoints_return_sanitized_503(
 def test_solar_horizon_validation() -> None:
     valid_response = client.post(
         "/api/v1/solar/forecast",
-        json={"forecast_origin": FORECAST_ORIGIN, "horizon_hours": 48},
+        json={"forecast_origin": "2024-06-15T00:00:00+00:00", "horizon_hours": 48},
     )
     invalid_response = client.post(
         "/api/v1/solar/forecast",
         json={"forecast_origin": FORECAST_ORIGIN, "horizon_hours": 12},
     )
 
-    assert valid_response.status_code == 503
+    assert valid_response.status_code == 200
     assert invalid_response.status_code == 422
     assert invalid_response.json()["error"] == "invalid_payload"
 
@@ -155,7 +145,7 @@ def test_unexpected_errors_are_sanitized(monkeypatch: pytest.MonkeyPatch) -> Non
     safe_client = TestClient(app, raise_server_exceptions=False)
     response = safe_client.post(
         "/api/v1/solar/forecast",
-        json={"forecast_origin": FORECAST_ORIGIN, "horizon_hours": 24},
+        json={"forecast_origin": "2024-06-15T00:00:00+00:00", "horizon_hours": 24},
     )
 
     assert response.status_code == 500

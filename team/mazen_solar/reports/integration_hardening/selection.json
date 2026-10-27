@@ -1,0 +1,100 @@
+{
+  "source_commit": "bfc088839fce1229c9f3045ab44e6ffedc0d1c37",
+  "source_pvgis_sha256": "c874550a69cf8387eae022993063b99b8eed9d5b6b84fec7154e54b99c944017",
+  "source_openmeteo_sha256": "a5f712cdf0c7497f33d833c85921eadd3a0b640a8ed0748d9eab2f38350b6b8b",
+  "history_sha256": "07cac6b546b22abe86d8bb32fc332436192f4599720cc2b1c256b73d2661b39c",
+  "weather_sha256": "bbd1ac262663bb3bff9307b6ed019950cbd735c60b2c9d37d11adb8534543351",
+  "source_rows": 4368,
+  "missing_target_hours": [
+    "2024-05-27T08:00:00",
+    "2024-06-27T07:00:00"
+  ],
+  "timestamp_alignment": "PVGIS HH:09 readings aligned by ordinal hour to UTC Open-Meteo H1 labels; only labels strictly before origin used as history",
+  "selection": "lowest May 2024 chronological validation MAE; June test evaluated after selection",
+  "horizons": {
+    "24": {
+      "artifact": "solar_24h.json",
+      "sha256": "d6a3f76a818d525be1d817181997a64ef6dba0604ec27f9197a95aae2009f07e",
+      "champion": "Seasonal Persistence",
+      "families": {
+        "Seasonal Persistence": {
+          "validation_mae_kw": 1.622748094718194
+        },
+        "Ridge Regression": {
+          "validation_mae_kw": 1.6359178492974102
+        },
+        "XGBoost": {
+          "validation_mae_kw": 2.236132797905716
+        }
+      },
+      "test_mae_kw": 0.36056800652741733,
+      "rows": {
+        "train": 9560,
+        "validation": 2924,
+        "test": 2772
+      },
+      "origins": {
+        "train": 400,
+        "validation": 124,
+        "test": 116
+      },
+      "date_ranges": {
+        "train": [
+          "2024-01-22 00:00:00",
+          "2024-04-30 18:00:00"
+        ],
+        "validation": [
+          "2024-05-01 00:00:00",
+          "2024-05-31 18:00:00"
+        ],
+        "test": [
+          "2024-06-01 00:00:00",
+          "2024-06-29 18:00:00"
+        ]
+      },
+      "mlflow_run_id": "32475574f9014e33a775fb3fce2786fb"
+    },
+    "48": {
+      "artifact": "solar_48h.json",
+      "sha256": "7ad9cfa2a8c8febc2cab0f5b3a11c2058fc9269743a3efa5cb55b399ed5a29ac",
+      "champion": "Ridge Regression",
+      "families": {
+        "Seasonal Persistence": {
+          "validation_mae_kw": 1.7936694924283736
+        },
+        "Ridge Regression": {
+          "validation_mae_kw": 1.7562040155134448
+        },
+        "XGBoost": {
+          "validation_mae_kw": 2.2314263394689546
+        }
+      },
+      "test_mae_kw": 1.2566504947713324,
+      "rows": {
+        "train": 9524,
+        "validation": 2890,
+        "test": 2679
+      },
+      "origins": {
+        "train": 200,
+        "validation": 62,
+        "test": 56
+      },
+      "date_ranges": {
+        "train": [
+          "2024-01-22 00:00:00",
+          "2024-04-30 12:00:00"
+        ],
+        "validation": [
+          "2024-05-01 00:00:00",
+          "2024-05-31 12:00:00"
+        ],
+        "test": [
+          "2024-06-01 00:00:00",
+          "2024-06-28 12:00:00"
+        ]
+      },
+      "mlflow_run_id": "1f231a8f7b984e26b3313c33c6fbe357"
+    }
+  }
+}

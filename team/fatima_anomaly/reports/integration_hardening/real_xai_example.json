@@ -1,0 +1,12 @@
+{
+  "charger_id": "12",
+  "anomaly": true,
+  "score": 0.5058535797814687,
+  "threshold": 0.4,
+  "reason": [
+    "location (Financial Industrial Park) contributed to higher estimated abnormal-end risk",
+    "charger_id (12) contributed to higher estimated abnormal-end risk",
+    "start_month (10) contributed to higher estimated abnormal-end risk"
+  ],
+  "model_version": "anomaly-v1"
+}

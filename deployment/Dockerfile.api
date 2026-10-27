@@ -21,6 +21,10 @@ COPY --chown=chargesentinel:chargesentinel src ./src
 COPY --chown=chargesentinel:chargesentinel team/waseem_demand/demand ./team/waseem_demand/demand
 COPY --chown=chargesentinel:chargesentinel team/waseem_demand/bundle/v1 ./team/waseem_demand/bundle/v1
 COPY --chown=chargesentinel:chargesentinel team/waseem_demand/runtime_data ./team/waseem_demand/runtime_data
+COPY --chown=chargesentinel:chargesentinel team/fatima_anomaly/integration ./team/fatima_anomaly/integration
+COPY --chown=chargesentinel:chargesentinel team/fatima_anomaly/bundle ./team/fatima_anomaly/bundle
+COPY --chown=chargesentinel:chargesentinel team/mazen_solar/integration ./team/mazen_solar/integration
+COPY --chown=chargesentinel:chargesentinel team/mazen_solar/bundle ./team/mazen_solar/bundle
 
 USER chargesentinel
 
