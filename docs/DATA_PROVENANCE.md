@@ -1,0 +1,11 @@
+# Data provenance and artifact policy
+
+| Dataset / asset | Origin and scope | Repository evidence |
+|---|---|---|
+| Jiaxing `Charging_Data.csv` | Jiaxing EV charging transactions, 441,077 rows, 2019-12-31 to 2021-12-31 source operational time. Raw file remains outside Git. | SHA256 `6f3643db401327ec4f4a074109987706e421896869acac26a8ee1a5c6e3b45ee`; `team/waseem_demand/reports/data_audit.json`; `team/fatima_anomaly/bundle/anomaly-v1/config.json`. Source timezone unverified. |
+| Jiaxing hourly runtime history | Derived from the above: 17,547 continuous hourly rows, completion-hour `energy_kwh`, start-hour `sessions`. Committed for reproducible historical inference. | `team/waseem_demand/runtime_data/jiaxing-hourly-demand-v1/metadata.json`; CSV SHA256 `77dbbafa7430f3c02712c9fb3be02a8dcbcb3ae9bef302aa3c26386ac63071a3`. |
+| PVGIS H1 | New Cairo 100 kWp **modelled/reference PV** output, January–June 2024. Raw PVGIS source excluded; small derived hourly runtime CSV committed. | `team/mazen_solar/reports/integration_hardening/selection.json` records raw source SHA256 `c874550a69cf8387eae022993063b99b8eed9d5b6b84fec7154e54b99c944017` and runtime history SHA256. |
+| Open-Meteo Previous Runs H1 | Historical previous-run weather inputs for January–June 2024. Raw JSON excluded; small derived runtime CSV committed. | Same selection report records raw source SHA256 `a5f712cdf0c7497f33d833c85921eadd3a0b640a8ed0748d9eab2f38350b6b8b` and runtime weather SHA256. |
+| ACN sessions/telemetry | Earlier EV data-research source; not used by current deployed demand, solar, session-risk, or grid-load models. | No ACN runtime asset is committed. Do not imply current models were trained on ACN. |
+
+Committed portable model bundles are under `team/*/bundle/`; raw datasets, local experiment stores, and owner-generated `team/*/artifacts/` are excluded by `.gitignore`. The grid-load interval rule uses the committed Jiaxing hourly history and a checksum-checked JSON threshold. The original Fatima PR ZIP remains on her source branch, not in the production bundle. Public source/reference links are retained in source acquisition records where available; this repository does not establish an independent license grant for redistributed raw data.
