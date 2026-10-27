@@ -1,0 +1,10 @@
+
+{
+  "model_type": "CatBoostClassifier",
+  "target_column": "is_abnormal",
+  "decision_threshold": 0.41,
+  "positive_class": 1,
+  "random_state": 42,
+  "explanation_method": "SHAP",
+  "model_artifact": "catboost_anomaly_model.cbm"
+}
