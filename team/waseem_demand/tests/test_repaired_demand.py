@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import shutil
 import sys
 
 import jsonschema
@@ -206,3 +207,19 @@ def test_mlflow_experiment_and_real_run_receipts():
 
 def test_smape_both_zero_and_nonnegative_clipping():
     assert metrics(np.array([0., 0.]), np.array([0., -1.])) == {"MAE": 0., "RMSE": 0., "sMAPE": 0.}
+
+
+@pytest.mark.parametrize("family", ["Baseline", "XGBoost", "LSTM"])
+def test_each_family_bundle_loads_in_clean_process(tmp_path, family):
+    path, meta = load_bundle()
+    destination = tmp_path / "bundle"
+    shutil.copytree(path, destination)
+    meta["champions"] = {c: family for c in TARGETS}
+    (destination / "metadata.json").write_text(json.dumps(meta))
+    env = {**os.environ, "PYTHONPATH": str(MODULE), "CHARGESENTINEL_DEMAND_BUNDLE": str(destination)}
+    code = "import json;from demand import predict_demand;from pathlib import Path;print(json.dumps(predict_demand(json.loads(Path(" + repr(str(MODULE / "fixtures/request.json")) + ").read_text()))))"
+    result = subprocess.run([sys.executable, "-c", code], cwd=tmp_path, env=env,
+                            capture_output=True, text=True, check=True)
+    response = json.loads(result.stdout)
+    assert np.isfinite(response["expected_energy_kwh"]) and response["expected_energy_kwh"] >= 0
+    assert np.isfinite(response["expected_sessions"]) and response["expected_sessions"] >= 0
