@@ -38,8 +38,8 @@ Start with a transparent deterministic score. Use OR-Tools only if it is useful 
 
 ## Main tasks
 
-1. Audit sessions, reconstruct occupancy, and complete EDA for duration/occupancy distributions, missingness, outliers, seasonality, correlations, and time patterns.
-2. Build leakage-safe availability features and time-aware splits; explicitly test that End Time is absent from inference inputs.
+1. [x] Audit sessions, reconstruct occupancy, and complete EDA for duration/occupancy distributions, missingness, outliers, seasonality, correlations, and time patterns.
+2. [x] Build leakage-safe availability features and time-aware splits; explicitly test that End Time is absent from inference inputs.
 3. Train the median, Random Forest, and XGBoost models; tune key parameters with Optuna and track all runs/artifacts in MLflow.
 4. Compare held-out duration results and export the evidence-based champion.
 5. Build and version the deterministic recommendation score; add OR-Tools only if justified by evidence.
