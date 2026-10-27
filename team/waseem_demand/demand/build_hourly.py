@@ -44,6 +44,10 @@ def build_hourly(path):
     identifiers = {c: {"unique": int(raw[c].nunique()), "missing": int(raw[c].isna().sum())}
                    for c in ["UserID", "Charging Post ID"]}
     audit = {"raw_sha256": before, "raw_rows": len(raw), "schema": list(raw.columns),
+             "dtypes": raw.dtypes.astype(str).to_dict(),
+             "time_ranges": {c: {"first": str(pd.to_datetime(raw[c].str.strip()).min()),
+                                  "last": str(pd.to_datetime(raw[c].str.strip()).max())}
+                             for c in ["Start Time", "End Time"]},
              "missing": raw.isna().sum().astype(int).to_dict(),
              "duplicates": int(raw.duplicated().sum()), "identifiers": identifiers,
              "session_identifier": "No unique transaction ID; UserID is a repeated customer identifier",

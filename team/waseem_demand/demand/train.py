@@ -180,6 +180,8 @@ def main():
     write_report(meta, audit, reports)
     tracking_uri = os.environ.get("MLFLOW_TRACKING_URI", "sqlite:///" + str(runtime / "mlflow.db"))
     mlflow.set_tracking_uri(tracking_uri)
+    if not os.environ.get("MLFLOW_TRACKING_URI") and mlflow.get_experiment_by_name(EXPERIMENT) is None:
+        mlflow.create_experiment(EXPERIMENT, artifact_location=(runtime / "mlartifacts").as_uri())
     mlflow.set_experiment(EXPERIMENT)
     run_ids = {}
     for family in predictions:
@@ -209,13 +211,18 @@ def main():
                                              input_example=d[FEATURES].head(2))
             elif family == "LSTM":
                 import mlflow.pytorch
-                mlflow.pytorch.log_model(net, name="scaled_sequence_model", input_example=seq_x[:2].astype(np.float32),
-                                         code_paths=[str(MODULE / "demand")])
+                traced = torch.jit.trace(net, torch.tensor(seq_x[:2], dtype=torch.float32))
+                mlflow.pytorch.log_model(traced, name="scaled_sequence_model", input_example=seq_x[:2].astype(np.float32))
             else:
                 import mlflow.pyfunc
+                def seasonal_for_mlflow(frame):
+                    return np.column_stack([
+                        .5 * frame[f"{c}_lag_24"].to_numpy() + .5 * np.array([
+                            profiles[c][f"{int(d)}:{int(h)}"] for d, h in zip(frame.dayofweek, frame.hour)])
+                        for c in ["energy_kwh", "sessions"]])
                 mlflow.pyfunc.log_model(name="seasonal_model",
-                    python_model=lambda frame: baseline_predict(frame, profiles),
-                    input_example=d[FEATURES].head(2), code_paths=[str(MODULE / "demand")])
+                    python_model=seasonal_for_mlflow,
+                    input_example=d[FEATURES].head(2))
             run_ids[family] = {"run_id": run.info.run_id,
                                "bundle_artifact_uri": f"runs:/{run.info.run_id}/bundle"}
     receipt = {"experiment": EXPERIMENT, "runs": run_ids,
