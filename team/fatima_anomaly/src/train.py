@@ -22,8 +22,7 @@ from sklearn.metrics import (
 )
 from sklearn.model_selection import train_test_split
 
-from features import TARGET, prepare_features
-
+from team.fatima_anomaly.src.features import TARGET, prepare_features
 
 RANDOM_STATE = 42
 THRESHOLD = 0.41
