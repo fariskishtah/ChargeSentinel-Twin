@@ -14,7 +14,7 @@ Samsung Innovation Campus Smart Energy historical demonstration: renewable PV fo
 | Digital Twin / Charging Station Simulator | Working simulations | Explicit scenario inputs, deterministic outputs. |
 | Availability / Recommendation | Not integrated | Safe `ModelNotReady` / 503; no fabricated results. |
 
-The project is **not production validated in Egypt**. See [Samsung compliance](docs/SAMSUNG_COMPLIANCE_MATRIX.md) for evidence and remaining limitations.
+The project is **not production validated in Egypt**. See [Samsung compliance](docs/SAMSUNG_COMPLIANCE_MATRIX.md) for evidence and remaining limitations, and [validation](docs/VALIDATION.md) for the final test gate.
 
 ## Setup and launch
 

@@ -21,5 +21,5 @@ Acceptance basis: local `SIC8 - AI Project Final .pdf`, especially Smart Energy 
 | Versioned portable artifacts | DONE | Demand/solar/session-risk bundles; grid-load JSON plus source checksum | Raw data excluded. |
 | Architecture diagram | DONE | `docs/ARCHITECTURE.md`, `docs/architecture.mmd` | SVG optional if renderer unavailable. |
 | Data dictionary, provenance, splits | DONE | `docs/DATA_DICTIONARY.md`, `DATA_PROVENANCE.md`, `SPLITS.md` | Provider units/licensing should be checked against raw acquisition records. |
-| Functional tests and demo runbook | PARTIAL | `tests/`; `docs/DEMO_RUNBOOK.md` | Final clean-install/Docker gate must pass. |
+| Functional tests and demo runbook | DONE | `tests/`; `docs/DEMO_RUNBOOK.md`; `docs/VALIDATION.md` | Historical demo only; no field validation. |
 | Team contribution summary | DONE | `docs/TEAM_CONTRIBUTIONS.md`; `docs/TEAM_STATUS.md` | Mariam not integrated. |

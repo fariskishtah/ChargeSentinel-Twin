@@ -1,6 +1,6 @@
 # Team Status
 
-Updated 2026-10-28 on `feature/faris-integration`. Status reflects repository evidence. The prior 150-test Docker gate predates this hardening; current verification is recorded separately.
+Updated 2026-10-28 on `feature/faris-integration`. Status reflects repository evidence and the current [155-test Docker gate](VALIDATION.md).
 
 | Owner | Module | Source branch | Owner handoff / integration status | Key limitation |
 |---|---|---|---|---|
