@@ -12,8 +12,7 @@ import numpy as np
 import pandas as pd
 from catboost import CatBoostClassifier
 
-from features import prepare_features
-
+from team.fatima_anomaly.src.features import prepare_features
 
 MODULE_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = MODULE_DIR.parent
