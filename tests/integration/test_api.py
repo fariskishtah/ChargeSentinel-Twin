@@ -112,6 +112,7 @@ def test_openapi_contract_and_docs() -> None:
         "/api/v1/solar/forecast",
         "/api/v1/demand/forecast",
         "/api/v1/anomaly/predict",
+        "/api/v1/anomaly/grid-load",
         "/api/v1/chargers/availability",
         "/api/v1/chargers/recommend",
         "/api/v1/digital-twin/simulate",

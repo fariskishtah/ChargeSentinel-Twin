@@ -1,0 +1,56 @@
+{
+  "data": "Jiaxing hourly derived completed-session energy and start-hour arrivals",
+  "history_sha256": "77dbbafa7430f3c02712c9fb3be02a8dcbcb3ae9bef302aa3c26386ac63071a3",
+  "splits": {
+    "reference_train": [
+      "2020-02-25T21:00:00",
+      "2020-12-31T23:00:00",
+      7443
+    ],
+    "validation": [
+      "2021-01-01T00:00:00",
+      "2021-06-30T23:00:00",
+      4344
+    ],
+    "held_out_test": [
+      "2021-07-01T00:00:00",
+      "2021-12-31T23:00:00",
+      4416
+    ]
+  },
+  "rule_threshold": 5.827239498038368,
+  "forest_threshold": 0.5644235352356007,
+  "forest_parameters": {
+    "n_estimators": 100,
+    "max_samples": 256,
+    "contamination": "auto",
+    "random_state": 42
+  },
+  "injection": {
+    "window_hours": 3,
+    "spacing_hours": 360,
+    "first_offset_hours": 48,
+    "energy_rule": "observed * 1.8 + 200 kWh",
+    "sessions_rule": "observed * 1.5 + 10",
+    "history_modified": false
+  },
+  "validation": {
+    "natural_unlabeled_intervals": 4344,
+    "simulated_injected_hours": 36,
+    "rule_natural_alert_rate": 0.010128913443830571,
+    "forest_natural_alert_rate": 0.010128913443830571,
+    "rule_injected_detection_rate": 0.6944444444444444,
+    "forest_injected_detection_rate": 0.5833333333333334
+  },
+  "held_out_test": {
+    "natural_unlabeled_intervals": 4416,
+    "simulated_injected_hours": 39,
+    "rule_natural_alert_rate": 0.007019927536231884,
+    "forest_natural_alert_rate": 0.1428894927536232,
+    "rule_injected_detection_rate": 0.6153846153846154,
+    "forest_injected_detection_rate": 0.6923076923076923
+  },
+  "selected": "robust seasonal rule",
+  "selection_reason": "causal, interpretable, portable; fixed 1% validation alert budget",
+  "ground_truth_note": "No maintenance-confirmed hourly fault labels. Natural alert rate is not false-positive rate; injected detection rate is sensitivity to synthetic perturbations, not real fault recall."
+}

@@ -14,6 +14,7 @@ from pydantic import BaseModel, ValidationError
 
 from app.api.schemas import (
     AnomalyResponse,
+    GridLoadResponse,
     AvailabilityResponse,
     DemandForecastResponse,
     DigitalTwinResponse,
@@ -136,6 +137,11 @@ class ChargeSentinelAPIClient:
     def predict_anomaly(self, payload: Mapping[str, object]) -> APIResult:
         return self._request(
             "POST", "/api/v1/anomaly/predict", AnomalyResponse, payload
+        )
+
+    def detect_grid_load(self, payload: Mapping[str, object]) -> APIResult:
+        return self._request(
+            "POST", "/api/v1/anomaly/grid-load", GridLoadResponse, payload
         )
 
     def get_availability(self, payload: Mapping[str, object]) -> APIResult:

@@ -180,7 +180,7 @@ def _render_demand(client: ChargeSentinelAPIClient) -> None:
 
 def _render_anomaly(client: ChargeSentinelAPIClient) -> None:
     with st.container(border=True):
-        st.subheader("Anomaly Alert")
+        st.subheader("EV Session Risk")
         st.caption(
             "Start-of-session estimate of abnormal end-cause risk on Jiaxing data. "
             "This is an investigation flag, not a confirmed live fault."
@@ -206,6 +206,32 @@ def _render_anomaly(client: ChargeSentinelAPIClient) -> None:
                 cols[2].metric("Threshold", f"{data['threshold']:.1%}")
                 cols[3].metric("Model Version", _value(data, "model_version"))
                 st.write("Top contributing features", data["reason"])
+
+            _render_result(result, "anomaly", show)
+
+
+def _render_grid_load(client: ChargeSentinelAPIClient) -> None:
+    with st.container(border=True):
+        st.subheader("Grid-Load Interval Anomaly")
+        st.caption("Historical Jiaxing completed-session energy proxy, not measured grid power. "
+                   "An unusual interval is an investigation flag, not a confirmed equipment fault.")
+        with st.form("grid_load_form"):
+            day = st.date_input("Interval — Date (source operational time)",
+                                value=date(2021, 10, 1), key="grid_load_date")
+            hour = st.time_input("Interval — Hour (source operational time)",
+                                 value=time(0), step=3600, key="grid_load_hour")
+            submitted = st.form_submit_button("Check Historical Interval")
+        if submitted:
+            result = client.detect_grid_load({"timestamp": datetime.combine(day, hour).isoformat()})
+
+            def show(data: dict[str, object]) -> None:
+                cols = st.columns(4)
+                cols[0].metric("Status", "Investigate" if data["anomaly"] else "Within range")
+                cols[1].metric("Deviation score", f"{data['score']:.2f}")
+                cols[2].metric("Threshold", f"{data['threshold']:.2f}")
+                cols[3].metric("Completed energy (kWh)", f"{data['energy_kwh']:.1f}")
+                st.write("Reason", data["reason"])
+                st.caption(f"Detector: {data['detector_version']} · Recorded arrivals: {data['sessions']}")
 
             _render_result(result, "anomaly", show)
 
@@ -393,6 +419,7 @@ def render_operator_view(
     _render_solar(client)
     _render_demand(client)
     _render_anomaly(client)
+    _render_grid_load(client)
     _render_operator_availability(client)
     render_station_simulator(client)
     _render_twin(client)

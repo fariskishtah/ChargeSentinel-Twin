@@ -91,6 +91,22 @@ class AnomalyResponse(APIModel):
     model_version: Identifier
 
 
+class GridLoadRequest(APIModel):
+    timestamp: NaiveDatetime = Field(description="Historical Jiaxing whole hour; source timezone unverified")
+
+
+class GridLoadResponse(APIModel):
+    timestamp: NaiveDatetime
+    anomaly: bool
+    score: float = Field(ge=0)
+    threshold: float = Field(ge=0)
+    reason: list[TextValue]
+    detector_version: Identifier
+    energy_kwh: float = Field(ge=0)
+    sessions: int = Field(ge=0)
+    is_simulated: Literal[False] = False
+
+
 class AvailabilityRequest(APIModel):
     charger_id: Identifier
     query_time: AwareDatetime

@@ -80,6 +80,7 @@ def test_client_methods_target_the_versioned_api_routes() -> None:
     client.predict_anomaly(
         {"charger_id": "charger-1", "features": {"feature_1": 1.0}}
     )
+    client.detect_grid_load({"timestamp": "2021-10-01T00:00:00"})
     client.get_availability({"charger_id": "charger-1", "query_time": origin})
     client.get_recommendation({"user_eta": origin})
     client.simulate_digital_twin(
@@ -99,6 +100,7 @@ def test_client_methods_target_the_versioned_api_routes() -> None:
         "/api/v1/solar/forecast",
         "/api/v1/demand/forecast",
         "/api/v1/anomaly/predict",
+        "/api/v1/anomaly/grid-load",
         "/api/v1/chargers/availability",
         "/api/v1/chargers/recommend",
         "/api/v1/digital-twin/simulate",

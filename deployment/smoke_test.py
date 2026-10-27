@@ -170,6 +170,10 @@ def main() -> int:
                 "district":"Nanhu", "start_time":"2021-10-16T12:02:44"}})
         if not anomaly or anomaly.get("model_version") != "anomaly-v1" or not anomaly.get("reason"):
             raise RuntimeError("Anomaly model or explanation unavailable")
+        grid = request("Historical grid-load interval", f"{API_URL}/api/v1/anomaly/grid-load",
+            payload={"timestamp": "2021-10-01T00:00:00"})
+        if not grid or grid.get("detector_version") != "grid-load-seasonal-rule-v1" or grid.get("is_simulated") is not False:
+            raise RuntimeError("Grid-load detector or historical labeling unavailable")
         check_internal_api_connection()
     except (OSError, RuntimeError, subprocess.SubprocessError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)

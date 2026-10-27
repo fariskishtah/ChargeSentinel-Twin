@@ -3,6 +3,8 @@
 from app.api.schemas.models import (
     AnomalyRequest,
     AnomalyResponse,
+    GridLoadRequest,
+    GridLoadResponse,
     AvailabilityRequest,
     AvailabilityResponse,
     DemandForecastRequest,
@@ -26,6 +28,8 @@ from app.api.schemas.models import (
 __all__ = [
     "AnomalyRequest",
     "AnomalyResponse",
+    "GridLoadRequest",
+    "GridLoadResponse",
     "AvailabilityRequest",
     "AvailabilityResponse",
     "DemandForecastRequest",
