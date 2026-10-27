@@ -1,6 +1,6 @@
 # Demand integration — Jiaxing historical demo
 
-The demand endpoint uses Waseem's repaired source commit `64eadd73175f1a063e134ecc7e346b628b8309cf`, model `demand-completion-v1`, feature version `causal-completion-v1`, and the two unchanged XGBoost champion artifacts. Only runtime source/bundle files were copied; training code, local MLflow stores, and fixtures are not runtime dependencies. The source checksum manifest is preserved as provenance for the full original bundle; this deployment includes only its required champion subset.
+The demand endpoint uses Waseem's repaired source commit `64eadd73175f1a063e134ecc7e346b628b8309cf`, model `demand-completion-v1`, feature version `causal-completion-v1`, and the two unchanged XGBoost champion artifacts. Final hardening restored Waseem's missing training code, fixtures, comparison artifacts, and evaluation reports from his owner branch without replacing the integrated runtime. Training code, local MLflow stores, and fixtures are not runtime dependencies. The source checksum manifest is preserved as provenance for the full original bundle; the deployment includes only its required champion subset.
 
 `POST /api/v1/demand/forecast` accepts only `forecast_origin`, a **naive whole-hour source operational timestamp**. Source timezone is not independently verified. No UTC/Cairo conversion is guessed. This deliberately changes demand's former aware-datetime schema; all other model timestamp contracts are unchanged. Example:
 

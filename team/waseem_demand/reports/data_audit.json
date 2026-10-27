@@ -1,0 +1,113 @@
+{
+  "raw_sha256": "6f3643db401327ec4f4a074109987706e421896869acac26a8ee1a5c6e3b45ee",
+  "raw_rows": 441077,
+  "schema": [
+    "UserID",
+    "Charging Post ID",
+    "Location Information",
+    "District Name",
+    "Order creation time",
+    "Transaction power/kwh",
+    "Electricity cost/Yuan",
+    "Service charge/Yuan",
+    "Transaction Amount/Yuan",
+    "Actual Payment/Yuan",
+    "Start Time",
+    "End Time",
+    "Payment time",
+    "Temperature(\u2103)",
+    "Relative Humidity(%)",
+    "Precipitation(mm)",
+    "end_cause",
+    "is_full_charge",
+    "is_user_stop",
+    "is_nonsystem_fault",
+    "is_system_issue",
+    "is_EV_fault",
+    "is_other_fault",
+    "is_abnormal"
+  ],
+  "dtypes": {
+    "UserID": "int64",
+    "Charging Post ID": "int64",
+    "Location Information": "object",
+    "District Name": "object",
+    "Order creation time": "object",
+    "Transaction power/kwh": "float64",
+    "Electricity cost/Yuan": "float64",
+    "Service charge/Yuan": "float64",
+    "Transaction Amount/Yuan": "float64",
+    "Actual Payment/Yuan": "float64",
+    "Start Time": "object",
+    "End Time": "object",
+    "Payment time": "object",
+    "Temperature(\u2103)": "float64",
+    "Relative Humidity(%)": "int64",
+    "Precipitation(mm)": "float64",
+    "end_cause": "object",
+    "is_full_charge": "int64",
+    "is_user_stop": "int64",
+    "is_nonsystem_fault": "int64",
+    "is_system_issue": "int64",
+    "is_EV_fault": "int64",
+    "is_other_fault": "int64",
+    "is_abnormal": "int64"
+  },
+  "time_ranges": {
+    "Start Time": {
+      "first": "2019-12-31 21:27:03",
+      "last": "2021-12-31 23:52:14"
+    },
+    "End Time": {
+      "first": "2020-01-01 00:01:37",
+      "last": "2021-12-31 23:58:03"
+    }
+  },
+  "missing": {
+    "UserID": 0,
+    "Charging Post ID": 0,
+    "Location Information": 0,
+    "District Name": 0,
+    "Order creation time": 0,
+    "Transaction power/kwh": 0,
+    "Electricity cost/Yuan": 0,
+    "Service charge/Yuan": 0,
+    "Transaction Amount/Yuan": 0,
+    "Actual Payment/Yuan": 0,
+    "Start Time": 0,
+    "End Time": 0,
+    "Payment time": 0,
+    "Temperature(\u2103)": 0,
+    "Relative Humidity(%)": 0,
+    "Precipitation(mm)": 0,
+    "end_cause": 0,
+    "is_full_charge": 0,
+    "is_user_stop": 0,
+    "is_nonsystem_fault": 0,
+    "is_system_issue": 0,
+    "is_EV_fault": 0,
+    "is_other_fault": 0,
+    "is_abnormal": 0
+  },
+  "duplicates": 0,
+  "identifiers": {
+    "UserID": {
+      "unique": 56115,
+      "missing": 0
+    },
+    "Charging Post ID": {
+      "unique": 92,
+      "missing": 0
+    }
+  },
+  "session_identifier": "No unique transaction ID; UserID is a repeated customer identifier",
+  "hourly_rows": 17547,
+  "first_hour": "2019-12-31 21:00:00",
+  "last_hour": "2021-12-31 23:00:00",
+  "zero_arrival_hours": 480,
+  "zero_energy_hours": 429,
+  "energy_conserved": true,
+  "sessions_conserved": true,
+  "timezone": "Source timezone not independently verified; naive operational time",
+  "zero_policy": "No recorded event => zero, conditional on complete source capture; outages cannot be distinguished"
+}

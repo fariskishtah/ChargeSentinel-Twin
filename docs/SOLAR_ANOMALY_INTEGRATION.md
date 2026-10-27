@@ -13,6 +13,8 @@ The current operator UI describes a live check, so inference is at **session sta
 
 Fatima's source code had no committed model or metrics, used `train_test_split`, fixed threshold 0.41, post-event duration/rate features, and an explanation fallback that swallowed SHAP failures. Its tests used fake models; the `.ipynb` file is a Colab-dependent script. The integration handoff at `team/fatima_anomaly/integration/` retrains CatBoost from the real local Jiaxing source with a strict chronological train/validation/test split and a validation-only threshold sweep. No notebook, Drive path, or local MLflow store is needed for inference.
 
+On 2026-10-28, Fatima's later PR #1 added an archived model ZIP from that earlier completed-session methodology. The ZIP and extracted model checksums matched the reconciliation audit; the PR was professionally closed without merge, and her source branch/history remain intact. Its higher random-split scores are not a replacement for `anomaly-v1`. A separate [grid-load interval screen](GRID_LOAD_ANOMALY.md) now addresses the handbook's interval anomaly wording without changing the session-risk contract.
+
 | Split | First to last source timestamp | Rows | Normal | Abnormal | Prevalence |
 |---|---|---:|---:|---:|---:|
 | Train | 2019-12-31 21:27 to 2021-07-30 14:43 | 308,753 | 252,267 | 56,486 | 18.29% |
