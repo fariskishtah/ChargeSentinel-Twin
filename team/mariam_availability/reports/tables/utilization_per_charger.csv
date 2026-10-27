@@ -1,0 +1,93 @@
+charger_id,utilization,location,district
+72,0.021310568651051385,Expressway Service District B,Xiuzhou
+73,0.036830125644162715,Expressway Service District A,Xiuzhou
+44,0.05835276584270217,Industrial Park,Tongxiang
+16,0.06274942133684187,Financial Industrial Park,Nanhu
+2,0.06939041381966436,Tourist Attraction,Nanhu
+8,0.07151310529105707,Tourist Attraction,Nanhu
+75,0.07835277120992391,Expressway Service District A,Xiuzhou
+36,0.07846648355255845,Park A,Tongxiang
+80,0.08562510839579557,Expressway Service District C,Xiuzhou
+4,0.08749212573315332,Tourist Attraction,Nanhu
+15,0.09160126999455037,Financial Industrial Park,Nanhu
+71,0.09480011968553789,Expressway Service District B,Xiuzhou
+14,0.09850149062948874,Financial Industrial Park,Nanhu
+78,0.09993929912863558,Expressway Service District C,Xiuzhou
+69,0.10057521891802937,Expressway Service District B,Xiuzhou
+31,0.10486375899688592,Park A,Tongxiang
+7,0.10753019744208896,Tourist Attraction,Nanhu
+34,0.11106211952447274,Park A,Tongxiang
+70,0.11324855188480591,Expressway Service District B,Xiuzhou
+43,0.11384490246588151,Industrial Park,Tongxiang
+9,0.11400398114225183,Financial Industrial Park,Nanhu
+76,0.11422652467826375,Expressway Service District A,Xiuzhou
+74,0.11800738393586797,Expressway Service District A,Xiuzhou
+12,0.12130902884925748,Financial Industrial Park,Nanhu
+6,0.12137623999962481,Tourist Attraction,Nanhu
+13,0.12470558853097027,Financial Industrial Park,Nanhu
+39,0.1257189737032288,Industrial Park,Tongxiang
+41,0.1261893618904631,Industrial Park,Tongxiang
+33,0.13131381320252447,Park A,Tongxiang
+42,0.1324921541445352,Industrial Park,Tongxiang
+83,0.14103645933562692,Expressway Service District C,Xiuzhou
+82,0.14209989667135334,Expressway Service District C,Xiuzhou
+3,0.14406781774803487,Tourist Attraction,Nanhu
+5,0.14894716729252727,Tourist Attraction,Nanhu
+30,0.15317185793183324,Park A,Tongxiang
+11,0.15541250297447745,Financial Industrial Park,Nanhu
+10,0.15586664413283222,Financial Industrial Park,Nanhu
+35,0.15958067957331687,Park A,Tongxiang
+29,0.1698491673715847,Park A,Tongxiang
+84,0.17074361875049698,Expressway Service District C,Xiuzhou
+81,0.1713120182188068,Expressway Service District C,Xiuzhou
+79,0.17818041296911977,Expressway Service District C,Xiuzhou
+1,0.17952476508183227,Tourist Attraction,Nanhu
+32,0.18197543205747388,Park A,Tongxiang
+38,0.1915894329057287,Industrial Park,Tongxiang
+37,0.1964907652300694,Industrial Park,Tongxiang
+77,0.21523961071452605,Expressway Service District C,Xiuzhou
+90,0.22348198970949676,Wholesale Market,Xiuzhou
+40,0.23070112001848536,Industrial Park,Tongxiang
+88,0.24967217891571836,Wholesale Market,Xiuzhou
+86,0.2544997559641141,Wholesale Market,Xiuzhou
+85,0.2574788629829711,Wholesale Market,Xiuzhou
+61,0.267597973249942,Government Agency,Xiuzhou
+89,0.27142223219497197,Wholesale Market,Xiuzhou
+64,0.27422017457405906,Government Agency,Xiuzhou
+91,0.2759147077758464,Wholesale Market,Xiuzhou
+27,0.2792662425656539,Shopping Mall,Tongxiang
+68,0.28693874436292083,Government Agency,Xiuzhou
+24,0.2921661174900086,Shopping Mall,Tongxiang
+65,0.3139550567842771,Government Agency,Xiuzhou
+67,0.3238487311661906,Government Agency,Xiuzhou
+62,0.33307678506777705,Government Agency,Xiuzhou
+92,0.34214492857672035,Wholesale Market,Xiuzhou
+87,0.355186153178106,Wholesale Market,Xiuzhou
+63,0.3612648669963279,Government Agency,Xiuzhou
+66,0.3638059225150632,Government Agency,Xiuzhou
+54,0.38318563567994574,Bus Station,Tongxiang
+50,0.38562960532751,Park B,Tongxiang
+28,0.3974289936954541,Shopping Mall,Tongxiang
+19,0.40195148549392623,Technology Park,Nanhu
+47,0.4090676566075286,Park B,Tongxiang
+51,0.41737441343596754,Park B,Tongxiang
+26,0.41958937196880547,Shopping Mall,Tongxiang
+58,0.4291476427905592,Bus Station,Tongxiang
+45,0.43416718026375,Park B,Tongxiang
+18,0.43563808370753154,Technology Park,Nanhu
+20,0.4510884848020119,Technology Park,Nanhu
+48,0.4516178055996325,Park B,Tongxiang
+22,0.454628325045111,Shopping Mall,Tongxiang
+46,0.4578018040747786,Park B,Tongxiang
+21,0.4594910183272305,Shopping Mall,Tongxiang
+49,0.4639576389870066,Park B,Tongxiang
+52,0.4696954177729241,Park B,Tongxiang
+17,0.4703868906439384,Technology Park,Nanhu
+59,0.47344113882342104,Bus Station,Tongxiang
+56,0.47589083993238107,Bus Station,Tongxiang
+25,0.4882462415958736,Shopping Mall,Tongxiang
+53,0.5054748462294885,Bus Station,Tongxiang
+57,0.5163776971931796,Bus Station,Tongxiang
+55,0.5241052312238764,Bus Station,Tongxiang
+60,0.5291283866274571,Bus Station,Tongxiang
+23,0.5838398335166659,Shopping Mall,Tongxiang
