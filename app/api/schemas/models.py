@@ -4,6 +4,7 @@ from typing import Annotated, Literal, TypeAlias
 
 from pydantic import (
     AwareDatetime,
+    NaiveDatetime,
     BaseModel,
     ConfigDict,
     Field,
@@ -40,14 +41,20 @@ class SolarForecastResponse(APIModel):
 
 
 class DemandForecastRequest(APIModel):
-    forecast_origin: AwareDatetime
-    # TODO(Waseem): confirm whether the client needs any additional inputs.
+    forecast_origin: NaiveDatetime = Field(description="Whole-hour source operational time; timezone unverified, not UTC")
+
+    @field_validator("forecast_origin")
+    @classmethod
+    def require_whole_hour(cls, value):
+        if value.minute or value.second or value.microsecond:
+            raise ValueError("Demand forecast_origin must be a whole hour")
+        return value
 
 
 class DemandForecastResponse(APIModel):
-    timestamp: AwareDatetime
+    timestamp: NaiveDatetime
     expected_energy_kwh: float = Field(ge=0)
-    expected_sessions: int = Field(ge=0)
+    expected_sessions: float = Field(ge=0, description="Statistical expected arrival count, not rounded")
     model_version: Identifier
 
 

@@ -6,6 +6,10 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
+ENV PYTHONPATH=/app
+RUN apt-get update && apt-get install -y --no-install-recommends libgomp1 \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
 COPY requirements/api.txt /tmp/requirements.txt
 RUN python -m pip install --upgrade pip \
     && python -m pip install -r /tmp/requirements.txt \
@@ -14,6 +18,9 @@ RUN python -m pip install --upgrade pip \
 
 COPY --chown=chargesentinel:chargesentinel app ./app
 COPY --chown=chargesentinel:chargesentinel src ./src
+COPY --chown=chargesentinel:chargesentinel team/waseem_demand/demand ./team/waseem_demand/demand
+COPY --chown=chargesentinel:chargesentinel team/waseem_demand/bundle/v1 ./team/waseem_demand/bundle/v1
+COPY --chown=chargesentinel:chargesentinel team/waseem_demand/runtime_data ./team/waseem_demand/runtime_data
 
 USER chargesentinel
 

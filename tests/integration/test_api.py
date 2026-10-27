@@ -28,11 +28,6 @@ def test_health() -> None:
             "solar",
         ),
         (
-            "/api/v1/demand/forecast",
-            {"forecast_origin": FORECAST_ORIGIN},
-            "demand",
-        ),
-        (
             "/api/v1/anomaly/predict",
             {"charger_id": "charger-1", "features": {"feature_1": 1.0}},
             "anomaly",

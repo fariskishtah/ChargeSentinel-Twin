@@ -136,6 +136,12 @@ def main() -> int:
         request("API documentation", f"{API_URL}/docs")
         request("Streamlit health", f"{UI_URL}/_stcore/health")
         request("MLflow health", f"{MLFLOW_URL}/health")
+        demand = request("Real demand inference", f"{API_URL}/api/v1/demand/forecast",
+                         payload={"forecast_origin": "2021-10-01T00:00:00"})
+        if not demand or demand.get("model_version") != "demand-completion-v1":
+            raise RuntimeError("Demand endpoint did not return the repaired model")
+        if not isinstance(demand.get("expected_sessions"), float):
+            raise RuntimeError("Demand expected sessions were not preserved as float")
         check_ui_application_startup()
         twin = request(
             "Digital Twin simulation",

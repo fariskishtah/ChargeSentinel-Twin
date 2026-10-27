@@ -24,7 +24,7 @@ NOW = datetime(2026, 10, 24, 12, 0, tzinfo=UTC)
 def test_valid_requests() -> None:
     assert SolarForecastRequest(forecast_origin=NOW, horizon_hours=24)
     assert SolarForecastRequest(forecast_origin=NOW, horizon_hours=48)
-    assert DemandForecastRequest(forecast_origin=NOW)
+    assert DemandForecastRequest(forecast_origin=datetime(2021, 10, 1))
     assert AnomalyRequest(charger_id="charger-1", features={"feature_1": 1.0})
     assert AvailabilityRequest(charger_id="charger-1", query_time=NOW)
     assert RecommendationRequest(user_eta=NOW)
@@ -49,7 +49,7 @@ def test_invalid_solar_horizon_is_rejected() -> None:
 def test_negative_demand_output_is_rejected() -> None:
     with pytest.raises(ValidationError):
         DemandForecastResponse(
-            timestamp=NOW,
+            timestamp=NOW.replace(tzinfo=None),
             expected_energy_kwh=-0.1,
             expected_sessions=1,
             model_version="demand-v1",
@@ -57,7 +57,7 @@ def test_negative_demand_output_is_rejected() -> None:
 
     with pytest.raises(ValidationError):
         DemandForecastResponse(
-            timestamp=NOW,
+            timestamp=NOW.replace(tzinfo=None),
             expected_energy_kwh=1,
             expected_sessions=-1,
             model_version="demand-v1",

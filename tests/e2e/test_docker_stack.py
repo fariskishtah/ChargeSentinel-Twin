@@ -73,6 +73,35 @@ def test_api_health_returns_200() -> None:
     assert json.loads(body)["status"] == "ok"
 
 
+def test_real_demand_works_inside_docker() -> None:
+    status, body = _request(f"{API_URL}/api/v1/demand/forecast",
+                            payload={"forecast_origin": "2021-10-01T00:00:00"})
+    result = json.loads(body)
+    assert status == 200 and result["model_version"] == "demand-completion-v1"
+    assert result["expected_energy_kwh"] == pytest.approx(670.3817138671875)
+    assert isinstance(result["expected_sessions"], float)
+    assert result["expected_sessions"] == pytest.approx(43.74503707885742)
+    check = _compose("exec", "-T", "--workdir", "/tmp", "api", "python", "-c",
+        "from src.integration.adapters.demand import get_demand_service; "
+        "s=get_demand_service(); h=s.history_provider.get_history('2021-10-01T00:00:00'); "
+        "assert len(h)==192 and h[-1]['timestamp']=='2021-09-30T23:00:00'; "
+        "assert s.predict({'forecast_origin':'2021-10-01T00:00:00'})['model_version']=='demand-completion-v1'")
+    assert check.returncode == 0, check.stderr
+
+
+def test_streamlit_displays_real_demand_from_api() -> None:
+    result = _compose("exec", "-T", "--workdir", "/tmp", "ui", "python", "-c",
+        "from streamlit.testing.v1 import AppTest; "
+        "a=AppTest.from_file('/app/app/ui/streamlit_app.py').run(timeout=20); "
+        "next(b for b in a.button if b.label=='Run Demand Forecast').click().run(timeout=20); "
+        "assert not a.exception; "
+        "assert any(m.label=='Expected Completed-Session Energy (kWh)' and m.value=='670.38' for m in a.metric); "
+        "assert any(m.label=='Expected Sessions' and m.value=='43.7' for m in a.metric); "
+        "assert any(m.value=='demand-completion-v1' for m in a.metric); "
+        "assert not any('demand' in w.value.lower() and 'MODEL NOT READY' in w.value for w in a.warning)")
+    assert result.returncode == 0, result.stderr
+
+
 def test_openapi_endpoint_responds() -> None:
     status, body = _request(f"{API_URL}/openapi.json")
     docs_status, _ = _request(f"{API_URL}/docs")
@@ -152,11 +181,6 @@ def test_charging_station_simulator_works_through_containerized_api() -> None:
                 "horizon_hours": 24,
             },
             "solar",
-        ),
-        (
-            "/api/v1/demand/forecast",
-            {"forecast_origin": "2026-10-24T12:00:00+02:00"},
-            "demand",
         ),
         (
             "/api/v1/anomaly/predict",

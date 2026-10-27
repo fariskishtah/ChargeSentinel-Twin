@@ -14,7 +14,7 @@ from app.ui.simulator_view import render_station_simulator
 
 NOT_READY_MESSAGES = {
     "solar": "Solar forecasting model is awaiting integration.",
-    "demand": "EV demand forecasting model is awaiting integration.",
+    "demand": "Demand service is temporarily unavailable.",
     "anomaly": "Anomaly detection model is awaiting integration.",
     "availability": "Charger availability model is awaiting integration.",
     "recommendation": "Smart charger recommendation model is awaiting integration.",
@@ -142,10 +142,18 @@ def _render_demand(client: ChargeSentinelAPIClient) -> None:
     with st.container(border=True):
         st.subheader("EV Demand Forecast")
         st.caption(
-            "Estimate charging energy and session demand from a UTC origin time."
+            "Jiaxing historical demo: 2020-01-08 21:00 through 2022-01-01 00:00. "
+            "Use source operational time; source timezone is unverified."
         )
+        st.info("Energy is aggregated by session completion hour and is used as an EV demand proxy; "
+                "it is not direct physical grid-load telemetry.")
         with st.form("demand_form"):
-            forecast_origin = _datetime_fields("Forecast Origin", "demand_origin")
+            date_col, time_col = st.columns(2)
+            selected_date = date_col.date_input("Forecast Origin — Date (source operational time)",
+                                               value=date(2021, 10, 1), key="demand_origin_date")
+            selected_time = time_col.time_input("Forecast Origin — Hour (source operational time)",
+                                               value=time(0), step=3600, key="demand_origin_time")
+            forecast_origin = datetime.combine(selected_date, selected_time).isoformat()
             submitted = st.form_submit_button("Run Demand Forecast")
         if submitted:
             result = client.get_demand_forecast(
@@ -155,10 +163,11 @@ def _render_demand(client: ChargeSentinelAPIClient) -> None:
             def show(data: dict[str, object]) -> None:
                 cols = st.columns(3)
                 cols[0].metric(
-                    "Expected energy", f"{_value(data, 'expected_energy_kwh')} kWh"
+                    "Expected Completed-Session Energy (kWh)", f"{data['expected_energy_kwh']:.2f}"
                 )
-                cols[1].metric("Expected sessions", _value(data, "expected_sessions"))
-                cols[2].metric("Model version", _value(data, "model_version"))
+                cols[1].metric("Expected Sessions", f"{data['expected_sessions']:.1f}")
+                cols[2].metric("Model Version", _value(data, "model_version"))
+                st.caption(f"Forecast timestamp (source operational time): {data['timestamp']}")
 
             _render_result(result, "demand", show)
 
