@@ -35,6 +35,8 @@ python -m pytest team/waseem_demand/tests -q
 
 Raw input is read-only and hashed before/after. Full derived hourly data, MLflow SQLite store and MLflow artifacts remain under ignored `runtime/`; no large dataset or database is committed. Set `MLFLOW_TRACKING_URI` explicitly for a shared server. Real run IDs and local bundle artifact URIs are in `reports/mlflow_receipt.json`. The committed bundle is independently portable; local run URIs are not advertised as public.
 
+The first environment hit a native XGBoost crash and produced no metrics. Training completed with the pinned NumPy/XGBoost/PyTorch stack; its exact packages are in `reports/environment.txt`. Tracking was then resumed from the frozen bundle after pinning SQLAlchemy 2.0.44 for MLflow compatibility; `reports/tracking_environment.txt` records that environment. `python -m team.waseem_demand.demand.train --log-only` resumes tracking without retraining or changing metrics.
+
 ## Handoff and limitations
 
 - Function: `demand/inference.py`, `predict_demand(payload)`.

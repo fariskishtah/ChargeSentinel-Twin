@@ -51,10 +51,10 @@ def predict_demand(payload):
             row = features.iloc[-1]
             pred = .5 * row[f"{c}_lag_24"] + .5 * profiles[c][f"{int(row.dayofweek)}:{int(row.hour)}"]
         elif family == "XGBoost":
-            from xgboost import XGBRegressor
-            model = XGBRegressor()
+            from xgboost import Booster, DMatrix
+            model = Booster()
             model.load_model(path / f"xgboost_{c}.json")
-            pred = model.predict(features[FEATURES].tail(1))[0]
+            pred = model.predict(DMatrix(features[FEATURES].tail(1).to_numpy()))[0]
         elif family == "LSTM":
             import torch
             from .models import CompactLSTM

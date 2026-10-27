@@ -1,0 +1,340 @@
+{
+  "model_version": "demand-completion-v1",
+  "feature_version": "causal-completion-v1",
+  "dataset_version": "sha256:6f3643db401327ec4f4a074109987706e421896869acac26a8ee1a5c6e3b45ee",
+  "training_code_commit": "90358a91ebd9def6fb6ff76110898d75dd7dacff",
+  "features": [
+    "energy_kwh_lag_1",
+    "energy_kwh_lag_2",
+    "energy_kwh_lag_3",
+    "energy_kwh_lag_24",
+    "energy_kwh_lag_48",
+    "energy_kwh_lag_168",
+    "sessions_lag_1",
+    "sessions_lag_2",
+    "sessions_lag_3",
+    "sessions_lag_24",
+    "sessions_lag_48",
+    "sessions_lag_168",
+    "energy_kwh_mean_6",
+    "energy_kwh_std_6",
+    "energy_kwh_mean_24",
+    "energy_kwh_std_24",
+    "sessions_mean_6",
+    "sessions_std_6",
+    "sessions_mean_24",
+    "sessions_std_24",
+    "hour",
+    "dayofweek",
+    "weekend",
+    "month",
+    "sin_hour",
+    "cos_hour",
+    "sin_dayofweek",
+    "cos_dayofweek"
+  ],
+  "champions": {
+    "energy_kwh": "XGBoost",
+    "sessions": "XGBoost"
+  },
+  "selection": "Lowest validation MAE per target; test is reporting only",
+  "aggregation": "Completed-session energy recognized at End Time hour; arrivals at Start Time hour",
+  "forecast_origin": "First boundary of target hour; history ends at origin minus one hour",
+  "expected_sessions_type": "Nonnegative float statistical expected count",
+  "splits": {
+    "train": {
+      "rows": 12940,
+      "first": "2020-01-08 20:00:00",
+      "last": "2021-06-30 23:00:00"
+    },
+    "validation": {
+      "rows": 2208,
+      "first": "2021-07-01 00:00:00",
+      "last": "2021-09-30 23:00:00"
+    },
+    "test": {
+      "rows": 2208,
+      "first": "2021-10-01 00:00:00",
+      "last": "2021-12-31 23:00:00"
+    }
+  },
+  "results": {
+    "Baseline": {
+      "validation": {
+        "energy_kwh": {
+          "MAE": 127.65213201992752,
+          "RMSE": 165.2446420064691,
+          "sMAPE": 28.829935374127572
+        },
+        "sessions": {
+          "MAE": 8.34861865942029,
+          "RMSE": 11.437486388286825,
+          "sMAPE": 30.589535515774223
+        }
+      },
+      "test": {
+        "energy_kwh": {
+          "MAE": 146.38263473731885,
+          "RMSE": 188.95393058271324,
+          "sMAPE": 29.051614036118274
+        },
+        "sessions": {
+          "MAE": 8.62783061594203,
+          "RMSE": 11.365877403773485,
+          "sMAPE": 29.857886034893863
+        }
+      }
+    },
+    "XGBoost": {
+      "validation": {
+        "energy_kwh": {
+          "MAE": 91.87051279987112,
+          "RMSE": 117.4609827631322,
+          "sMAPE": 21.616053135884865
+        },
+        "sessions": {
+          "MAE": 6.235109508253526,
+          "RMSE": 8.428199074408262,
+          "sMAPE": 23.512017758302456
+        }
+      },
+      "test": {
+        "energy_kwh": {
+          "MAE": 103.67469139817831,
+          "RMSE": 134.74292829295143,
+          "sMAPE": 19.686200184869676
+        },
+        "sessions": {
+          "MAE": 6.340499866267909,
+          "RMSE": 8.29403873640472,
+          "sMAPE": 21.356829174104522
+        }
+      }
+    },
+    "LSTM": {
+      "validation": {
+        "energy_kwh": {
+          "MAE": 93.3738963812676,
+          "RMSE": 120.00461762810549,
+          "sMAPE": 21.76525780086916
+        },
+        "sessions": {
+          "MAE": 6.362942322872687,
+          "RMSE": 8.556033280853121,
+          "sMAPE": 23.85646133026891
+        }
+      },
+      "test": {
+        "energy_kwh": {
+          "MAE": 108.67910667419433,
+          "RMSE": 140.64432797665035,
+          "sMAPE": 20.868059062743946
+        },
+        "sessions": {
+          "MAE": 6.683124147463536,
+          "RMSE": 8.750352693631168,
+          "sMAPE": 22.337855296754398
+        }
+      }
+    }
+  },
+  "optuna": {
+    "energy_kwh": {
+      "trials": 6,
+      "validation_MAE": 91.87051279987112,
+      "best_params": {
+        "n_estimators": 240,
+        "max_depth": 3,
+        "learning_rate": 0.03325115032364978,
+        "subsample": 0.9,
+        "colsample_bytree": 0.9,
+        "reg_lambda": 2.0,
+        "random_state": 42,
+        "n_jobs": 2,
+        "tree_method": "hist"
+      },
+      "trials_detail": [
+        {
+          "number": 0,
+          "params": {
+            "n_estimators": 170,
+            "max_depth": 6,
+            "learning_rate": 0.07881419922251147
+          },
+          "value": 94.44966849603514
+        },
+        {
+          "number": 1,
+          "params": {
+            "n_estimators": 170,
+            "max_depth": 3,
+            "learning_rate": 0.03193080802595728
+          },
+          "value": 92.49548366104347
+        },
+        {
+          "number": 2,
+          "params": {
+            "n_estimators": 100,
+            "max_depth": 6,
+            "learning_rate": 0.06418659580326884
+          },
+          "value": 93.25208272311998
+        },
+        {
+          "number": 3,
+          "params": {
+            "n_estimators": 240,
+            "max_depth": 3,
+            "learning_rate": 0.11446760508149088
+          },
+          "value": 92.9206135689003
+        },
+        {
+          "number": 4,
+          "params": {
+            "n_estimators": 240,
+            "max_depth": 3,
+            "learning_rate": 0.03325115032364978
+          },
+          "value": 91.87051279987112
+        },
+        {
+          "number": 5,
+          "params": {
+            "n_estimators": 100,
+            "max_depth": 4,
+            "learning_rate": 0.056941083846378505
+          },
+          "value": 91.89944511855857
+        }
+      ]
+    },
+    "sessions": {
+      "trials": 6,
+      "validation_MAE": 6.235109508253526,
+      "best_params": {
+        "n_estimators": 100,
+        "max_depth": 4,
+        "learning_rate": 0.056941083846378505,
+        "subsample": 0.9,
+        "colsample_bytree": 0.9,
+        "reg_lambda": 2.0,
+        "random_state": 42,
+        "n_jobs": 2,
+        "tree_method": "hist"
+      },
+      "trials_detail": [
+        {
+          "number": 0,
+          "params": {
+            "n_estimators": 170,
+            "max_depth": 6,
+            "learning_rate": 0.07881419922251147
+          },
+          "value": 6.271854883302813
+        },
+        {
+          "number": 1,
+          "params": {
+            "n_estimators": 170,
+            "max_depth": 3,
+            "learning_rate": 0.03193080802595728
+          },
+          "value": 6.318348252147004
+        },
+        {
+          "number": 2,
+          "params": {
+            "n_estimators": 100,
+            "max_depth": 6,
+            "learning_rate": 0.06418659580326884
+          },
+          "value": 6.250622418263684
+        },
+        {
+          "number": 3,
+          "params": {
+            "n_estimators": 240,
+            "max_depth": 3,
+            "learning_rate": 0.11446760508149088
+          },
+          "value": 6.256648745117844
+        },
+        {
+          "number": 4,
+          "params": {
+            "n_estimators": 240,
+            "max_depth": 3,
+            "learning_rate": 0.03325115032364978
+          },
+          "value": 6.27048964701269
+        },
+        {
+          "number": 5,
+          "params": {
+            "n_estimators": 100,
+            "max_depth": 4,
+            "learning_rate": 0.056941083846378505
+          },
+          "value": 6.235109508253526
+        }
+      ]
+    }
+  },
+  "lstm": {
+    "epochs": 12,
+    "best_epoch": 8,
+    "best_validation_scaled_MSE": 0.23993240296840668,
+    "history": [
+      {
+        "epoch": 1,
+        "validation_scaled_MSE": 0.3239903450012207
+      },
+      {
+        "epoch": 2,
+        "validation_scaled_MSE": 0.2873845398426056
+      },
+      {
+        "epoch": 3,
+        "validation_scaled_MSE": 0.2733632028102875
+      },
+      {
+        "epoch": 4,
+        "validation_scaled_MSE": 0.26357167959213257
+      },
+      {
+        "epoch": 5,
+        "validation_scaled_MSE": 0.25431203842163086
+      },
+      {
+        "epoch": 6,
+        "validation_scaled_MSE": 0.24620695412158966
+      },
+      {
+        "epoch": 7,
+        "validation_scaled_MSE": 0.24219302833080292
+      },
+      {
+        "epoch": 8,
+        "validation_scaled_MSE": 0.23993240296840668
+      },
+      {
+        "epoch": 9,
+        "validation_scaled_MSE": 0.24066253006458282
+      },
+      {
+        "epoch": 10,
+        "validation_scaled_MSE": 0.24063463509082794
+      },
+      {
+        "epoch": 11,
+        "validation_scaled_MSE": 0.2414693981409073
+      },
+      {
+        "epoch": 12,
+        "validation_scaled_MSE": 0.2419259399175644
+      }
+    ]
+  }
+}

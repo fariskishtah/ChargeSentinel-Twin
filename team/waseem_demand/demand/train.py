@@ -39,10 +39,17 @@ def fit_scalers(x, y, train_mask):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--raw", type=Path, required=True)
+    parser.add_argument("--raw", type=Path)
+    parser.add_argument("--log-only", action="store_true", help="Resume tracking from frozen bundle; do not retrain")
     parser.add_argument("--trials", type=int, default=6)
     parser.add_argument("--epochs", type=int, default=12)
     args = parser.parse_args()
+    if args.log_only:
+        log_runs(json.loads((MODULE / "bundle/v1/metadata.json").read_text()),
+                 MODULE / "bundle/v1", MODULE / "reports", MODULE / "runtime")
+        return
+    if args.raw is None:
+        parser.error("--raw is required for training")
     if args.trials < 1 or args.epochs < 1:
         parser.error("trials and epochs must be positive")
     import torch
@@ -178,23 +185,55 @@ def main():
     save_json(MODULE / "fixtures" / "expected_response.json", predict_demand(fixture))
     make_plots(hourly, eval_frame, predictions, truth, eval_masks["test"], reports)
     write_report(meta, audit, reports)
+    receipt = log_runs(meta, bundle, reports, runtime)
+    from .build_hourly import sha256
+    assert sha256(args.raw) == audit["raw_sha256"], "Raw data changed"
+    print(json.dumps({"champions": champions, "results": results, "mlflow": receipt}, indent=2), flush=True)
+
+
+def log_runs(meta, bundle, reports, runtime):
+    """Track the frozen, already-evaluated bundle without needing raw data or retraining."""
+    (reports / "tracking_environment.txt").write_text(subprocess.check_output(
+        [sys.executable, "-m", "pip", "freeze"], text=True))
+    import torch
+    import mlflow
+    import mlflow.xgboost
+    from xgboost import XGBRegressor
+    from .models import CompactLSTM
+    from .build_hourly import sha256
+    commit, results = meta["training_code_commit"], meta["results"]
+    profiles = json.loads((bundle / "baseline.json").read_text())
+    fixture = json.loads((MODULE / "fixtures/request.json").read_text())
+    target = {"timestamp": fixture["forecast_origin"], "energy_kwh": 0., "sessions": 0}
+    d = extract_features(pd.DataFrame([*fixture["history"], target])).dropna(subset=FEATURES)
+    scaling = json.loads((bundle / "scaling.json").read_text())
+    seq_x = ((d[FEATURES].tail(24).to_numpy() - scaling["x_mean"]) / scaling["x_scale"])[None]
+    net = CompactLSTM(len(FEATURES))
+    net.load_state_dict(torch.load(bundle / "lstm.pt", map_location="cpu", weights_only=True))
+    net.eval()
+    xgb_models = []
+    for target_name in TARGETS:
+        model = XGBRegressor()
+        model.load_model(bundle / f"xgboost_{target_name}.json")
+        xgb_models.append(model)
+    parameters = {c: meta["optuna"][c]["best_params"] for c in TARGETS}
     tracking_uri = os.environ.get("MLFLOW_TRACKING_URI", "sqlite:///" + str(runtime / "mlflow.db"))
     mlflow.set_tracking_uri(tracking_uri)
     if not os.environ.get("MLFLOW_TRACKING_URI") and mlflow.get_experiment_by_name(EXPERIMENT) is None:
         mlflow.create_experiment(EXPERIMENT, artifact_location=(runtime / "mlartifacts").as_uri())
     mlflow.set_experiment(EXPERIMENT)
     run_ids = {}
-    for family in predictions:
+    for family in results:
         with mlflow.start_run(run_name=f"repaired-{family}") as run:
             mlflow.set_tags({"owner": "Waseem", "module": "demand", "git_commit": commit})
             params = {"model_name": family, "dataset_version": meta["dataset_version"],
                       "feature_version": FEATURE_VERSION, "seed": SEED}
             if family == "XGBoost":
                 params.update({f"{c}_{k}": v for c in TARGETS for k, v in parameters[c].items()})
-                params["optuna_trials_per_target"] = args.trials
+                params["optuna_trials_per_target"] = meta["optuna"]["energy_kwh"]["trials"]
             elif family == "LSTM":
-                params.update({"hidden_dim": 32, "sequence_length": 24, "epochs": args.epochs,
-                               "best_epoch": best_epoch, "learning_rate": .002, "batch_size": 128})
+                params.update({"hidden_dim": 32, "sequence_length": 24, "epochs": meta["lstm"]["epochs"],
+                               "best_epoch": meta["lstm"]["best_epoch"], "learning_rate": .002, "batch_size": 128})
             else:
                 params["strategy"] = "50% lag24 + 50% training hour/dayofweek median"
             mlflow.log_params(params)
@@ -215,10 +254,10 @@ def main():
                 mlflow.pytorch.log_model(traced, name="scaled_sequence_model", input_example=seq_x[:2].astype(np.float32))
             else:
                 import mlflow.pyfunc
-                def seasonal_for_mlflow(frame):
+                def seasonal_for_mlflow(model_input):
                     return np.column_stack([
-                        .5 * frame[f"{c}_lag_24"].to_numpy() + .5 * np.array([
-                            profiles[c][f"{int(d)}:{int(h)}"] for d, h in zip(frame.dayofweek, frame.hour)])
+                        .5 * model_input[f"{c}_lag_24"].to_numpy() + .5 * np.array([
+                            profiles[c][f"{int(d)}:{int(h)}"] for d, h in zip(model_input.dayofweek, model_input.hour)])
                         for c in ["energy_kwh", "sessions"]])
                 mlflow.pyfunc.log_model(name="seasonal_model",
                     python_model=seasonal_for_mlflow,
@@ -240,11 +279,10 @@ def main():
     for info in run_ids.values():
         client.log_artifact(info["run_id"], str(reports / "evaluation.md"), "evaluation")
         client.log_artifact(info["run_id"], str(reports / "mlflow_receipt.json"), "evaluation")
-    from .build_hourly import sha256
     checksums = {p.name: sha256(p) for p in bundle.iterdir() if p.is_file() and p.name != "checksums.json"}
     save_json(bundle / "checksums.json", checksums)
-    assert sha256(args.raw) == audit["raw_sha256"], "Raw data changed"
-    print(json.dumps({"champions": champions, "results": results, "mlflow": receipt}, indent=2), flush=True)
+    print(json.dumps(receipt, indent=2), flush=True)
+    return receipt
 
 
 def make_plots(hourly, frame, predictions, truth, test, reports):

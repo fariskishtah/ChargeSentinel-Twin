@@ -3,6 +3,7 @@ torch==2.8.0
 scikit-learn==1.7.2
 optuna==4.5.0
 mlflow==3.5.1
+SQLAlchemy==2.0.44
 matplotlib==3.10.7
 pytest>=8,<10
 jsonschema>=4,<5
