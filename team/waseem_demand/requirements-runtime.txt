@@ -1,0 +1,5 @@
+numpy>=1.26,<3
+pandas>=2.2,<4
+xgboost>=2.1,<4
+# Only required at inference if the selected champion uses LSTM:
+# torch>=2.5,<3
