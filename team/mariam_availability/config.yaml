@@ -2,7 +2,7 @@
 # total scores are better. Wait, historical risk, and demand add cost; solar
 # benefit reduces cost. Mock demand/solar values apply only when a candidate
 # omits those signals and are marked in the recommendation output.
-version: recommendation-score-v2
+version: recommendation-score-v3
 weights:
   wait: 0.45
   anomaly_risk: 0.25

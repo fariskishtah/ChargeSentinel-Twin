@@ -13,7 +13,8 @@ from pathlib import Path
 from typing import Any, Mapping
 
 
-RANKER_VERSION = "recommendation-score-v2"
+RANKER_VERSION = "recommendation-score-v3"
+RECOMMENDATION_SCHEMA_VERSION = "recommendation-output-v1"
 DEFAULT_CONFIG = Path(__file__).resolve().parents[2] / "config.yaml"
 _WEIGHT_KEYS = ("wait", "anomaly_risk", "demand_pressure", "solar_benefit")
 _SIGNAL_KEYS = ("anomaly_risk", "demand_pressure", "solar_benefit")
@@ -61,6 +62,7 @@ def _validate_config(config: Mapping[str, Any]) -> dict[str, Any]:
     max_wait = float(config.get("max_wait_minutes", 120))
     alternatives_limit = int(config.get("alternatives_limit", 3))
     prefer_free = config.get("prefer_free_if_available", True)
+    use_person3_score = config.get("use_person3_score", False)
     mock = config.get("mock_signals", {})
     if not math.isfinite(max_wait) or max_wait <= 0:
         raise ValueError("max_wait_minutes must be finite and positive")
@@ -68,6 +70,8 @@ def _validate_config(config: Mapping[str, Any]) -> dict[str, Any]:
         raise ValueError("alternatives_limit must be non-negative")
     if not isinstance(prefer_free, bool):
         raise ValueError("prefer_free_if_available must be boolean")
+    if not isinstance(use_person3_score, bool):
+        raise ValueError("use_person3_score must be boolean")
     if not isinstance(mock, Mapping):
         raise ValueError("mock_signals must be a mapping")
     mock_signals = {}
@@ -80,6 +84,7 @@ def _validate_config(config: Mapping[str, Any]) -> dict[str, Any]:
         "max_wait_minutes": max_wait,
         "alternatives_limit": alternatives_limit,
         "prefer_free_if_available": prefer_free,
+        "use_person3_score": use_person3_score,
         "mock_signals": mock_signals,
         "mock_source": str(mock.get("source", "configured_mock")),
     }
@@ -167,6 +172,10 @@ def recommend(payload: Mapping[str, Any], config: Mapping[str, Any] | None = Non
             "expected_wait_minutes": 0.0,
             "recommended_slot": None,
             "model_version": settings["version"],
+            "config_version": settings["version"],
+            "schema_version": RECOMMENDATION_SCHEMA_VERSION,
+            "risk_source": "historical_abnormal_rate",
+            "limitations": [],
             "score": None,
             "score_components": None,
             "mock_signals_used": False,
@@ -214,12 +223,13 @@ def recommend(payload: Mapping[str, Any], config: Mapping[str, Any] | None = Non
             "solar_benefit": signals["solar_benefit"],
         }
         weights = settings["weights"]
-        score = (
-            weights["wait"] * components["wait"]
-            + weights["anomaly_risk"] * components["anomaly_risk"]
-            + weights["demand_pressure"] * components["demand_pressure"]
-            - weights["solar_benefit"] * components["solar_benefit"]
-        )
+        weighted_terms = {
+            "wait": weights["wait"] * components["wait"],
+            "anomaly_risk": weights["anomaly_risk"] * components["anomaly_risk"],
+            "demand_pressure": weights["demand_pressure"] * components["demand_pressure"],
+            "solar_benefit": -weights["solar_benefit"] * components["solar_benefit"],
+        }
+        score = sum(weighted_terms.values())
         reasons = []
         if free_pool_restricted:
             reasons.append("free_chargers_preferred")
@@ -243,29 +253,107 @@ def recommend(payload: Mapping[str, Any], config: Mapping[str, Any] | None = Non
             "expected_free_time": free_time.isoformat(),
             "expected_wait_minutes": round(wait_minutes, 2),
             "recommended_slot": slot.isoformat(),
-            "score": round(score, 6),
+            "score": score,
             "score_components": {key: round(value, 6) for key, value in components.items()},
+            "risk_source": candidate.get("risk_source", "historical_abnormal_rate"),
+            "_terms": components,
+            "_weighted_terms": weighted_terms,
             "mock_signals_used": mock_used,
             "free_pool_restricted": free_pool_restricted,
             "reason": reasons,
             "_wait_sort": wait_minutes,
         })
 
-    ranked.sort(key=lambda row: (row["score"], row["_wait_sort"], row["charger_id"]))
+    ranked.sort(key=lambda row: (round(row["score"], 12), row["_wait_sort"], row["charger_id"]))
+    lowest_risk = min(row["_terms"]["anomaly_risk"] for row in ranked)
+    highest_solar = max(row["_terms"]["solar_benefit"] for row in ranked)
     for row in ranked:
+        weighted_terms = row.pop("_weighted_terms")
+        terms = row.pop("_terms")
+        dominant_factor = max(
+            _WEIGHT_KEYS,
+            key=lambda key: (abs(weighted_terms[key]), -_WEIGHT_KEYS.index(key)),
+        )
+        reasons = []
+        if terms["wait"] == 0:
+            reasons.append("Free now")
+        if terms["anomaly_risk"] == lowest_risk:
+            reasons.append("Lowest fault risk at this site")
+        if terms["solar_benefit"] == highest_solar:
+            reasons.append("Highest solar benefit")
+        dominant_reasons = {
+            "wait": "Wait has the largest weighted contribution",
+            "anomaly_risk": "Historical fault risk has the largest weighted contribution",
+            "demand_pressure": "Demand pressure has the largest weighted contribution",
+            "solar_benefit": "Solar benefit has the largest weighted contribution",
+        }
+        reasons.append(dominant_reasons[dominant_factor])
+        score = sum(weighted_terms.values())
+        assert math.isclose(score, row["score"], rel_tol=0.0, abs_tol=1e-9)
+        assert math.isclose(sum(weighted_terms.values()), score, rel_tol=0.0, abs_tol=1e-9)
+        row["explanation"] = {
+            "terms": terms,
+            "weights": dict(weights),
+            "weighted_terms": weighted_terms,
+            "score": score,
+            "dominant_factor": dominant_factor,
+            "reason": "; ".join(reasons) + ".",
+        }
         row.pop("_wait_sort")
     winner = ranked[0]
-    return {
+    result = {
         "recommended_charger": winner["charger_id"],
         "location": winner["location"],
         "expected_free_time": winner["expected_free_time"],
         "expected_wait_minutes": winner["expected_wait_minutes"],
         "recommended_slot": winner["recommended_slot"],
         "model_version": settings["version"],
+        "config_version": settings["version"],
+        "schema_version": RECOMMENDATION_SCHEMA_VERSION,
+        "risk_source": winner["risk_source"],
+        "limitations": [],
         "score": winner["score"],
         "score_components": winner["score_components"],
+        "explanation": winner["explanation"],
         "mock_signals_used": winner["mock_signals_used"],
         "free_pool_restricted": free_pool_restricted,
         "reason": winner["reason"],
         "alternatives": ranked[1:1 + settings["alternatives_limit"]],
     }
+    if len(ranked) > 1:
+        second = ranked[1]
+        term_differences = {
+            key: round(
+                second["explanation"]["weighted_terms"][key]
+                - winner["explanation"]["weighted_terms"][key],
+                12,
+            )
+            for key in _WEIGHT_KEYS
+        }
+        largest_difference = max(abs(value) for value in term_differences.values())
+        decisive_terms = [
+            key for key in _WEIGHT_KEYS
+            if math.isclose(abs(term_differences[key]), largest_difference, abs_tol=1e-12)
+        ]
+        decisive_term = decisive_terms[0]
+        if largest_difference <= 1e-12:
+            comparison_reason = "Their weighted terms are tied; the ranking tie-break selected the top charger."
+        elif len(decisive_terms) > 1:
+            labels = {"anomaly_risk": "historical fault risk"}
+            factors = [labels.get(key, key.replace("_", " ")) for key in decisive_terms]
+            comparison_reason = (
+                f"{' and '.join(factors)} contributed equally to the difference versus the second charger."
+            )
+        else:
+            comparison_reason = {
+                "wait": "Wait made the largest difference versus the second charger.",
+                "anomaly_risk": "Historical fault risk made the largest difference versus the second charger.",
+                "demand_pressure": "Demand pressure made the largest difference versus the second charger.",
+                "solar_benefit": "Solar benefit made the largest difference versus the second charger.",
+            }[decisive_term]
+        result["comparison"] = {
+            "second_charger_id": second["charger_id"],
+            "decisive_term": decisive_term,
+            "reason": comparison_reason,
+        }
+    return result

@@ -9,12 +9,20 @@ from typing import Any, Mapping
 import joblib
 import numpy as np
 import pandas as pd
+import xgboost as xgb
 
 from .features import FORBIDDEN, NUMERIC, FeatureEncoder
 
 
 TEAM_DIR = Path(__file__).resolve().parents[2]
 DEFAULT_BUNDLE_PATH = TEAM_DIR / "artifacts" / "availability_duration_bundle_optuna_mlflow.joblib"
+AVAILABILITY_SCHEMA_VERSION = "availability-output-v1"
+_LIMITATIONS = [
+    "Duration is predicted from the session start and is not adjusted for time already elapsed.",
+    "Demand and solar inputs are placeholders until Persons 1 and 2 deliver.",
+    "Anomaly risk is a historical abnormal rate, not a model prediction.",
+    "Labels are operator recorded, not verified hardware diagnoses.",
+]
 _CALENDAR_WEATHER = {
     "hour", "dow", "is_weekend", "hour_sin", "hour_cos",
     "temp_c", "humidity", "precip_mm",
@@ -25,7 +33,10 @@ _FORBIDDEN_INPUTS |= {"end_time", "end time", "duration", "duration_minutes"}
 
 def _timestamp(value: Any, field: str) -> pd.Timestamp:
     if isinstance(value, (str, datetime, pd.Timestamp)):
-        stamp = pd.Timestamp(value)
+        try:
+            stamp = pd.Timestamp(value)
+        except Exception as exc:
+            raise ValueError(f"{field} must be a valid ISO-8601 timestamp") from exc
     else:
         raise ValueError(f"{field} must be an ISO-8601 local timestamp")
     if pd.isna(stamp):
@@ -120,6 +131,7 @@ class AvailabilityPredictor:
             f"{bundle.get('model_name', 'availability_duration')}@"
             f"{bundle['data_version'].get('data_sha256_12', 'unknown')}"
         )
+        self.bundle_version = str(bundle.get("bundle_version", self.model_version))
 
     def predict(self, payload: Mapping[str, Any]) -> dict[str, Any]:
         features, start, as_of = _prepare_features(payload)
@@ -132,14 +144,71 @@ class AvailabilityPredictor:
         wait = max(0.0, (free_time - as_of).total_seconds() / 60.0)
         history = payload.get("history_features", {})
         risk = history.get("hist_abnormal_rate")
-        return {
+        from ..recommendation.ranker import load_config
+        result = {
             "charger_id": str(payload["charger_id"]),
             "predicted_duration_minutes": round(duration, 2),
             "expected_free_time": free_time.isoformat(),
             "expected_wait_minutes": round(wait, 2),
             "anomaly_risk": None if risk is None else float(risk),
             "model_version": self.model_version,
+            "bundle_version": self.bundle_version,
+            "config_version": load_config()["version"],
+            "schema_version": AVAILABILITY_SCHEMA_VERSION,
+            "limitations": list(_LIMITATIONS),
         }
+        explain = payload.get("explain", False)
+        if not isinstance(explain, bool):
+            raise ValueError("explain must be a boolean")
+        if explain:
+            if isinstance(self.model, xgb.XGBModel):
+                matrix = xgb.DMatrix(encoded, feature_names=list(encoded.columns))
+                # sklearn wrappers with early stopping predict through
+                # best_iteration, while Booster.predict otherwise uses every
+                # tree. Match the wrapper's iteration range for additivity.
+                best_iteration = getattr(self.model, "best_iteration", None)
+                contrib_kwargs = (
+                    {"iteration_range": (0, int(best_iteration) + 1)}
+                    if best_iteration is not None
+                    else {}
+                )
+                contributions = np.asarray(
+                    self.model.get_booster().predict(
+                        matrix, pred_contribs=True, **contrib_kwargs
+                    ),
+                    dtype=float,
+                )[0]
+                base_value = float(contributions[-1])
+                feature_contributions = contributions[:-1]
+                raw_margin = float(np.asarray(
+                    self.model.predict(encoded, output_margin=True), dtype=float
+                )[0])
+                if not math.isclose(
+                    base_value + float(feature_contributions.sum()),
+                    raw_margin,
+                    rel_tol=0.0,
+                    abs_tol=1e-3,
+                ):
+                    raise AssertionError("XGBoost local contributions do not add up to the raw model margin")
+                order = np.argsort(np.abs(feature_contributions))[::-1][:5]
+                result["explanation"] = {
+                    "unit": "log_minutes",
+                    "base_value": base_value,
+                    "top_contributors": [
+                        {
+                            "feature": str(encoded.columns[index]),
+                            "value": float(encoded.iloc[0, index]),
+                            "contribution": float(feature_contributions[index]),
+                            "direction": "increases" if feature_contributions[index] >= 0 else "decreases",
+                        }
+                        for index in order
+                    ],
+                    "note": "Contributions are in log minutes and add up to the model output before conversion to minutes.",
+                }
+            else:
+                result["explanation"] = None
+                result["explanation_note"] = "Local explanation is available only for XGBoost bundles."
+        return result
 
 
 def predict_availability(
@@ -147,3 +216,17 @@ def predict_availability(
 ) -> dict[str, Any]:
     """Load the saved champion and return duration, expected free time, and wait."""
     return AvailabilityPredictor(bundle_path).predict(payload)
+
+
+def get_bundle_version(bundle_path: str | Path = DEFAULT_BUNDLE_PATH) -> str:
+    """Read a bundle's version without requiring a prediction call."""
+    path = Path(bundle_path)
+    if not path.is_file():
+        return "unavailable"
+    bundle = joblib.load(path)
+    explicit = bundle.get("bundle_version")
+    if explicit:
+        return str(explicit)
+    data_version = bundle.get("data_version", {})
+    digest = data_version.get("data_sha256_12", "unknown")
+    return f"{bundle.get('model_name', 'availability_duration')}@{digest}"

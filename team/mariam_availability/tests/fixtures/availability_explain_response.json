@@ -1,0 +1,54 @@
+{
+  "charger_id": "201001",
+  "predicted_duration_minutes": 35.49,
+  "expected_free_time": "2021-10-15T12:35:29.466856920",
+  "expected_wait_minutes": 5.49,
+  "anomaly_risk": 0.12,
+  "model_version": "xgboost_default@e518e9c6d140",
+  "bundle_version": "xgboost_default@e518e9c6d140",
+  "config_version": "recommendation-score-v3",
+  "schema_version": "availability-output-v1",
+  "limitations": [
+    "Duration is predicted from the session start and is not adjusted for time already elapsed.",
+    "Demand and solar inputs are placeholders until Persons 1 and 2 deliver.",
+    "Anomaly risk is a historical abnormal rate, not a model prediction.",
+    "Labels are operator recorded, not verified hardware diagnoses."
+  ],
+  "explanation": {
+    "unit": "log_minutes",
+    "base_value": 3.5927324295043945,
+    "top_contributors": [
+      {
+        "feature": "charger_id_code",
+        "value": -1.0,
+        "contribution": -0.07296294718980789,
+        "direction": "decreases"
+      },
+      {
+        "feature": "hour_sin",
+        "value": 1.2246467991473532e-16,
+        "contribution": 0.0488726906478405,
+        "direction": "increases"
+      },
+      {
+        "feature": "idle_before_min",
+        "value": 39.416666666666664,
+        "contribution": 0.04786665737628937,
+        "direction": "increases"
+      },
+      {
+        "feature": "location_code",
+        "value": 10.0,
+        "contribution": -0.0330224446952343,
+        "direction": "decreases"
+      },
+      {
+        "feature": "hist_median_normal",
+        "value": 41.0,
+        "contribution": 0.03239930048584938,
+        "direction": "increases"
+      }
+    ],
+    "note": "Contributions are in log minutes and add up to the model output before conversion to minutes."
+  }
+}
