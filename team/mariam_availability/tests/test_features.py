@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src.features import (build_features, split_by_time, FeatureEncoder, FORBIDDEN,
+from src.availability.features import (build_features, split_by_time, FeatureEncoder, FORBIDDEN,
                           CATEGORICAL, NUMERIC, TRAIN_END, VAL_END)
 
 NON_FEATURE = ("start", "target_min", "is_abnormal")

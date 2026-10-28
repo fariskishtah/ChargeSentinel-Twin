@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chargesentinel.local/schemas/recommendation_output.schema.json",
+  "title": "Charger recommendation output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["recommended_charger", "location", "expected_free_time", "expected_wait_minutes", "recommended_slot", "model_version", "score", "score_components", "mock_signals_used", "free_pool_restricted", "reason", "alternatives"],
+  "properties": {
+    "recommended_charger": {"type": ["string", "null"]},
+    "location": {"type": ["string", "null"]},
+    "expected_free_time": {"type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?([+-]\\d{2}:\\d{2}|Z)?$"},
+    "expected_wait_minutes": {"type": "number", "minimum": 0},
+    "recommended_slot": {"type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?([+-]\\d{2}:\\d{2}|Z)?$"},
+    "model_version": {"type": "string"},
+    "score": {"type": ["number", "null"]},
+    "score_components": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["wait", "anomaly_risk", "demand_pressure", "solar_benefit"],
+      "properties": {
+        "wait": {"type": "number", "minimum": 0, "maximum": 1},
+        "anomaly_risk": {"type": "number", "minimum": 0, "maximum": 1},
+        "demand_pressure": {"type": "number", "minimum": 0, "maximum": 1},
+        "solar_benefit": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "mock_signals_used": {"type": "boolean"},
+    "free_pool_restricted": {"type": "boolean"},
+    "reason": {"type": "array", "items": {"type": "string"}},
+    "alternatives": {"type": "array", "items": {"$ref": "#/$defs/alternative"}}
+  },
+  "$defs": {
+    "alternative": {
+      "type": "object",
+      "required": ["charger_id", "location", "expected_free_time", "expected_wait_minutes", "recommended_slot", "score", "score_components", "mock_signals_used", "reason"],
+      "properties": {
+        "charger_id": {"type": "string"},
+        "location": {"type": ["string", "null"]},
+        "expected_free_time": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?([+-]\\d{2}:\\d{2}|Z)?$"},
+        "expected_wait_minutes": {"type": "number", "minimum": 0},
+        "recommended_slot": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?([+-]\\d{2}:\\d{2}|Z)?$"},
+        "score": {"type": "number"},
+        "score_components": {"type": "object"},
+        "mock_signals_used": {"type": "boolean"},
+        "reason": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

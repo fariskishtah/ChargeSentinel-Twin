@@ -1,0 +1,10 @@
+numpy==2.5.1
+pandas==3.0.5
+joblib==1.6.0
+scikit-learn==1.9.0
+xgboost==3.4.1
+optuna==5.0.0
+mlflow==3.17.2
+PyYAML==6.0.3
+jsonschema==4.26.0
+pytest==9.2.0

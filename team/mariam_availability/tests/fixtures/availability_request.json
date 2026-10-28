@@ -1,0 +1,18 @@
+{
+  "charger_id": "201001",
+  "location": "Technology Park",
+  "district": "Nanhu",
+  "session_start": "2021-10-15T12:00:00",
+  "as_of": "2021-10-15T12:30:00",
+  "temp_c": 22.5,
+  "history_features": {
+    "hist_abnormal_rate": 0.12,
+    "hist_median_normal": 41.0,
+    "sessions_before": 120,
+    "has_history": 1,
+    "site_n_chargers": 8,
+    "site_busy_others": 2,
+    "site_busy_share": 0.2857,
+    "site_starts_last_60min": 3
+  }
+}

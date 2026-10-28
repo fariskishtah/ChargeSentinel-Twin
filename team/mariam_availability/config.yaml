@@ -1,0 +1,17 @@
+# Recommendation rule v1. Every score input is normalized to [0, 1]. Lower
+# total scores are better. Wait, historical risk, and demand add cost; solar
+# benefit reduces cost. Mock demand/solar values apply only when a candidate
+# omits those signals and are marked in the recommendation output.
+version: recommendation-score-v2
+weights:
+  wait: 0.45
+  anomaly_risk: 0.25
+  demand_pressure: 0.20
+  solar_benefit: 0.10
+max_wait_minutes: 120
+alternatives_limit: 3
+prefer_free_if_available: true
+mock_signals:
+  source: neutral_placeholder_until_demand_and_solar_models_are_integrated
+  demand_pressure: 0.5
+  solar_benefit: 0.5
