@@ -1,5 +1,6 @@
 """Version 1 API contracts shared by the integration layer and model owners."""
 
+from datetime import datetime
 from typing import Annotated, Literal, TypeAlias
 
 from pydantic import (
@@ -107,31 +108,116 @@ class GridLoadResponse(APIModel):
     is_simulated: Literal[False] = False
 
 
+class AvailabilityHistory(APIModel):
+    """Caller-supplied context known when the current session started."""
+
+    idle_before_min: float | None = Field(ge=0)
+    prev_duration_min: float | None = Field(ge=0)
+    hist_median_normal: float | None = Field(ge=0)
+    hist_mean_normal: float | None = Field(ge=0)
+    hist_abnormal_rate: float | None = Field(ge=0, le=1)
+    sessions_before: int = Field(ge=0)
+    has_history: Literal[0, 1]
+    site_n_chargers: int = Field(ge=1)
+    site_busy_others: float = Field(ge=0)
+    site_busy_share: float = Field(ge=0, le=1)
+    site_starts_last_60min: float = Field(ge=0)
+
+
 class AvailabilityRequest(APIModel):
     charger_id: Identifier
-    query_time: AwareDatetime
-    # End Time is deliberately excluded because it is target-derived information.
+    location: Identifier
+    district: Identifier
+    session_start: NaiveDatetime = Field(description="Jiaxing source operational time; timezone unverified")
+    as_of: NaiveDatetime = Field(description="Historical prediction time; no future End Time supplied")
+    history_features: AvailabilityHistory
+    temp_c: float | None = Field(default=None, ge=-100, le=100)
+    humidity: float | None = Field(default=None, ge=0, le=100)
+    precip_mm: float | None = Field(default=None, ge=0)
+    explain: bool = False
+
+    @model_validator(mode="after")
+    def require_supported_historical_interval(self) -> "AvailabilityRequest":
+        if self.as_of < self.session_start:
+            raise ValueError("as_of cannot precede session_start")
+        if not datetime(2019, 12, 31) <= self.session_start < datetime(2022, 1, 1):
+            raise ValueError("session_start is outside the Jiaxing historical support window")
+        if self.as_of >= datetime(2022, 1, 1):
+            raise ValueError("as_of is outside the Jiaxing historical support window")
+        return self
 
 
 class AvailabilityResponse(APIModel):
     charger_id: Identifier
-    expected_free_time: AwareDatetime
+    predicted_duration_minutes: float = Field(ge=0)
+    expected_free_time: NaiveDatetime
     expected_wait_minutes: float = Field(ge=0)
+    anomaly_risk: float | None = Field(ge=0, le=1)
     model_version: Identifier
+    bundle_version: Identifier
+    config_version: Identifier
+    schema_version: Identifier
+    limitations: list[TextValue]
+    explanation: dict[str, object] | None = None
+    explanation_note: str | None = None
+
+
+class RecommendationCandidate(APIModel):
+    charger_id: Identifier
+    location: Identifier
+    district: Identifier | None = None
+    busy: bool
+    status: Literal["AVAILABLE", "CHARGING", "FAULT", "OFFLINE", "UNAVAILABLE", "RESERVED"]
+    session_start: NaiveDatetime | None = None
+    history_features: AvailabilityHistory | None = None
+    temp_c: float | None = Field(default=None, ge=-100, le=100)
+    humidity: float | None = Field(default=None, ge=0, le=100)
+    precip_mm: float | None = Field(default=None, ge=0)
+    demand_pressure: float | None = Field(default=None, ge=0, le=1)
+    solar_benefit: float | None = Field(default=None, ge=0, le=1)
+
+    @model_validator(mode="after")
+    def require_consistent_state(self) -> "RecommendationCandidate":
+        if self.status == "AVAILABLE" and self.busy:
+            raise ValueError("AVAILABLE charger cannot be busy")
+        if self.status == "CHARGING":
+            if not self.busy or self.session_start is None or self.history_features is None:
+                raise ValueError("CHARGING charger needs busy=true, session_start and history_features")
+        return self
 
 
 class RecommendationRequest(APIModel):
-    user_eta: AwareDatetime
-    preferred_charger_id: Identifier | None = None
-    # TODO(Mariam): confirm which versioned upstream outputs the ranker accepts.
+    location: Identifier
+    user_eta: NaiveDatetime = Field(description="Jiaxing source operational time; historical replay")
+    candidates: list[RecommendationCandidate] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def require_supported_historical_time(self) -> "RecommendationRequest":
+        if not datetime(2019, 12, 31) <= self.user_eta < datetime(2022, 1, 1):
+            raise ValueError("user_eta is outside the Jiaxing historical support window")
+        return self
 
 
 class RecommendationResponse(APIModel):
     recommended_charger: Identifier
-    recommended_slot: TextValue
+    location: Identifier
+    expected_free_time: NaiveDatetime
+    recommended_slot: NaiveDatetime
     expected_wait_minutes: float = Field(ge=0)
-    alternatives: list[Identifier]
     model_version: Identifier
+    bundle_version: Identifier
+    config_version: Identifier
+    schema_version: Identifier
+    risk_source: Identifier
+    score: float
+    score_components: dict[str, float]
+    explanation: dict[str, object]
+    mock_signals_used: bool
+    free_pool_restricted: bool
+    reason: list[TextValue]
+    alternatives: list[dict[str, object]]
+    limitations: list[TextValue]
+    comparison: dict[str, object] | None = None
 
 
 class DigitalTwinRequest(APIModel):

@@ -30,7 +30,7 @@ def main() -> None:
     existing = client.search_runs([experiment_id], max_results=1000)
     source_head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
 
-    for name in ("demand_runs.json", "solar_runs.json", "anomaly_runs.json", "grid_load_runs.json"):
+    for name in ("demand_runs.json", "solar_runs.json", "anomaly_runs.json", "grid_load_runs.json", "availability_runs.json"):
         path = RECEIPTS / name
         digest = hashlib.sha256(path.read_bytes()).hexdigest()
         match = next((run for run in existing if run.data.tags.get("receipt_sha256") == digest

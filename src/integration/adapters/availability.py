@@ -1,19 +1,37 @@
-"""Availability and recommendation adapter contracts."""
+"""Portable Mariam availability model and deterministic recommendation adapter."""
 
 from collections.abc import Mapping
+from functools import lru_cache
 
 from src.integration.adapters.base import ModelNotReadyError
+from team.mariam_availability.src.availability.inference import AvailabilityPredictor
+from team.mariam_availability.src.recommendation.risk import load_risk_table
+from team.mariam_availability.src.recommendation.service import recommend as owner_recommend
+
+
+@lru_cache(maxsize=1)
+def _predictor() -> AvailabilityPredictor:
+    try:
+        return AvailabilityPredictor()
+    except (FileNotFoundError, OSError, EOFError, KeyError, ValueError) as exc:
+        raise ModelNotReadyError("availability") from exc
 
 
 def predict_availability(payload: Mapping[str, object]) -> dict[str, object]:
-    """Return availability after the validated model is connected."""
+    """Estimate free time from explicit session-start context, never End Time."""
 
-    del payload
-    raise ModelNotReadyError("availability")
+    return _predictor().predict(payload)
 
 
 def recommend(payload: Mapping[str, object]) -> dict[str, object]:
-    """Return a recommendation after the validated ranker is connected."""
+    """Rank caller-supplied historical candidate states; exclude fault/offline."""
 
-    del payload
-    raise ModelNotReadyError("recommendation")
+    predictor = _predictor()
+    try:
+        load_risk_table()
+    except (FileNotFoundError, OSError, KeyError, ValueError) as exc:
+        raise ModelNotReadyError("recommendation") from exc
+    result = owner_recommend(payload, predictor=predictor)
+    if result.get("recommended_charger") is None:
+        raise ValueError("No eligible charger at the requested location")
+    return result

@@ -1,5 +1,8 @@
 """Integration contract tests for the API skeleton."""
 
+import json
+from pathlib import Path
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -7,6 +10,11 @@ from app.api.main import app
 
 client = TestClient(app)
 FORECAST_ORIGIN = "2026-10-24T12:00:00+02:00"
+FIXTURES = Path(__file__).resolve().parents[2] / "team/mariam_availability/tests/fixtures"
+
+
+def _fixture(name: str) -> dict[str, object]:
+    return json.loads((FIXTURES / name).read_text(encoding="utf-8"))
 
 
 def test_health() -> None:
@@ -19,36 +27,70 @@ def test_health() -> None:
     }
 
 
-@pytest.mark.parametrize(
-    ("path", "payload", "component"),
-    [
-        (
-            "/api/v1/chargers/availability",
-            {"charger_id": "charger-1", "query_time": FORECAST_ORIGIN},
-            "availability",
-        ),
-        (
-            "/api/v1/chargers/recommend",
-            {"user_eta": FORECAST_ORIGIN},
-            "recommendation",
-        ),
-    ],
-)
-def test_unconnected_endpoints_return_sanitized_503(
-    path: str, payload: dict[str, object], component: str
-) -> None:
-    response = client.post(path, json=payload)
+def test_real_jiaxing_availability_and_recommendation() -> None:
+    availability = client.post(
+        "/api/v1/chargers/availability",
+        json=_fixture("real_jiaxing_availability_request.json"),
+    )
+    assert availability.status_code == 200
+    result = availability.json()
+    assert result["charger_id"] == "2"
+    assert result["predicted_duration_minutes"] == pytest.approx(31.74, abs=0.02)
+    assert result["expected_wait_minutes"] == pytest.approx(16.74, abs=0.02)
+    assert result["expected_free_time"].startswith("2021-10-15T12:44:10")
+    assert result["bundle_version"].startswith("availability-duration-xgboost-default-v1@87ec74f0fbee")
 
+    recommendation = client.post(
+        "/api/v1/chargers/recommend",
+        json=_fixture("real_jiaxing_recommendation_request.json"),
+    )
+    assert recommendation.status_code == 200
+    ranked = recommendation.json()
+    assert ranked["recommended_charger"] == "8"
+    assert ranked["mock_signals_used"] is True
+    assert ranked["expected_wait_minutes"] >= 0
+
+
+def test_availability_rejects_future_outcome_and_live_date() -> None:
+    payload = _fixture("real_jiaxing_availability_request.json")
+    payload["end_time"] = "2021-10-15T12:33:47"
+    response = client.post("/api/v1/chargers/availability", json=payload)
+    assert response.status_code == 422
+    payload.pop("end_time")
+    payload["as_of"] = "2026-10-24T12:00:00"
+    assert client.post("/api/v1/chargers/availability", json=payload).status_code == 422
+
+
+def test_recommendation_excludes_fault_and_offline() -> None:
+    payload = _fixture("real_jiaxing_recommendation_request.json")
+    for candidate in payload["candidates"]:
+        if candidate["charger_id"] == "8":
+            candidate["status"] = "FAULT"
+    response = client.post("/api/v1/chargers/recommend", json=payload)
+    assert response.status_code == 200
+    assert response.json()["recommended_charger"] != "8"
+    for candidate in payload["candidates"]:
+        candidate["status"] = "OFFLINE"
+    assert client.post("/api/v1/chargers/recommend", json=payload).status_code == 422
+
+
+def test_missing_availability_artifact_returns_sanitized_503(monkeypatch: pytest.MonkeyPatch) -> None:
+    from src.integration.adapters import availability
+
+    def missing_bundle() -> object:
+        raise availability.ModelNotReadyError("availability")
+
+    monkeypatch.setattr(availability, "_predictor", missing_bundle)
+    response = client.post(
+        "/api/v1/chargers/availability",
+        json=_fixture("real_jiaxing_availability_request.json"),
+    )
     assert response.status_code == 503
     assert response.json() == {
         "error": "model_not_ready",
         "message": "Model or component is not ready.",
-        "component": component,
+        "component": "availability",
     }
-    assert not any(
-        key in response.json()
-        for key in ("forecast_kw", "expected_energy_kwh", "score", "recommendation")
-    )
 
 
 def test_solar_horizon_validation() -> None:

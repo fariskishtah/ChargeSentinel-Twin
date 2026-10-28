@@ -1,0 +1,7 @@
+model,subset,MAE,RMSE,MedianAE,n
+baseline,normal,35.52,84.78,18.58,65993
+baseline,all,36.45,84.73,20.9,80072
+random_forest,normal,35.08,82.87,17.93,65993
+random_forest,all,35.29,82.7,18.75,80072
+xgboost,normal,34.98,83.01,17.81,65993
+xgboost,all,35.21,82.88,18.65,80072

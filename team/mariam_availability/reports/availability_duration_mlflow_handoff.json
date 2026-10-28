@@ -1,0 +1,35 @@
+{
+  "registered_model_uri": "models:/availability_duration@champion",
+  "champion_run_id": "2bbe5e41509e4552b8aef4b1a11cca40",
+  "tracking_uri": "sqlite:///team/mariam_availability/artifacts/mlflow.db (local; set CHARGESENTINEL_MLFLOW_TRACKING_URI for a shared store)",
+  "experiment_name": "chargesentinel-availability",
+  "bundle_path": "team/mariam_availability/artifacts/availability_duration_bundle_optuna_mlflow.joblib (local generated artifact)",
+  "data_version": {
+    "data_file": "Charging_Data_clean.csv",
+    "data_sha256_12": "e518e9c6d140",
+    "n_rows": 441064,
+    "train_end": "2021-07-01 00:00:00",
+    "val_end": "2021-10-01 00:00:00"
+  },
+  "cleaning_count_reconciliation": "team/mariam_availability/reports/tables/cleaning_count_reconciliation.csv",
+  "prior_test_scoring_disclosed": true,
+  "prior_test_metrics_data_rows": 440972,
+  "prior_test_metrics_file": "notebooks/reports/duration_test_metrics.csv",
+  "validation_comparison_file": "team/mariam_availability/reports/availability_duration_validation_comparison.csv",
+  "champion_test_metrics_file": "team/mariam_availability/reports/availability_duration_champion_test_metrics.csv",
+  "selection_report_file": "team/mariam_availability/reports/availability_duration_selection.json",
+  "test_metrics_are_for_selected_champion_only": true,
+  "test_comparison_file": "team/mariam_availability/reports/availability_duration_test_comparison.csv",
+  "duration_evaluation_report": "team/mariam_availability/reports/availability_duration_evaluation.md",
+  "recommendation_evaluation_report": "team/mariam_availability/reports/availability_recommendation_evaluation.md",
+  "recommendation_replay_metrics": "team/mariam_availability/reports/availability_recommendation_replay.json",
+  "inference_module": "src.availability.inference.predict_availability",
+  "recommendation_module": "src.recommendation.recommend",
+  "recommendation_config": "team/mariam_availability/config.yaml",
+  "schemas": [
+    "schemas/availability_input.schema.json",
+    "schemas/availability_output.schema.json",
+    "schemas/recommendation_input.schema.json",
+    "schemas/recommendation_output.schema.json"
+  ]
+}

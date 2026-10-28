@@ -1,5 +1,7 @@
 # Final hardening validation — 2026-10-28
 
+**Later gate:** The availability/recommendation 503 statement below describes the prior candidate. See [MARIAM_RELEASE_VALIDATION.md](MARIAM_RELEASE_VALIDATION.md) for the 157-test Docker-enabled integration gate and historical HTTP 200 endpoints.
+
 Starting branch/HEAD: `feature/faris-integration` at `673e8663894eda60ab21662d93276ef810a6af55`, clean before work. PR #1 source ZIP was rehashed (`db3b665abfe63901110c4029d54f7ab797981bad8149aa11b5314a8522ac2fc5`) and old config/code reconfirmed random stratification, fixed 0.41, and completed-session inputs. The PR was commented on and closed without merge; remote `feature/fatima-anomaly` remains at `99f157a54c689d385a7aba4f823b612468822eb8`.
 
 The `python` commands below were executed with an isolated Python 3.12 environment; interpreter paths are omitted to keep the instructions portable.

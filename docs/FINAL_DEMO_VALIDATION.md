@@ -1,5 +1,7 @@
 # Final historical demo validation
 
+**Later gate:** The availability/recommendation 503 statements below describe the previous candidate. The 2026-10-28 Mariam integration gate is recorded in [MARIAM_RELEASE_VALIDATION.md](MARIAM_RELEASE_VALIDATION.md); both endpoints now return real historical HTTP 200 responses on documented Jiaxing fixtures.
+
 **Date:** 2026-10-28 (Africa/Cairo). **Candidate runtime commit:** `338c977e061df646717d4156182d2af3c399b003` on `feature/faris-integration`. This was a fresh temporary clone of the remote branch, with a new Python 3.12 virtual environment installed using `pip install --no-cache-dir -r requirements/dev.txt`. The documentation-only release gate commit follows this validation; no serving code or model artifact changed.
 
 ## Reproduction commands and outcome

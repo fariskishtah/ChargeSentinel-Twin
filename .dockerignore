@@ -32,6 +32,7 @@ team/*/artifacts
 *.h5
 *.hdf5
 *.joblib
+!team/mariam_availability/bundle/availability-v1/availability_duration.joblib
 *.pkl
 *.pickle
 *.parquet

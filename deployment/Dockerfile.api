@@ -25,6 +25,9 @@ COPY --chown=chargesentinel:chargesentinel team/fatima_anomaly/integration ./tea
 COPY --chown=chargesentinel:chargesentinel team/fatima_anomaly/bundle ./team/fatima_anomaly/bundle
 COPY --chown=chargesentinel:chargesentinel team/mazen_solar/integration ./team/mazen_solar/integration
 COPY --chown=chargesentinel:chargesentinel team/mazen_solar/bundle ./team/mazen_solar/bundle
+COPY --chown=chargesentinel:chargesentinel team/mariam_availability/src ./team/mariam_availability/src
+COPY --chown=chargesentinel:chargesentinel team/mariam_availability/config.yaml ./team/mariam_availability/config.yaml
+COPY --chown=chargesentinel:chargesentinel team/mariam_availability/bundle ./team/mariam_availability/bundle
 
 USER chargesentinel
 

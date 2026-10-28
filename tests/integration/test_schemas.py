@@ -1,6 +1,8 @@
 """Validation tests for the public v1 Pydantic contracts."""
 
 from datetime import UTC, datetime
+import json
+from pathlib import Path
 
 import pytest
 from pydantic import ValidationError
@@ -19,6 +21,11 @@ from app.api.schemas import (
 )
 
 NOW = datetime(2026, 10, 24, 12, 0, tzinfo=UTC)
+FIXTURES = Path(__file__).resolve().parents[2] / "team/mariam_availability/tests/fixtures"
+
+
+def _fixture(name: str) -> dict[str, object]:
+    return json.loads((FIXTURES / name).read_text(encoding="utf-8"))
 
 
 def test_valid_requests() -> None:
@@ -28,8 +35,8 @@ def test_valid_requests() -> None:
     assert AnomalyRequest(charger_id="charger-1", features={
         "location": "Financial Industrial Park", "district": "Nanhu",
         "start_time": "2021-10-16T12:02:44"})
-    assert AvailabilityRequest(charger_id="charger-1", query_time=NOW)
-    assert RecommendationRequest(user_eta=NOW)
+    assert AvailabilityRequest.model_validate(_fixture("real_jiaxing_availability_request.json"))
+    assert RecommendationRequest.model_validate(_fixture("real_jiaxing_recommendation_request.json"))
     assert DigitalTwinRequest(
         baseline_solar_kw=60,
         baseline_demand_kw=100,
@@ -113,9 +120,7 @@ def test_anomaly_outcome_fields_are_rejected(field: str) -> None:
 
 
 def test_end_time_is_not_an_availability_input() -> None:
+    payload = _fixture("real_jiaxing_availability_request.json")
+    payload["end_time"] = "2021-10-15T12:33:47"
     with pytest.raises(ValidationError):
-        AvailabilityRequest(
-            charger_id="charger-1",
-            query_time=NOW,
-            end_time=NOW,
-        )
+        AvailabilityRequest.model_validate(payload)

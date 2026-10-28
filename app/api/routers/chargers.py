@@ -1,6 +1,6 @@
 """Charger availability and recommendation routes."""
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from app.api.schemas import (
     AvailabilityRequest,
@@ -16,9 +16,15 @@ router = APIRouter(prefix="/chargers", tags=["chargers"])
 
 @router.post("/availability", response_model=AvailabilityResponse)
 def charger_availability(request: AvailabilityRequest) -> AvailabilityResponse:
-    return AvailabilityResponse(**predict_availability(schema_to_payload(request)))
+    try:
+        return AvailabilityResponse(**predict_availability(schema_to_payload(request)))
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
 @router.post("/recommend", response_model=RecommendationResponse)
 def recommend_charger(request: RecommendationRequest) -> RecommendationResponse:
-    return RecommendationResponse(**recommend(schema_to_payload(request)))
+    try:
+        return RecommendationResponse(**recommend(schema_to_payload(request)))
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc

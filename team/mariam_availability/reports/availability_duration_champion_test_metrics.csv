@@ -1,0 +1,2 @@
+model,test_mae_normal,test_rmse_normal,test_median_ae_normal,test_mae_all
+xgboost_default,34.94829826403939,83.04948102990728,17.836515495395474,35.17234989758164

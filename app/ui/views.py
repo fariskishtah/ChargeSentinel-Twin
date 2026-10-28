@@ -6,6 +6,7 @@ import json
 from collections.abc import Callable
 from datetime import UTC, date, datetime, time
 from html import escape
+from pathlib import Path
 
 import pandas as pd
 import streamlit as st
@@ -17,8 +18,8 @@ NOT_READY_MESSAGES = {
     "solar": "Solar service is temporarily unavailable.",
     "demand": "Demand service is temporarily unavailable.",
     "anomaly": "Anomaly service is temporarily unavailable.",
-    "availability": "Charger availability model is awaiting integration.",
-    "recommendation": "Smart charger recommendation model is awaiting integration.",
+    "availability": "The portable availability bundle is unavailable.",
+    "recommendation": "The availability bundle or historical risk table is unavailable.",
     "digital_twin": "Digital Twin service is temporarily unavailable.",
 }
 
@@ -27,18 +28,9 @@ def _iso_utc(selected_date: date, selected_time: time) -> str:
     return datetime.combine(selected_date, selected_time, tzinfo=UTC).isoformat()
 
 
-def _datetime_fields(label: str, key: str) -> str:
-    now = datetime.now(UTC)
-    date_col, time_col = st.columns(2)
-    selected_date = date_col.date_input(
-        f"{label} — Date (UTC)", value=now.date(), key=f"{key}_date"
-    )
-    selected_time = time_col.time_input(
-        f"{label} — Time (UTC)",
-        value=now.time().replace(microsecond=0),
-        key=f"{key}_time",
-    )
-    return _iso_utc(selected_date, selected_time)
+def _mariam_demo_input(name: str) -> dict[str, object]:
+    path = Path(__file__).resolve().parent / "demo_inputs" / f"{name}.json"
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def _parse_feature_payload(raw: str) -> dict[str, object] | None:
@@ -237,15 +229,19 @@ def _render_grid_load(client: ChargeSentinelAPIClient) -> None:
 
 
 def _availability_form(client: ChargeSentinelAPIClient, *, form_key: str) -> None:
+    request = _mariam_demo_input("availability")
     with st.form(form_key):
-        charger_id = st.text_input("Charger ID", key=f"{form_key}_charger")
-        query_time = _datetime_fields("Query Time", f"{form_key}_query")
+        st.caption(
+            f"Real Jiaxing held-out session: charger {request['charger_id']} · "
+            f"started {request['session_start']} (source operational time). "
+            "The model receives start-known history, not the actual End Time."
+        )
+        with st.expander("View historical request context"):
+            st.json(request)
         submitted = st.form_submit_button("Check Availability")
     result = None
     if submitted:
-        result = client.get_availability(
-            {"charger_id": charger_id.strip(), "query_time": query_time}
-        )
+        result = client.get_availability(request)
 
     st.markdown("#### Result")
     if (
@@ -255,12 +251,17 @@ def _availability_form(client: ChargeSentinelAPIClient, *, form_key: str) -> Non
     ):
 
         def show(data: dict[str, object]) -> None:
-            cols = st.columns(2)
-            cols[0].metric("Expected free time", _value(data, "expected_free_time"))
-            cols[1].metric(
+            cols = st.columns(3)
+            cols[0].metric("Charger", _value(data, "charger_id"))
+            cols[1].metric("Expected free time", _value(data, "expected_free_time"))
+            cols[2].metric(
                 "Expected wait", f"{_value(data, 'expected_wait_minutes')} min"
             )
-            st.caption(f"Model version: {_value(data, 'model_version')}")
+            st.caption(
+                f"Estimated total session duration: {_value(data, 'predicted_duration_minutes')} min · "
+                f"Model: {_value(data, 'model_version')}"
+            )
+            st.info("Historical estimate only; no live charger telemetry or guaranteed release time.")
 
         _render_result(result, "availability", show)
     else:
@@ -428,23 +429,25 @@ def render_operator_view(
 def _render_driver_availability(client: ChargeSentinelAPIClient) -> None:
     with st.container(border=True):
         st.subheader("Check Charger Availability")
-        st.caption("See when a selected charging point is expected to become free.")
+        st.caption("Historical Jiaxing example of when a charging session may finish.")
         _availability_form(client, form_key="driver_availability")
 
 
 def _render_recommendation(client: ChargeSentinelAPIClient) -> None:
+    request = _mariam_demo_input("recommendation")
     with st.container(border=True):
         st.subheader("Smart Charger Recommendation")
-        st.caption("Find a suitable charger and time around your expected arrival.")
+        st.caption(
+            "Historical Jiaxing candidate states reconstructed at the shown arrival time. "
+            "This is a ranked suggestion, not a live availability guarantee."
+        )
         with st.form("recommendation_form"):
-            user_eta = _datetime_fields("User ETA", "recommendation_eta")
-            preferred = st.text_input("Preferred charger ID (optional)")
+            st.caption(f"Location: {request['location']} · Arrival: {request['user_eta']} (source operational time)")
+            with st.expander("View historical candidate context"):
+                st.json(request)
             submitted = st.form_submit_button("Recommend Charger")
         if submitted:
-            payload: dict[str, object] = {"user_eta": user_eta}
-            if preferred.strip():
-                payload["preferred_charger_id"] = preferred.strip()
-            result = client.get_recommendation(payload)
+            result = client.get_recommendation(request)
 
             def show(data: dict[str, object]) -> None:
                 cols = st.columns(3)
@@ -455,8 +458,14 @@ def _render_recommendation(client: ChargeSentinelAPIClient) -> None:
                 cols[2].metric(
                     "Expected wait", f"{_value(data, 'expected_wait_minutes')} min"
                 )
+                explanation = data.get("explanation") or {}
+                if isinstance(explanation, dict):
+                    st.write("Why this charger:", explanation.get("reason", "—"))
                 st.write("Alternatives:", _value(data, "alternatives"))
-                st.caption(f"Model version: {_value(data, 'model_version')}")
+                if data.get("mock_signals_used"):
+                    st.warning("Demand and solar score inputs are neutral placeholders in this historical replay.")
+                st.caption(f"Ranker: {_value(data, 'model_version')} · Availability bundle: {_value(data, 'bundle_version')}")
+                st.info("Fault and offline candidates are excluded; historical abnormal-end rates are not hardware fault probabilities.")
 
             _render_result(result, "recommendation", show)
 
@@ -465,7 +474,7 @@ def render_driver_view(client: ChargeSentinelAPIClient) -> None:
     st.header("EV Driver View")
     st.markdown(
         '<p class="cs-view-intro">Plan a charging stop with clear availability and '
-        "charger recommendations when those services are ready.</p>",
+        "charger recommendations using documented historical Jiaxing context.</p>",
         unsafe_allow_html=True,
     )
     _render_driver_availability(client)

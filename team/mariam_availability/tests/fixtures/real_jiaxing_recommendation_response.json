@@ -1,0 +1,106 @@
+{
+  "recommended_charger": "8",
+  "location": "Tourist Attraction",
+  "expected_free_time": "2021-10-15T12:27:26",
+  "expected_wait_minutes": 0.0,
+  "recommended_slot": "2021-10-15T12:27:26",
+  "model_version": "recommendation-score-v3",
+  "config_version": "recommendation-score-v3",
+  "schema_version": "recommendation-output-v1",
+  "risk_source": "historical_abnormal_rate",
+  "limitations": [
+    "Duration is predicted from the session start and is not adjusted for time already elapsed.",
+    "Candidate occupancy and station state are caller supplied or historical replay, not live telemetry.",
+    "Missing demand and solar score inputs use disclosed neutral constants, not model forecasts.",
+    "Anomaly risk is a training-period abnormal-end rate, not a fault probability.",
+    "Abnormal-end labels are operator recorded, not verified hardware diagnoses."
+  ],
+  "score": 0.1088042049934297,
+  "score_components": {
+    "wait": 0.0,
+    "anomaly_risk": 0.235217,
+    "demand_pressure": 0.5,
+    "solar_benefit": 0.5
+  },
+  "explanation": {
+    "terms": {
+      "wait": 0.0,
+      "anomaly_risk": 0.2352168199737188,
+      "demand_pressure": 0.5,
+      "solar_benefit": 0.5
+    },
+    "weights": {
+      "wait": 0.45,
+      "anomaly_risk": 0.25,
+      "demand_pressure": 0.2,
+      "solar_benefit": 0.1
+    },
+    "weighted_terms": {
+      "wait": 0.0,
+      "anomaly_risk": 0.0588042049934297,
+      "demand_pressure": 0.1,
+      "solar_benefit": -0.05
+    },
+    "score": 0.1088042049934297,
+    "dominant_factor": "demand_pressure",
+    "reason": "Free now; Lowest historical abnormal-end rate at this site; Highest solar benefit; Demand pressure has the largest weighted contribution."
+  },
+  "mock_signals_used": true,
+  "free_pool_restricted": true,
+  "reason": [
+    "free_chargers_preferred",
+    "available_at_driver_eta"
+  ],
+  "alternatives": [
+    {
+      "charger_id": "4",
+      "location": "Tourist Attraction",
+      "expected_free_time": "2021-10-15T12:27:26",
+      "expected_wait_minutes": 0.0,
+      "recommended_slot": "2021-10-15T12:27:26",
+      "score": 0.11453867660764212,
+      "score_components": {
+        "wait": 0.0,
+        "anomaly_risk": 0.258155,
+        "demand_pressure": 0.5,
+        "solar_benefit": 0.5
+      },
+      "risk_source": "historical_abnormal_rate",
+      "mock_signals_used": true,
+      "free_pool_restricted": true,
+      "reason": [
+        "free_chargers_preferred",
+        "available_at_driver_eta"
+      ],
+      "explanation": {
+        "terms": {
+          "wait": 0.0,
+          "anomaly_risk": 0.2581547064305685,
+          "demand_pressure": 0.5,
+          "solar_benefit": 0.5
+        },
+        "weights": {
+          "wait": 0.45,
+          "anomaly_risk": 0.25,
+          "demand_pressure": 0.2,
+          "solar_benefit": 0.1
+        },
+        "weighted_terms": {
+          "wait": 0.0,
+          "anomaly_risk": 0.06453867660764212,
+          "demand_pressure": 0.1,
+          "solar_benefit": -0.05
+        },
+        "score": 0.11453867660764212,
+        "dominant_factor": "demand_pressure",
+        "reason": "Free now; Highest solar benefit; Demand pressure has the largest weighted contribution."
+      }
+    }
+  ],
+  "comparison": {
+    "second_charger_id": "4",
+    "decisive_term": "anomaly_risk",
+    "reason": "Historical abnormal-end rate made the largest difference versus the second charger."
+  },
+  "bundle_version": "availability-duration-xgboost-default-v1@87ec74f0fbee"
+}

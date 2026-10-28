@@ -12,9 +12,9 @@ Samsung Innovation Campus Smart Energy historical demonstration: renewable PV fo
 | EV Session Risk | Integrated | `anomaly-v1`; chronological session-start model, 0.40 threshold, real SHAP. Not a confirmed equipment fault. |
 | Grid-Load Interval Anomaly | Integrated historical screen | `grid-load-seasonal-rule-v1`; unusual Jiaxing hourly demand-proxy intervals, no real grid-fault labels. |
 | Digital Twin / Charging Station Simulator | Working simulations | Explicit scenario inputs, deterministic outputs. |
-| Availability / Recommendation | Not integrated | Safe `ModelNotReady` / 503; no fabricated results. |
+| Availability / Recommendation | Integrated historical replay | Portable Jiaxing duration bundle and deterministic ranker; caller supplies historical state and start-known history. No live telemetry. |
 
-The project is **not production validated in Egypt**. See [Samsung compliance](docs/SAMSUNG_COMPLIANCE_MATRIX.md) for evidence and remaining limitations, and [validation](docs/VALIDATION.md) for the final test gate.
+The project is **not production validated in Egypt**. See [Samsung compliance](docs/SAMSUNG_COMPLIANCE_MATRIX.md) for evidence and remaining limitations, and [Mariam integration validation](docs/MARIAM_RELEASE_VALIDATION.md) for the latest test gate.
 
 ## Setup and launch
 
@@ -39,4 +39,4 @@ Model comparison, tuning and held-out evidence live in `team/waseem_demand/repor
 
 ## Team and contribution history
 
-Waseem owns EV demand; Mazen owns solar; Fatima owns the original anomaly pipeline and XAI; Faris owns backend/integration, leakage-safe anomaly retraining, Digital Twin, simulator, Docker and release engineering. Mariam's availability/recommendation scope is not integrated. See [TEAM_CONTRIBUTIONS.md](docs/TEAM_CONTRIBUTIONS.md) and [TEAM_STATUS.md](docs/TEAM_STATUS.md). Fatima's old PR #1 was closed without merging its completed-session model; her branch and contribution history remain intact.
+Waseem owns EV demand; Mazen owns solar; Fatima owns the original anomaly pipeline and XAI; Mariam owns availability and recommendation source; Faris owns backend/integration, portable artifact rebuild, Digital Twin, simulator, Docker and release engineering. Availability and recommendation serve documented historical Jiaxing context only. The ranker discloses neutral demand/solar score inputs when absent. See [TEAM_CONTRIBUTIONS.md](docs/TEAM_CONTRIBUTIONS.md) and [TEAM_STATUS.md](docs/TEAM_STATUS.md). Fatima's old PR #1 was closed without merging its completed-session model; her branch and contribution history remain intact.

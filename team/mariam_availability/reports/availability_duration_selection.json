@@ -1,0 +1,17 @@
+{
+  "selection_metric": "normal-session validation MAE (minutes)",
+  "minimum_tuned_gain_fraction": 0.01,
+  "default_xgboost_validation_mae_normal": 43.40372372646231,
+  "tuned_xgboost_validation_mae_normal": 43.397954021304365,
+  "tuned_relative_gain_fraction": 0.00013293110965102787,
+  "champion": "xgboost_default",
+  "test_set_previously_scored_before_tuning": true,
+  "prior_test_metrics_file": "notebooks/reports/duration_test_metrics.csv",
+  "data_version": {
+    "data_file": "Charging_Data_clean.csv",
+    "data_sha256_12": "e518e9c6d140",
+    "n_rows": 441064,
+    "train_end": "2021-07-01 00:00:00",
+    "val_end": "2021-10-01 00:00:00"
+  }
+}

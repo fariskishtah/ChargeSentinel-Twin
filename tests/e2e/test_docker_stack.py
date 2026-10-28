@@ -217,32 +217,21 @@ def test_charging_station_simulator_works_through_containerized_api() -> None:
 
 
 @pytest.mark.parametrize(
-    ("path", "payload", "component"),
+    ("endpoint", "fixture", "expected_key", "expected_value"),
     [
-        (
-            "/api/v1/chargers/availability",
-            {
-                "charger_id": "scenario-charger-1",
-                "query_time": "2026-10-24T12:00:00+02:00",
-            },
-            "availability",
-        ),
-        (
-            "/api/v1/chargers/recommend",
-            {"user_eta": "2026-10-24T12:00:00+02:00"},
-            "recommendation",
-        ),
+        ("availability", "real_jiaxing_availability_request.json", "charger_id", "2"),
+        ("recommend", "real_jiaxing_recommendation_request.json", "recommended_charger", "8"),
     ],
 )
-def test_unavailable_models_still_return_503(
-    path: str,
-    payload: dict[str, object],
-    component: str,
+def test_real_mariam_models_inside_docker(
+    endpoint: str, fixture: str, expected_key: str, expected_value: str
 ) -> None:
-    status, body = _request(f"{API_URL}{path}", payload=payload)
-
-    assert status == 503
-    assert json.loads(body)["component"] == component
+    fixture_path = PROJECT_ROOT / "team/mariam_availability/tests/fixtures" / fixture
+    payload = json.loads(fixture_path.read_text(encoding="utf-8"))
+    status, body = _request(f"{API_URL}/api/v1/chargers/{endpoint}", payload=payload)
+    result = json.loads(body)
+    assert status == 200, result
+    assert result[expected_key] == expected_value
 
 
 def test_ui_container_resolves_api_service_hostname() -> None:
@@ -281,7 +270,7 @@ def test_ui_package_imports_outside_project_workdir() -> None:
     assert result.returncode == 0, result.stderr
 
 
-def test_streamlit_renders_online_and_model_not_ready_states() -> None:
+def test_streamlit_renders_real_availability() -> None:
     result = _compose(
         "exec",
         "-T",
@@ -293,13 +282,11 @@ def test_streamlit_renders_online_and_model_not_ready_states() -> None:
         (
             "from streamlit.testing.v1 import AppTest; "
             "app=AppTest.from_file('/app/app/ui/streamlit_app.py').run(timeout=15); "
-            "next(item for item in app.text_input if item.key=='operator_availability_charger').set_value('CHG-01'); "
             "next(item for item in app.button "
             "if item.key == 'FormSubmitter:operator_availability-Check Availability').click().run(timeout=15); "
             "success=[item.value for item in app.success]; "
-            "warnings=[item.value for item in app.warning]; "
             "raise SystemExit(0 if not app.exception and 'API Online' in success "
-            "and any('MODEL NOT READY' in value for value in warnings) else 1)"
+            "and any(m.label=='Charger' and m.value=='2' for m in app.metric) else 1)"
         ),
     )
 

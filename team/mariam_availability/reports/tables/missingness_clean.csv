@@ -1,0 +1,26 @@
+,missing_values,missing_pct
+UserID,0,0.0
+charger_id,0,0.0
+location,0,0.0
+district,0,0.0
+Order creation time,0,0.0
+energy_kwh,0,0.0
+Electricity cost/Yuan,0,0.0
+Service charge/Yuan,0,0.0
+Transaction Amount/Yuan,0,0.0
+Actual Payment/Yuan,0,0.0
+start,0,0.0
+end,0,0.0
+Payment time,0,0.0
+temp_c,0,0.0
+humidity,0,0.0
+precip_mm,0,0.0
+end_cause,0,0.0
+is_full_charge,0,0.0
+is_user_stop,0,0.0
+is_nonsystem_fault,0,0.0
+is_system_issue,0,0.0
+is_EV_fault,0,0.0
+is_other_fault,0,0.0
+is_abnormal,0,0.0
+duration_min,0,0.0

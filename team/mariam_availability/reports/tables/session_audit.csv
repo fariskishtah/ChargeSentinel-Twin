@@ -1,0 +1,15 @@
+,value
+raw_rows,441077.0
+clean_rows,441064.0
+removed_rows,13.0
+invalid_timestamp_rows_removed,0.0
+nonpositive_duration_rows_removed,5.0
+exact_duplicate_rows_removed,0.0
+overlap_sessions_removed,8.0
+raw_missing_cells,0.0
+clean_missing_cells,0.0
+sessions_over_12h,1330.0
+duration_p50_min,33.28333333333333
+duration_p95_min,150.65
+duration_p99_min,557.6061666666666
+duration_max_min,1439.1333333333334
