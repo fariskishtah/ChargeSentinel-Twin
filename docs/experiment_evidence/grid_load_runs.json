@@ -47,5 +47,7 @@
     "team/fatima_anomaly/reports/grid_load/comparison.json",
     "src/grid_load/grid-load-v1.json",
     "src/grid_load/train.py"
-  ]
+  ],
+  "represented_run_type": "EVIDENCE-ONLY REGISTRATION",
+  "live_registration_type": "EVIDENCE-ONLY REGISTRATION"
 }

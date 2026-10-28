@@ -11,7 +11,8 @@
     "test_rmse_normal_minutes": 83.04948102990728,
     "optuna_trials_reported": 25,
     "test_previously_scored_before_tuning": true,
-    "evidence": "team/mariam_availability/reports/availability_duration_mlflow_handoff.json"
+    "evidence": "team/mariam_availability/reports/availability_duration_mlflow_handoff.json",
+    "represented_run_type": "ORIGINAL TRAINING RUN (portable historical receipt; local store absent)"
   },
   "portable_rebuild": {
     "run_id": "c4b2fb930ee94d938ef1a056426f16c9",
@@ -26,6 +27,8 @@
     "bundle_sha256": "7ebd9b3c9d4300a7c6c7da2fef8efe9b3f9a93fe4d995ef7e9ad1a043a2c56aa",
     "bundle_path": "team/mariam_availability/bundle/availability-v1/availability_duration.joblib",
     "original_owner_artifact_available": false,
-    "note": "Rebuild metrics are separate from owner metrics; prior test exposure still applies."
-  }
+    "note": "Rebuild metrics are separate from owner metrics; prior test exposure still applies.",
+    "represented_run_type": "REPRODUCTION RUN (local store, distinct from original)"
+  },
+  "live_registration_type": "EVIDENCE-ONLY REGISTRATION"
 }

@@ -1,5 +1,9 @@
 # Historical charging-load interval anomaly screen
 
+![Historical charging-load proxy with seasonal baseline and recorded anomaly intervals](assets/grid_load_anomaly_example.png)
+
+The figure uses only committed recorded Jiaxing hourly history. Orange points are rule alerts on natural hours; the highlighted 2021-10-02 13:00 interval is the demo example. The dashed baseline is the median of eight strictly earlier same-week hours. Rebuild with `PYTHONPATH=. python docs/tools/build_grid_load_chart.py` from the repository root. No injected case appears in this figure.
+
 The Samsung Smart Energy brief asks for abnormal generation or grid-load **intervals**. Session-start abnormal-ending risk is a separate EV session task, so `anomaly-v1` remains unchanged. This is **charging-load interval anomaly screening based on a historical hourly charging demand proxy**: Jiaxing charging activity supplies completed-session hourly energy and arrival counts. There is no physical feeder telemetry, maintenance-confirmed grid-fault label, or Egyptian infrastructure validation. An alert is not a confirmed equipment fault.
 
 ## Method and evidence

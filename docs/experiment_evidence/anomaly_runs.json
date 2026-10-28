@@ -60,5 +60,7 @@
     "team/fatima_anomaly/reports/integration_hardening/metrics.json",
     "team/fatima_anomaly/bundle/anomaly-v1/config.json",
     "original local MLflow file store (read-only audit)"
-  ]
+  ],
+  "represented_run_type": "ORIGINAL TRAINING RUN (portable receipt of historical run; no run recreated)",
+  "live_registration_type": "EVIDENCE-ONLY REGISTRATION"
 }

@@ -1,6 +1,49 @@
 # Final historical demo validation
 
-**Later gate:** The availability/recommendation 503 statements below describe the previous candidate. The 2026-10-28 Mariam integration gate is recorded in [MARIAM_RELEASE_VALIDATION.md](MARIAM_RELEASE_VALIDATION.md); both endpoints now return real historical HTTP 200 responses on documented Jiaxing fixtures.
+## Final closeout gate — 2026-10-28
+
+Serving commit `777ccdafcd8bce4133036ae24e24512f4dd7af76` on `feature/faris-integration` remained frozen while this evidence-only closeout was prepared. API, UI and MLflow containers were healthy. The full `docs/DEMO_RUNBOOK.md` sequence was executed with historical requests:
+
+| Order | Check | Observed result |
+|---|---|---|
+| 1 | API health | HTTP 200, `status=ok`. |
+| 2–3 | Solar 24/48 h | HTTP 200; 24 Seasonal Persistence points and 48 Ridge Regression points. |
+| 4 | Demand | HTTP 200, `demand-completion-v1`, 670.3817 kWh expected completed-session energy. |
+| 5 | Session anomaly | HTTP 200, `anomaly-v1`, score 0.50585. |
+| 6 | Grid-load interval | HTTP 200, score 8.2143, `is_simulated=false`; `docs/assets/grid_load_anomaly_example.png` shows the recorded hour and earlier-week baseline. |
+| 7 | Availability | HTTP 200; real held-out Jiaxing charger 2, expected free time `2021-10-15T12:44:10.307854`. |
+| 8 | Recommendation | HTTP 200; charger 8, `mock_signals_used=true` for disclosed neutral demand/solar score inputs. |
+| 9 | Digital Twin | HTTP 200, `is_simulation=true`, HIGH scenario severity. |
+| 10 | Simulator | Reset, add EV, advance 15 minutes and reset all returned HTTP 200. |
+| 11 | UI and MLflow | Both health endpoints HTTP 200; five evidence-only registration runs present with `original_training_run=false`. |
+| 12 | Limits | Runbook presents historical/proxy, source-timezone, neutral-signal and non-production limits. |
+
+Final practical suites: **157 platform/Docker passed; 47 Mariam owner passed with six generated-data/notebook-dependent skips; 34 Waseem owner passed. Total 238 passed, six skipped, zero failed.** The frozen serving code and model artifacts were not changed in closeout. No live Egyptian grid or charger telemetry was claimed.
+
+### Independent re-verification — 2026-10-28, closeout handover
+
+The closeout gate above was re-run from scratch by a second reviewer at the same serving commit `777ccdafcd8bce4133036ae24e24512f4dd7af76`, before any closeout commit existed. No model, bundle or serving file was modified.
+
+| Check | Re-verified result |
+|---|---|
+| Containers | API, UI and MLflow all healthy (`docker compose ps`), API/UI/MLflow health endpoints HTTP 200. |
+| Solar 24 h | `solar-seasonal-persistence-24h-v1`, Seasonal Persistence, 24 points. |
+| Solar 48 h | `solar-ridge-regression-48h-v1`, Ridge Regression, 48 points — distinct artifact routing confirmed. |
+| Demand | `demand-completion-v1`, 670.3817138671875 kWh, 43.745 expected sessions. |
+| Session anomaly | `anomaly-v1`, score 0.5058535797814687, threshold 0.40, three SHAP reasons. |
+| Grid-load interval | `grid-load-seasonal-rule-v1`, score 8.214285714285714, threshold 5.827239498038368, `is_simulated=false`, 1165.13 kWh recorded. |
+| Availability | charger 2, 31.74 min predicted duration, expected free time `2021-10-15T12:44:10.307854`. |
+| Recommendation | charger 8, `recommendation-score-v3`, `mock_signals_used=true`, weights 0.45/0.25/0.20/0.10. |
+| Digital Twin | HTTP 200, `is_simulation=true`, severity HIGH. |
+| Charts | `docs/assets/grid_load_anomaly_example.png` and `solar_reference_week.png` regenerate **byte-identical** (same SHA-256) from committed data via `docs/tools/`. |
+
+Test suites re-run in a fresh Python 3.12 virtual environment built from the repository's own pins: **platform + Docker 157 passed, 0 skipped; Waseem owner 34 passed; Mariam owner 47 passed, 6 skipped. Total 244 collected, 238 passed, 6 skipped, 0 failed.** The six Mariam skips are absent generated-data cases (`data/processed/Charging_Data_clean.csv` is excluded from Git by design). The Waseem LSTM bundle-load test requires `torch==2.8.0` from `team/waseem_demand/requirements-training.txt`; it is not needed for serving, because the deployed demand champion is XGBoost.
+
+Metric spot-checks against cited sources all matched to the published precision: solar selection MAE (24 h 1.6227/1.6359/2.2361, test 0.36057; 48 h 1.7937/1.7562/2.2314, test 1.2567), demand `metrics.json`, session-risk `metrics.json` (0.2147/0.8879/0.3458/0.6423/0.2377), grid-load `comparison.json` (0.70% natural, 24/39 injected, threshold 5.8272) and availability selection (43.4037 validation, champion `xgboost_default`). No invented metric was found.
+
+## Prior candidate snapshot
+
+The availability/recommendation 503 statements below describe an earlier candidate. The later Mariam integration gate is recorded in [MARIAM_RELEASE_VALIDATION.md](MARIAM_RELEASE_VALIDATION.md).
 
 **Date:** 2026-10-28 (Africa/Cairo). **Candidate runtime commit:** `338c977e061df646717d4156182d2af3c399b003` on `feature/faris-integration`. This was a fresh temporary clone of the remote branch, with a new Python 3.12 virtual environment installed using `pip install --no-cache-dir -r requirements/dev.txt`. The documentation-only release gate commit follows this validation; no serving code or model artifact changed.
 

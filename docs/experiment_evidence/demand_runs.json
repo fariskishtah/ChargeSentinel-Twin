@@ -163,5 +163,7 @@
     "team/waseem_demand/reports/optuna.json",
     "team/waseem_demand/bundle/v1/metadata.json",
     "team/waseem_demand/demand/train.py"
-  ]
+  ],
+  "represented_run_type": "ORIGINAL TRAINING RUN (portable receipt of historical run; no run recreated)",
+  "live_registration_type": "EVIDENCE-ONLY REGISTRATION"
 }

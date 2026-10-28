@@ -6,19 +6,19 @@ Samsung Innovation Campus Smart Energy historical demonstration: renewable PV fo
 
 | Component | Status | Version / limitation |
 |---|---|---|
-| Solar 24h | Integrated | Seasonal Persistence; 2024 H1 PVGIS modelled/reference PV, not measured station output. |
-| Solar 48h | Integrated | Ridge Regression; same historical reference. |
+| Solar 24h | Integrated | `solar-seasonal-persistence-24h-v1`; 2024 H1 PVGIS modelled/reference PV, not measured station output. |
+| Solar 48h | Integrated | `solar-ridge-regression-48h-v1`; same historical reference. |
 | EV demand | Integrated | `demand-completion-v1`; Jiaxing completed-session energy proxy, not physical instantaneous grid load. |
 | EV Session Risk | Integrated | `anomaly-v1`; chronological session-start model, 0.40 threshold, real SHAP. Not a confirmed equipment fault. |
 | Grid-Load Interval Anomaly | Integrated historical screen | `grid-load-seasonal-rule-v1`; unusual Jiaxing hourly demand-proxy intervals, no real grid-fault labels. |
 | Digital Twin / Charging Station Simulator | Working simulations | Explicit scenario inputs, deterministic outputs. |
-| Availability / Recommendation | Integrated historical replay | Portable Jiaxing duration bundle and deterministic ranker; caller supplies historical state and start-known history. No live telemetry. |
+| Availability / Recommendation | Integrated historical replay | `availability-duration-xgboost-default-v1@87ec74f0fbee` and `recommendation-score-v3`; caller supplies historical state and start-known history. No live telemetry. |
 
 The project is **not production validated in Egypt**. See [Samsung compliance](docs/SAMSUNG_COMPLIANCE_MATRIX.md) for evidence and remaining limitations, and [Mariam integration validation](docs/MARIAM_RELEASE_VALIDATION.md) for the latest test gate.
 
 ## Setup and launch
 
-Python **3.12** matches both API and UI Docker base images. For local work, create a fresh Python 3.12 virtual environment, install `requirements/dev.txt`, then run `python -m pytest tests -q`. Training-only demand dependencies are in `team/waseem_demand/requirements-training.txt`; the grid-load comparison needs scikit-learn. Raw source data is not needed for portable runtime inference.
+Python **3.12** matches both API and UI Docker base images. For local work, create a fresh Python 3.12 virtual environment, install `requirements/dev.txt`, then run `python -m pytest tests -q`. Run Mariam's owner suite from `team/mariam_availability/` with its requirements; run Waseem's owner suite with `team/waseem_demand/requirements-training.txt`. Set `RUN_DOCKER_TESTS=1` after starting Compose for the Docker-enabled suite. Raw source data is not needed for portable runtime inference.
 
 ```bash
 docker compose build
@@ -33,9 +33,11 @@ API: <http://localhost:8000/docs>; Streamlit: <http://localhost:8501>; MLflow: <
 
 The actual data → pipeline → portable bundle → adapter → API/UI flow is in [ARCHITECTURE.md](docs/ARCHITECTURE.md) and editable [Mermaid source](docs/architecture.mmd). `app/` holds API and UI; `src/` holds integration, grid-load, shared and simulation logic; `team/` holds owner modules, bundles and evidence; `tests/` covers contracts and regressions; `deployment/` contains Docker and smoke checks.
 
-Data references and checksums: [DATA_PROVENANCE.md](docs/DATA_PROVENANCE.md). Field meanings: [DATA_DICTIONARY.md](docs/DATA_DICTIONARY.md). Chronological boundaries: [SPLITS.md](docs/SPLITS.md). Leakage controls: [PREPROCESSING.md](docs/PREPROCESSING.md). The raw 441,077-row Jiaxing CSV, raw PVGIS/Open-Meteo files, local MLflow stores, and experiment binaries are excluded from Git. Small derived runtime assets and selected portable bundles are committed and checksum checked.
+Data references and checksums: [DATA_PROVENANCE.md](docs/DATA_PROVENANCE.md). Field meanings: [DATA_DICTIONARY.md](docs/DATA_DICTIONARY.md). Chronological boundaries: [SPLITS.md](docs/SPLITS.md). Leakage controls: [PREPROCESSING.md](docs/PREPROCESSING.md). [Final EDA audit](docs/FINAL_EDA_EVIDENCE.md) and [model comparisons](docs/FINAL_MODEL_RESULTS.md) summarize reviewer evidence. The raw 441,077-row Jiaxing CSV, raw PVGIS/Open-Meteo files, local MLflow stores, and experiment binaries are excluded from Git. Small derived runtime assets and selected portable bundles are committed and checksum checked.
 
-Model comparison, tuning and held-out evidence live in `team/waseem_demand/reports/`, `team/mazen_solar/reports/integration_hardening/`, `team/fatima_anomaly/reports/integration_hardening/`, and `team/fatima_anomaly/reports/grid_load/`. Use `python -m src.grid_load.train` in a Python environment with NumPy/scikit-learn to reproduce the grid-load comparison. Do not interpret injected sensitivity cases as real fault labels.
+Model comparison, tuning and held-out evidence live in `team/waseem_demand/reports/`, `team/mazen_solar/reports/integration_hardening/`, `team/fatima_anomaly/reports/integration_hardening/`, `team/fatima_anomaly/reports/grid_load/`, and `team/mariam_availability/reports/`. [Tuning coverage](docs/TUNING_COVERAGE.md) and [experiment receipts](docs/experiment_evidence/README.md) identify the limits of each record. Use `python -m src.grid_load.train` in a Python environment with NumPy/scikit-learn to reproduce the grid-load comparison. Do not interpret injected sensitivity cases as real fault labels.
+
+The [15-slide presentation source](docs/PRESENTATION_CONTENT.md) and [asset inventory](docs/PRESENTATION_ASSETS.md) provide the final reviewer narrative. The API contract is at `/docs`; the Streamlit dashboard is at port 8501. Follow the [demo runbook](docs/DEMO_RUNBOOK.md) with historical fixture inputs.
 
 ## Team and contribution history
 
