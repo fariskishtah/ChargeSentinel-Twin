@@ -59,6 +59,7 @@ artifacts/*
 # Team-local generated artifacts; retain placeholders only
 team/*/artifacts/*
 !team/*/artifacts/.gitkeep
+team/mariam_availability/.tmp/
 
 # Trained model and serialized binary formats
 *.pt

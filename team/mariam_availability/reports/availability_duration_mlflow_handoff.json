@@ -1,0 +1,20 @@
+{
+  "registered_model_uri": "models:/availability_duration@champion",
+  "champion_run_id": "adb9bfde27d44c11896cad4043200fc9",
+  "tracking_uri": "sqlite:///c:/Users/mariam/Desktop/SIC AI/ChargeSentinel-Twin/team/mariam_availability/artifacts/mlflow.db",
+  "experiment_name": "chargesentinel-availability",
+  "bundle_path": "c:\\Users\\mariam\\Desktop\\SIC AI\\ChargeSentinel-Twin\\team\\mariam_availability\\artifacts\\availability_duration_bundle_optuna_mlflow.joblib",
+  "data_version": {
+    "data_file": "Charging_Data_clean.csv",
+    "data_sha256_12": "e518e9c6d140",
+    "n_rows": 441064,
+    "train_end": "2021-07-01 00:00:00",
+    "val_end": "2021-10-01 00:00:00"
+  },
+  "cleaning_count_reconciliation": "c:\\Users\\mariam\\Desktop\\SIC AI\\ChargeSentinel-Twin\\team\\mariam_availability\\reports\\tables\\cleaning_count_reconciliation.csv",
+  "prior_test_scoring_disclosed": true,
+  "prior_test_metrics_data_rows": 440972,
+  "prior_test_metrics_file": "notebooks/reports/duration_test_metrics.csv",
+  "validation_comparison_file": "c:\\Users\\mariam\\Desktop\\SIC AI\\ChargeSentinel-Twin\\team\\mariam_availability\\reports\\availability_duration_validation_comparison.csv",
+  "champion_test_metrics_file": "c:\\Users\\mariam\\Desktop\\SIC AI\\ChargeSentinel-Twin\\team\\mariam_availability\\reports\\availability_duration_champion_test_metrics.csv"
+}

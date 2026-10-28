@@ -20,7 +20,7 @@ def find_project_root(start: Path | None = None) -> Path:
 
 
 def load_sessions(path: str | Path | None = None) -> pd.DataFrame:
-    """Load the already-standardized cleaned CSV; schema renaming belongs in cleaning."""
+    """Load the already-standardized cleaned CSV; schema renaming belongs in the data-cleaning notebook."""
     path = Path(path) if path is not None else find_project_root() / "data/processed/Charging_Data_clean.csv"
     if not path.is_file():
         raise FileNotFoundError(f"Clean sessions dataset not found: {path}")
