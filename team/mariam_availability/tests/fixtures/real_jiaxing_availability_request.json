@@ -1,0 +1,23 @@
+{
+  "charger_id": "2",
+  "location": "Tourist Attraction",
+  "district": "Nanhu",
+  "session_start": "2021-10-15T12:12:26",
+  "as_of": "2021-10-15T12:27:26",
+  "temp_c": 23.5,
+  "humidity": 88.0,
+  "precip_mm": 0.1,
+  "history_features": {
+    "idle_before_min": 244.86666666666667,
+    "prev_duration_min": 17.816666666666666,
+    "hist_median_normal": 43.45,
+    "hist_mean_normal": 50.6875,
+    "hist_abnormal_rate": 0.4,
+    "sessions_before": 1380,
+    "has_history": 1,
+    "site_n_chargers": 8,
+    "site_busy_others": 4.0,
+    "site_busy_share": 0.5714285714285714,
+    "site_starts_last_60min": 8.0
+  }
+}

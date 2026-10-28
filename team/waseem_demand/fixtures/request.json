@@ -1,0 +1,965 @@
+{
+  "forecast_origin": "2021-10-01T00:00:00",
+  "history": [
+    {
+      "timestamp": "2021-09-23T00:00:00",
+      "energy_kwh": 779.66,
+      "sessions": 45
+    },
+    {
+      "timestamp": "2021-09-23T01:00:00",
+      "energy_kwh": 328.61,
+      "sessions": 11
+    },
+    {
+      "timestamp": "2021-09-23T02:00:00",
+      "energy_kwh": 261.96,
+      "sessions": 18
+    },
+    {
+      "timestamp": "2021-09-23T03:00:00",
+      "energy_kwh": 245.76999999999998,
+      "sessions": 5
+    },
+    {
+      "timestamp": "2021-09-23T04:00:00",
+      "energy_kwh": 167.13,
+      "sessions": 16
+    },
+    {
+      "timestamp": "2021-09-23T05:00:00",
+      "energy_kwh": 307.23,
+      "sessions": 12
+    },
+    {
+      "timestamp": "2021-09-23T06:00:00",
+      "energy_kwh": 392.11,
+      "sessions": 18
+    },
+    {
+      "timestamp": "2021-09-23T07:00:00",
+      "energy_kwh": 412.09,
+      "sessions": 14
+    },
+    {
+      "timestamp": "2021-09-23T08:00:00",
+      "energy_kwh": 302.54,
+      "sessions": 23
+    },
+    {
+      "timestamp": "2021-09-23T09:00:00",
+      "energy_kwh": 475.34000000000003,
+      "sessions": 42
+    },
+    {
+      "timestamp": "2021-09-23T10:00:00",
+      "energy_kwh": 591.48,
+      "sessions": 39
+    },
+    {
+      "timestamp": "2021-09-23T11:00:00",
+      "energy_kwh": 663.71,
+      "sessions": 65
+    },
+    {
+      "timestamp": "2021-09-23T12:00:00",
+      "energy_kwh": 1187.82,
+      "sessions": 65
+    },
+    {
+      "timestamp": "2021-09-23T13:00:00",
+      "energy_kwh": 966.23,
+      "sessions": 83
+    },
+    {
+      "timestamp": "2021-09-23T14:00:00",
+      "energy_kwh": 1256.79,
+      "sessions": 56
+    },
+    {
+      "timestamp": "2021-09-23T15:00:00",
+      "energy_kwh": 773.94,
+      "sessions": 63
+    },
+    {
+      "timestamp": "2021-09-23T16:00:00",
+      "energy_kwh": 760.93,
+      "sessions": 51
+    },
+    {
+      "timestamp": "2021-09-23T17:00:00",
+      "energy_kwh": 708.88,
+      "sessions": 57
+    },
+    {
+      "timestamp": "2021-09-23T18:00:00",
+      "energy_kwh": 801.99,
+      "sessions": 62
+    },
+    {
+      "timestamp": "2021-09-23T19:00:00",
+      "energy_kwh": 764.24,
+      "sessions": 55
+    },
+    {
+      "timestamp": "2021-09-23T20:00:00",
+      "energy_kwh": 776.58,
+      "sessions": 52
+    },
+    {
+      "timestamp": "2021-09-23T21:00:00",
+      "energy_kwh": 931.87,
+      "sessions": 37
+    },
+    {
+      "timestamp": "2021-09-23T22:00:00",
+      "energy_kwh": 772.99,
+      "sessions": 61
+    },
+    {
+      "timestamp": "2021-09-23T23:00:00",
+      "energy_kwh": 654.59,
+      "sessions": 43
+    },
+    {
+      "timestamp": "2021-09-24T00:00:00",
+      "energy_kwh": 560.2,
+      "sessions": 34
+    },
+    {
+      "timestamp": "2021-09-24T01:00:00",
+      "energy_kwh": 493.33,
+      "sessions": 25
+    },
+    {
+      "timestamp": "2021-09-24T02:00:00",
+      "energy_kwh": 361.2,
+      "sessions": 8
+    },
+    {
+      "timestamp": "2021-09-24T03:00:00",
+      "energy_kwh": 295.06,
+      "sessions": 6
+    },
+    {
+      "timestamp": "2021-09-24T04:00:00",
+      "energy_kwh": 73.66,
+      "sessions": 5
+    },
+    {
+      "timestamp": "2021-09-24T05:00:00",
+      "energy_kwh": 232.86,
+      "sessions": 9
+    },
+    {
+      "timestamp": "2021-09-24T06:00:00",
+      "energy_kwh": 379.75,
+      "sessions": 28
+    },
+    {
+      "timestamp": "2021-09-24T07:00:00",
+      "energy_kwh": 491.48,
+      "sessions": 14
+    },
+    {
+      "timestamp": "2021-09-24T08:00:00",
+      "energy_kwh": 413.48,
+      "sessions": 20
+    },
+    {
+      "timestamp": "2021-09-24T09:00:00",
+      "energy_kwh": 443.33,
+      "sessions": 38
+    },
+    {
+      "timestamp": "2021-09-24T10:00:00",
+      "energy_kwh": 628.79,
+      "sessions": 45
+    },
+    {
+      "timestamp": "2021-09-24T11:00:00",
+      "energy_kwh": 941.98,
+      "sessions": 68
+    },
+    {
+      "timestamp": "2021-09-24T12:00:00",
+      "energy_kwh": 1139.71,
+      "sessions": 80
+    },
+    {
+      "timestamp": "2021-09-24T13:00:00",
+      "energy_kwh": 1161.75,
+      "sessions": 77
+    },
+    {
+      "timestamp": "2021-09-24T14:00:00",
+      "energy_kwh": 1200.8,
+      "sessions": 63
+    },
+    {
+      "timestamp": "2021-09-24T15:00:00",
+      "energy_kwh": 855.99,
+      "sessions": 46
+    },
+    {
+      "timestamp": "2021-09-24T16:00:00",
+      "energy_kwh": 884.88,
+      "sessions": 69
+    },
+    {
+      "timestamp": "2021-09-24T17:00:00",
+      "energy_kwh": 777.6,
+      "sessions": 37
+    },
+    {
+      "timestamp": "2021-09-24T18:00:00",
+      "energy_kwh": 596.69,
+      "sessions": 50
+    },
+    {
+      "timestamp": "2021-09-24T19:00:00",
+      "energy_kwh": 636.99,
+      "sessions": 63
+    },
+    {
+      "timestamp": "2021-09-24T20:00:00",
+      "energy_kwh": 955.8199999999999,
+      "sessions": 50
+    },
+    {
+      "timestamp": "2021-09-24T21:00:00",
+      "energy_kwh": 570.5,
+      "sessions": 29
+    },
+    {
+      "timestamp": "2021-09-24T22:00:00",
+      "energy_kwh": 591.3,
+      "sessions": 56
+    },
+    {
+      "timestamp": "2021-09-24T23:00:00",
+      "energy_kwh": 773.24,
+      "sessions": 38
+    },
+    {
+      "timestamp": "2021-09-25T00:00:00",
+      "energy_kwh": 484.12,
+      "sessions": 24
+    },
+    {
+      "timestamp": "2021-09-25T01:00:00",
+      "energy_kwh": 571.9,
+      "sessions": 19
+    },
+    {
+      "timestamp": "2021-09-25T02:00:00",
+      "energy_kwh": 281.98,
+      "sessions": 14
+    },
+    {
+      "timestamp": "2021-09-25T03:00:00",
+      "energy_kwh": 240.82,
+      "sessions": 9
+    },
+    {
+      "timestamp": "2021-09-25T04:00:00",
+      "energy_kwh": 78.77,
+      "sessions": 4
+    },
+    {
+      "timestamp": "2021-09-25T05:00:00",
+      "energy_kwh": 201.41,
+      "sessions": 15
+    },
+    {
+      "timestamp": "2021-09-25T06:00:00",
+      "energy_kwh": 413.24,
+      "sessions": 12
+    },
+    {
+      "timestamp": "2021-09-25T07:00:00",
+      "energy_kwh": 549.1899999999999,
+      "sessions": 23
+    },
+    {
+      "timestamp": "2021-09-25T08:00:00",
+      "energy_kwh": 424.07,
+      "sessions": 27
+    },
+    {
+      "timestamp": "2021-09-25T09:00:00",
+      "energy_kwh": 478.31,
+      "sessions": 33
+    },
+    {
+      "timestamp": "2021-09-25T10:00:00",
+      "energy_kwh": 475.99,
+      "sessions": 54
+    },
+    {
+      "timestamp": "2021-09-25T11:00:00",
+      "energy_kwh": 937.96,
+      "sessions": 78
+    },
+    {
+      "timestamp": "2021-09-25T12:00:00",
+      "energy_kwh": 919.63,
+      "sessions": 66
+    },
+    {
+      "timestamp": "2021-09-25T13:00:00",
+      "energy_kwh": 847.1,
+      "sessions": 64
+    },
+    {
+      "timestamp": "2021-09-25T14:00:00",
+      "energy_kwh": 925.51,
+      "sessions": 55
+    },
+    {
+      "timestamp": "2021-09-25T15:00:00",
+      "energy_kwh": 969.98,
+      "sessions": 58
+    },
+    {
+      "timestamp": "2021-09-25T16:00:00",
+      "energy_kwh": 1213.6,
+      "sessions": 65
+    },
+    {
+      "timestamp": "2021-09-25T17:00:00",
+      "energy_kwh": 597.67,
+      "sessions": 29
+    },
+    {
+      "timestamp": "2021-09-25T18:00:00",
+      "energy_kwh": 707.65,
+      "sessions": 50
+    },
+    {
+      "timestamp": "2021-09-25T19:00:00",
+      "energy_kwh": 680.67,
+      "sessions": 45
+    },
+    {
+      "timestamp": "2021-09-25T20:00:00",
+      "energy_kwh": 779.82,
+      "sessions": 32
+    },
+    {
+      "timestamp": "2021-09-25T21:00:00",
+      "energy_kwh": 635.31,
+      "sessions": 48
+    },
+    {
+      "timestamp": "2021-09-25T22:00:00",
+      "energy_kwh": 1003.85,
+      "sessions": 55
+    },
+    {
+      "timestamp": "2021-09-25T23:00:00",
+      "energy_kwh": 528.77,
+      "sessions": 35
+    },
+    {
+      "timestamp": "2021-09-26T00:00:00",
+      "energy_kwh": 622.59,
+      "sessions": 28
+    },
+    {
+      "timestamp": "2021-09-26T01:00:00",
+      "energy_kwh": 410.56,
+      "sessions": 17
+    },
+    {
+      "timestamp": "2021-09-26T02:00:00",
+      "energy_kwh": 192.68,
+      "sessions": 9
+    },
+    {
+      "timestamp": "2021-09-26T03:00:00",
+      "energy_kwh": 241.01999999999998,
+      "sessions": 8
+    },
+    {
+      "timestamp": "2021-09-26T04:00:00",
+      "energy_kwh": 169.63,
+      "sessions": 4
+    },
+    {
+      "timestamp": "2021-09-26T05:00:00",
+      "energy_kwh": 154.11,
+      "sessions": 6
+    },
+    {
+      "timestamp": "2021-09-26T06:00:00",
+      "energy_kwh": 209.8,
+      "sessions": 12
+    },
+    {
+      "timestamp": "2021-09-26T07:00:00",
+      "energy_kwh": 327.2,
+      "sessions": 13
+    },
+    {
+      "timestamp": "2021-09-26T08:00:00",
+      "energy_kwh": 490.72,
+      "sessions": 17
+    },
+    {
+      "timestamp": "2021-09-26T09:00:00",
+      "energy_kwh": 389.63,
+      "sessions": 36
+    },
+    {
+      "timestamp": "2021-09-26T10:00:00",
+      "energy_kwh": 545.86,
+      "sessions": 32
+    },
+    {
+      "timestamp": "2021-09-26T11:00:00",
+      "energy_kwh": 913.86,
+      "sessions": 64
+    },
+    {
+      "timestamp": "2021-09-26T12:00:00",
+      "energy_kwh": 758.85,
+      "sessions": 72
+    },
+    {
+      "timestamp": "2021-09-26T13:00:00",
+      "energy_kwh": 1039.3799999999999,
+      "sessions": 57
+    },
+    {
+      "timestamp": "2021-09-26T14:00:00",
+      "energy_kwh": 1099.52,
+      "sessions": 76
+    },
+    {
+      "timestamp": "2021-09-26T15:00:00",
+      "energy_kwh": 940.98,
+      "sessions": 58
+    },
+    {
+      "timestamp": "2021-09-26T16:00:00",
+      "energy_kwh": 713.12,
+      "sessions": 54
+    },
+    {
+      "timestamp": "2021-09-26T17:00:00",
+      "energy_kwh": 776.41,
+      "sessions": 42
+    },
+    {
+      "timestamp": "2021-09-26T18:00:00",
+      "energy_kwh": 530.5,
+      "sessions": 48
+    },
+    {
+      "timestamp": "2021-09-26T19:00:00",
+      "energy_kwh": 825.93,
+      "sessions": 50
+    },
+    {
+      "timestamp": "2021-09-26T20:00:00",
+      "energy_kwh": 668.17,
+      "sessions": 34
+    },
+    {
+      "timestamp": "2021-09-26T21:00:00",
+      "energy_kwh": 697.67,
+      "sessions": 52
+    },
+    {
+      "timestamp": "2021-09-26T22:00:00",
+      "energy_kwh": 783.55,
+      "sessions": 51
+    },
+    {
+      "timestamp": "2021-09-26T23:00:00",
+      "energy_kwh": 790.52,
+      "sessions": 43
+    },
+    {
+      "timestamp": "2021-09-27T00:00:00",
+      "energy_kwh": 460.69,
+      "sessions": 19
+    },
+    {
+      "timestamp": "2021-09-27T01:00:00",
+      "energy_kwh": 317.74,
+      "sessions": 26
+    },
+    {
+      "timestamp": "2021-09-27T02:00:00",
+      "energy_kwh": 354.78000000000003,
+      "sessions": 15
+    },
+    {
+      "timestamp": "2021-09-27T03:00:00",
+      "energy_kwh": 349.96,
+      "sessions": 13
+    },
+    {
+      "timestamp": "2021-09-27T04:00:00",
+      "energy_kwh": 158.93,
+      "sessions": 4
+    },
+    {
+      "timestamp": "2021-09-27T05:00:00",
+      "energy_kwh": 189.35,
+      "sessions": 14
+    },
+    {
+      "timestamp": "2021-09-27T06:00:00",
+      "energy_kwh": 576.9,
+      "sessions": 14
+    },
+    {
+      "timestamp": "2021-09-27T07:00:00",
+      "energy_kwh": 320.2,
+      "sessions": 18
+    },
+    {
+      "timestamp": "2021-09-27T08:00:00",
+      "energy_kwh": 305.39,
+      "sessions": 21
+    },
+    {
+      "timestamp": "2021-09-27T09:00:00",
+      "energy_kwh": 478.32,
+      "sessions": 31
+    },
+    {
+      "timestamp": "2021-09-27T10:00:00",
+      "energy_kwh": 472.54,
+      "sessions": 52
+    },
+    {
+      "timestamp": "2021-09-27T11:00:00",
+      "energy_kwh": 931.64,
+      "sessions": 68
+    },
+    {
+      "timestamp": "2021-09-27T12:00:00",
+      "energy_kwh": 1059.24,
+      "sessions": 63
+    },
+    {
+      "timestamp": "2021-09-27T13:00:00",
+      "energy_kwh": 978.71,
+      "sessions": 76
+    },
+    {
+      "timestamp": "2021-09-27T14:00:00",
+      "energy_kwh": 946.27,
+      "sessions": 83
+    },
+    {
+      "timestamp": "2021-09-27T15:00:00",
+      "energy_kwh": 1183.45,
+      "sessions": 59
+    },
+    {
+      "timestamp": "2021-09-27T16:00:00",
+      "energy_kwh": 1099.59,
+      "sessions": 82
+    },
+    {
+      "timestamp": "2021-09-27T17:00:00",
+      "energy_kwh": 1143.44,
+      "sessions": 61
+    },
+    {
+      "timestamp": "2021-09-27T18:00:00",
+      "energy_kwh": 709.24,
+      "sessions": 64
+    },
+    {
+      "timestamp": "2021-09-27T19:00:00",
+      "energy_kwh": 775.11,
+      "sessions": 56
+    },
+    {
+      "timestamp": "2021-09-27T20:00:00",
+      "energy_kwh": 780.24,
+      "sessions": 44
+    },
+    {
+      "timestamp": "2021-09-27T21:00:00",
+      "energy_kwh": 691.8199999999999,
+      "sessions": 49
+    },
+    {
+      "timestamp": "2021-09-27T22:00:00",
+      "energy_kwh": 784.36,
+      "sessions": 55
+    },
+    {
+      "timestamp": "2021-09-27T23:00:00",
+      "energy_kwh": 764.11,
+      "sessions": 44
+    },
+    {
+      "timestamp": "2021-09-28T00:00:00",
+      "energy_kwh": 580.21,
+      "sessions": 27
+    },
+    {
+      "timestamp": "2021-09-28T01:00:00",
+      "energy_kwh": 282.94,
+      "sessions": 13
+    },
+    {
+      "timestamp": "2021-09-28T02:00:00",
+      "energy_kwh": 147.99,
+      "sessions": 8
+    },
+    {
+      "timestamp": "2021-09-28T03:00:00",
+      "energy_kwh": 331.78,
+      "sessions": 12
+    },
+    {
+      "timestamp": "2021-09-28T04:00:00",
+      "energy_kwh": 265.54,
+      "sessions": 11
+    },
+    {
+      "timestamp": "2021-09-28T05:00:00",
+      "energy_kwh": 191.7,
+      "sessions": 11
+    },
+    {
+      "timestamp": "2021-09-28T06:00:00",
+      "energy_kwh": 417.15000000000003,
+      "sessions": 22
+    },
+    {
+      "timestamp": "2021-09-28T07:00:00",
+      "energy_kwh": 547.12,
+      "sessions": 17
+    },
+    {
+      "timestamp": "2021-09-28T08:00:00",
+      "energy_kwh": 298.63,
+      "sessions": 38
+    },
+    {
+      "timestamp": "2021-09-28T09:00:00",
+      "energy_kwh": 662.57,
+      "sessions": 29
+    },
+    {
+      "timestamp": "2021-09-28T10:00:00",
+      "energy_kwh": 600.9,
+      "sessions": 49
+    },
+    {
+      "timestamp": "2021-09-28T11:00:00",
+      "energy_kwh": 772.54,
+      "sessions": 64
+    },
+    {
+      "timestamp": "2021-09-28T12:00:00",
+      "energy_kwh": 900.06,
+      "sessions": 70
+    },
+    {
+      "timestamp": "2021-09-28T13:00:00",
+      "energy_kwh": 1049.23,
+      "sessions": 56
+    },
+    {
+      "timestamp": "2021-09-28T14:00:00",
+      "energy_kwh": 948.51,
+      "sessions": 66
+    },
+    {
+      "timestamp": "2021-09-28T15:00:00",
+      "energy_kwh": 1005.97,
+      "sessions": 58
+    },
+    {
+      "timestamp": "2021-09-28T16:00:00",
+      "energy_kwh": 1093.84,
+      "sessions": 65
+    },
+    {
+      "timestamp": "2021-09-28T17:00:00",
+      "energy_kwh": 657.04,
+      "sessions": 45
+    },
+    {
+      "timestamp": "2021-09-28T18:00:00",
+      "energy_kwh": 518.36,
+      "sessions": 63
+    },
+    {
+      "timestamp": "2021-09-28T19:00:00",
+      "energy_kwh": 801.09,
+      "sessions": 56
+    },
+    {
+      "timestamp": "2021-09-28T20:00:00",
+      "energy_kwh": 867.8199999999999,
+      "sessions": 44
+    },
+    {
+      "timestamp": "2021-09-28T21:00:00",
+      "energy_kwh": 711.08,
+      "sessions": 51
+    },
+    {
+      "timestamp": "2021-09-28T22:00:00",
+      "energy_kwh": 896.11,
+      "sessions": 80
+    },
+    {
+      "timestamp": "2021-09-28T23:00:00",
+      "energy_kwh": 833.42,
+      "sessions": 35
+    },
+    {
+      "timestamp": "2021-09-29T00:00:00",
+      "energy_kwh": 336.49,
+      "sessions": 36
+    },
+    {
+      "timestamp": "2021-09-29T01:00:00",
+      "energy_kwh": 644.37,
+      "sessions": 25
+    },
+    {
+      "timestamp": "2021-09-29T02:00:00",
+      "energy_kwh": 293.1,
+      "sessions": 8
+    },
+    {
+      "timestamp": "2021-09-29T03:00:00",
+      "energy_kwh": 151.18,
+      "sessions": 11
+    },
+    {
+      "timestamp": "2021-09-29T04:00:00",
+      "energy_kwh": 156.53,
+      "sessions": 12
+    },
+    {
+      "timestamp": "2021-09-29T05:00:00",
+      "energy_kwh": 321.45,
+      "sessions": 13
+    },
+    {
+      "timestamp": "2021-09-29T06:00:00",
+      "energy_kwh": 371.66,
+      "sessions": 15
+    },
+    {
+      "timestamp": "2021-09-29T07:00:00",
+      "energy_kwh": 350.13,
+      "sessions": 21
+    },
+    {
+      "timestamp": "2021-09-29T08:00:00",
+      "energy_kwh": 430.84000000000003,
+      "sessions": 27
+    },
+    {
+      "timestamp": "2021-09-29T09:00:00",
+      "energy_kwh": 429.19,
+      "sessions": 31
+    },
+    {
+      "timestamp": "2021-09-29T10:00:00",
+      "energy_kwh": 539.33,
+      "sessions": 36
+    },
+    {
+      "timestamp": "2021-09-29T11:00:00",
+      "energy_kwh": 771.68,
+      "sessions": 62
+    },
+    {
+      "timestamp": "2021-09-29T12:00:00",
+      "energy_kwh": 1042.11,
+      "sessions": 79
+    },
+    {
+      "timestamp": "2021-09-29T13:00:00",
+      "energy_kwh": 1093.73,
+      "sessions": 79
+    },
+    {
+      "timestamp": "2021-09-29T14:00:00",
+      "energy_kwh": 1051.54,
+      "sessions": 82
+    },
+    {
+      "timestamp": "2021-09-29T15:00:00",
+      "energy_kwh": 1002.44,
+      "sessions": 80
+    },
+    {
+      "timestamp": "2021-09-29T16:00:00",
+      "energy_kwh": 814.71,
+      "sessions": 46
+    },
+    {
+      "timestamp": "2021-09-29T17:00:00",
+      "energy_kwh": 606.27,
+      "sessions": 45
+    },
+    {
+      "timestamp": "2021-09-29T18:00:00",
+      "energy_kwh": 760.12,
+      "sessions": 50
+    },
+    {
+      "timestamp": "2021-09-29T19:00:00",
+      "energy_kwh": 892.27,
+      "sessions": 56
+    },
+    {
+      "timestamp": "2021-09-29T20:00:00",
+      "energy_kwh": 955.06,
+      "sessions": 49
+    },
+    {
+      "timestamp": "2021-09-29T21:00:00",
+      "energy_kwh": 729.64,
+      "sessions": 49
+    },
+    {
+      "timestamp": "2021-09-29T22:00:00",
+      "energy_kwh": 836.47,
+      "sessions": 67
+    },
+    {
+      "timestamp": "2021-09-29T23:00:00",
+      "energy_kwh": 840.15,
+      "sessions": 45
+    },
+    {
+      "timestamp": "2021-09-30T00:00:00",
+      "energy_kwh": 492.87,
+      "sessions": 19
+    },
+    {
+      "timestamp": "2021-09-30T01:00:00",
+      "energy_kwh": 565.74,
+      "sessions": 24
+    },
+    {
+      "timestamp": "2021-09-30T02:00:00",
+      "energy_kwh": 266.98,
+      "sessions": 13
+    },
+    {
+      "timestamp": "2021-09-30T03:00:00",
+      "energy_kwh": 199.73000000000002,
+      "sessions": 14
+    },
+    {
+      "timestamp": "2021-09-30T04:00:00",
+      "energy_kwh": 134.48,
+      "sessions": 6
+    },
+    {
+      "timestamp": "2021-09-30T05:00:00",
+      "energy_kwh": 149.78,
+      "sessions": 8
+    },
+    {
+      "timestamp": "2021-09-30T06:00:00",
+      "energy_kwh": 349.78000000000003,
+      "sessions": 22
+    },
+    {
+      "timestamp": "2021-09-30T07:00:00",
+      "energy_kwh": 349.98,
+      "sessions": 18
+    },
+    {
+      "timestamp": "2021-09-30T08:00:00",
+      "energy_kwh": 382.53000000000003,
+      "sessions": 33
+    },
+    {
+      "timestamp": "2021-09-30T09:00:00",
+      "energy_kwh": 582.72,
+      "sessions": 49
+    },
+    {
+      "timestamp": "2021-09-30T10:00:00",
+      "energy_kwh": 940.37,
+      "sessions": 41
+    },
+    {
+      "timestamp": "2021-09-30T11:00:00",
+      "energy_kwh": 762.8,
+      "sessions": 61
+    },
+    {
+      "timestamp": "2021-09-30T12:00:00",
+      "energy_kwh": 942.2,
+      "sessions": 77
+    },
+    {
+      "timestamp": "2021-09-30T13:00:00",
+      "energy_kwh": 1283.76,
+      "sessions": 71
+    },
+    {
+      "timestamp": "2021-09-30T14:00:00",
+      "energy_kwh": 1046.92,
+      "sessions": 69
+    },
+    {
+      "timestamp": "2021-09-30T15:00:00",
+      "energy_kwh": 1020.89,
+      "sessions": 52
+    },
+    {
+      "timestamp": "2021-09-30T16:00:00",
+      "energy_kwh": 831.9399999999999,
+      "sessions": 55
+    },
+    {
+      "timestamp": "2021-09-30T17:00:00",
+      "energy_kwh": 703.1899999999999,
+      "sessions": 48
+    },
+    {
+      "timestamp": "2021-09-30T18:00:00",
+      "energy_kwh": 824.6899999999999,
+      "sessions": 54
+    },
+    {
+      "timestamp": "2021-09-30T19:00:00",
+      "energy_kwh": 983.78,
+      "sessions": 53
+    },
+    {
+      "timestamp": "2021-09-30T20:00:00",
+      "energy_kwh": 909.13,
+      "sessions": 56
+    },
+    {
+      "timestamp": "2021-09-30T21:00:00",
+      "energy_kwh": 801.8,
+      "sessions": 49
+    },
+    {
+      "timestamp": "2021-09-30T22:00:00",
+      "energy_kwh": 729.42,
+      "sessions": 79
+    },
+    {
+      "timestamp": "2021-09-30T23:00:00",
+      "energy_kwh": 1025.27,
+      "sessions": 84
+    }
+  ]
+}

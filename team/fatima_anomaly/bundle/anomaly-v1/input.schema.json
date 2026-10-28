@@ -1,0 +1,52 @@
+{
+  "$defs": {
+    "AnomalyStartFeatures": {
+      "additionalProperties": false,
+      "properties": {
+        "location": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Location",
+          "type": "string"
+        },
+        "district": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "District",
+          "type": "string"
+        },
+        "start_time": {
+          "description": "Session start in source operational time; timezone unverified",
+          "format": "date-time",
+          "title": "Start Time",
+          "type": "string"
+        }
+      },
+      "required": [
+        "location",
+        "district",
+        "start_time"
+      ],
+      "title": "AnomalyStartFeatures",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "charger_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Charger Id",
+      "type": "string"
+    },
+    "features": {
+      "$ref": "#/$defs/AnomalyStartFeatures"
+    }
+  },
+  "required": [
+    "charger_id",
+    "features"
+  ],
+  "title": "AnomalyRequest",
+  "type": "object"
+}

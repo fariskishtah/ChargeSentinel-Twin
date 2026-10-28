@@ -1,0 +1,17 @@
+{
+  "charger_id": "201001",
+  "predicted_duration_minutes": 35.49,
+  "expected_free_time": "2021-10-15T12:35:29.466856920",
+  "expected_wait_minutes": 5.49,
+  "anomaly_risk": 0.12,
+  "model_version": "xgboost_default@e518e9c6d140",
+  "bundle_version": "xgboost_default@e518e9c6d140",
+  "config_version": "recommendation-score-v3",
+  "schema_version": "availability-output-v1",
+  "limitations": [
+    "Duration is predicted from the session start and is not adjusted for time already elapsed.",
+    "Demand and solar inputs are placeholders until Persons 1 and 2 deliver.",
+    "Anomaly risk is a historical abnormal rate, not a model prediction.",
+    "Labels are operator recorded, not verified hardware diagnoses."
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "data_sha256": "e518e9c6d140aa7844b2f7d77ed572acfe7b970b2a62d977f759148f7703a6bb",
+  "sessions": 441064,
+  "test_period_start": "2021-10-01 00:01:34",
+  "test_period_end": "2021-12-31 23:52:14",
+  "arrival_window": "held-out real session starts during 11:00-14:59 and 19:00-22:59 local clock time",
+  "arrival_count": 39204,
+  "share_arrivals_with_any_free_charger": 1.0,
+  "model_version": "xgboost_default@e518e9c6d140",
+  "ranker_version": "recommendation-score-v2",
+  "ranker_weights": {
+    "wait": 0.45,
+    "anomaly_risk": 0.25,
+    "demand_pressure": 0.2,
+    "solar_benefit": 0.1
+  },
+  "prefer_free_if_available": true,
+  "random_seed": 2026,
+  "policies": {
+    "ranker": {
+      "arrivals": 39204,
+      "mean_realised_wait_minutes": 0.0,
+      "median_realised_wait_minutes": 0.0,
+      "p95_realised_wait_minutes": 0.0,
+      "selected_free_share": 1.0,
+      "assignments": 39204,
+      "assignment_cv": 1.387155825103282,
+      "assignment_gini": 0.6526824015295689,
+      "observed_followup_outcomes": 38740,
+      "selected_charger_later_fault_share": 0.23200826019617965
+    },
+    "first_free": {
+      "arrivals": 39204,
+      "mean_realised_wait_minutes": 0.0,
+      "median_realised_wait_minutes": 0.0,
+      "p95_realised_wait_minutes": 0.0,
+      "selected_free_share": 1.0,
+      "assignments": 39204,
+      "assignment_cv": 1.3755987170238049,
+      "assignment_gini": 0.6516853870279429,
+      "observed_followup_outcomes": 38964,
+      "selected_charger_later_fault_share": 0.16530643671080997
+    },
+    "random_free": {
+      "arrivals": 39204,
+      "mean_realised_wait_minutes": 0.0,
+      "median_realised_wait_minutes": 0.0,
+      "p95_realised_wait_minutes": 0.0,
+      "selected_free_share": 1.0,
+      "assignments": 39204,
+      "assignment_cv": 0.43295990164686743,
+      "assignment_gini": 0.24069859774734614,
+      "observed_followup_outcomes": 38713,
+      "selected_charger_later_fault_share": 0.19866711440601348
+    }
+  },
+  "limitations": [
+    "Counterfactual replay: observed real starts are used as arrivals, but choices can differ from actual drivers.",
+    "There is no queue data; drivers who found every charger busy and left are unobserved.",
+    "Busy state at arrival is treated as observable. Predicted free time uses duration inference; actual end time is scoring-only.",
+    "Historical demand-by-hour is a proxy, solar benefit is a neutral configured mock, and risk is a training-period charger rate.",
+    "For a free charger, later-fault scoring uses its next observed session as a proxy outcome, not the counterfactual session created by this arrival.",
+    "Only held-out test-period arrivals in the specified peak windows are included."
+  ]
+}

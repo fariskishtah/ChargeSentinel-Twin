@@ -1,0 +1,169 @@
+{
+  "evidence_type": "portable historical experiment receipt, not a recreated training run",
+  "records": [
+    {
+      "experiment": "chargesentinel-demand",
+      "run_id": "3a9753a01ece44ddaf67472831d0c3f7",
+      "model_family": "Baseline",
+      "parameters_from_committed_evidence": {
+        "strategy": "50% lag24 + 50% train hour/dayofweek median"
+      },
+      "validation_metrics": {
+        "energy_kwh": {
+          "MAE": 127.65213201992752,
+          "RMSE": 165.2446420064691,
+          "sMAPE": 28.829935374127572
+        },
+        "sessions": {
+          "MAE": 8.34861865942029,
+          "RMSE": 11.437486388286825,
+          "sMAPE": 30.589535515774223
+        }
+      },
+      "test_metrics": {
+        "energy_kwh": {
+          "MAE": 146.38263473731885,
+          "RMSE": 188.95393058271324,
+          "sMAPE": 29.051614036118274
+        },
+        "sessions": {
+          "MAE": 8.62783061594203,
+          "RMSE": 11.365877403773485,
+          "sMAPE": 29.857886034893863
+        }
+      },
+      "tuning": {
+        "method": "No Optuna tuning for this family; validation comparison only"
+      },
+      "tags_in_original_run": "not portable / unavailable",
+      "source_commit": "90358a91ebd9def6fb6ff76110898d75dd7dacff",
+      "artifact_version": "demand-completion-v1",
+      "artifact_reference": "team/waseem_demand/bundle/v1/",
+      "original_artifact_uri": "runs:/3a9753a01ece44ddaf67472831d0c3f7/bundle",
+      "original_tracking_backend": "local SQLite MLflow database, excluded from Git",
+      "original_run_live_verified": false,
+      "portability_limitation": "Original SQLite store is absent; run IDs come from committed receipt, metrics and parameters from committed reports/bundle. runs:/ URI is not resolvable in a clean clone."
+    },
+    {
+      "experiment": "chargesentinel-demand",
+      "run_id": "93b9d57c77884a618b513c4ae08b1085",
+      "model_family": "XGBoost",
+      "parameters_from_committed_evidence": {
+        "energy_kwh": {
+          "n_estimators": 240,
+          "max_depth": 3,
+          "learning_rate": 0.03325115032364978,
+          "subsample": 0.9,
+          "colsample_bytree": 0.9,
+          "reg_lambda": 2.0,
+          "random_state": 42,
+          "n_jobs": 2,
+          "tree_method": "hist"
+        },
+        "sessions": {
+          "n_estimators": 100,
+          "max_depth": 4,
+          "learning_rate": 0.056941083846378505,
+          "subsample": 0.9,
+          "colsample_bytree": 0.9,
+          "reg_lambda": 2.0,
+          "random_state": 42,
+          "n_jobs": 2,
+          "tree_method": "hist"
+        }
+      },
+      "validation_metrics": {
+        "energy_kwh": {
+          "MAE": 91.87051279987112,
+          "RMSE": 117.4609827631322,
+          "sMAPE": 21.616053135884865
+        },
+        "sessions": {
+          "MAE": 6.235109508253526,
+          "RMSE": 8.428199074408262,
+          "sMAPE": 23.512017758302456
+        }
+      },
+      "test_metrics": {
+        "energy_kwh": {
+          "MAE": 103.67469139817831,
+          "RMSE": 134.74292829295143,
+          "sMAPE": 19.686200184869676
+        },
+        "sessions": {
+          "MAE": 6.340499866267909,
+          "RMSE": 8.29403873640472,
+          "sMAPE": 21.356829174104522
+        }
+      },
+      "tuning": {
+        "method": "Optuna seeded TPE, 6 validation trials per target"
+      },
+      "tags_in_original_run": "not portable / unavailable",
+      "source_commit": "90358a91ebd9def6fb6ff76110898d75dd7dacff",
+      "artifact_version": "demand-completion-v1",
+      "artifact_reference": "team/waseem_demand/bundle/v1/",
+      "original_artifact_uri": "runs:/93b9d57c77884a618b513c4ae08b1085/bundle",
+      "original_tracking_backend": "local SQLite MLflow database, excluded from Git",
+      "original_run_live_verified": false,
+      "portability_limitation": "Original SQLite store is absent; run IDs come from committed receipt, metrics and parameters from committed reports/bundle. runs:/ URI is not resolvable in a clean clone."
+    },
+    {
+      "experiment": "chargesentinel-demand",
+      "run_id": "a34cf7e5426e4decaf3b750eb8ecc04c",
+      "model_family": "LSTM",
+      "parameters_from_committed_evidence": {
+        "epochs": 12,
+        "best_epoch": 8,
+        "hidden_dim": 32,
+        "sequence_length": 24,
+        "learning_rate": 0.002,
+        "batch_size": 128
+      },
+      "validation_metrics": {
+        "energy_kwh": {
+          "MAE": 93.3738963812676,
+          "RMSE": 120.00461762810549,
+          "sMAPE": 21.76525780086916
+        },
+        "sessions": {
+          "MAE": 6.362942322872687,
+          "RMSE": 8.556033280853121,
+          "sMAPE": 23.85646133026891
+        }
+      },
+      "test_metrics": {
+        "energy_kwh": {
+          "MAE": 108.67910667419433,
+          "RMSE": 140.64432797665035,
+          "sMAPE": 20.868059062743946
+        },
+        "sessions": {
+          "MAE": 6.683124147463536,
+          "RMSE": 8.750352693631168,
+          "sMAPE": 22.337855296754398
+        }
+      },
+      "tuning": {
+        "method": "No Optuna tuning for this family; validation comparison only"
+      },
+      "tags_in_original_run": "not portable / unavailable",
+      "source_commit": "90358a91ebd9def6fb6ff76110898d75dd7dacff",
+      "artifact_version": "demand-completion-v1",
+      "artifact_reference": "team/waseem_demand/bundle/v1/",
+      "original_artifact_uri": "runs:/a34cf7e5426e4decaf3b750eb8ecc04c/bundle",
+      "original_tracking_backend": "local SQLite MLflow database, excluded from Git",
+      "original_run_live_verified": false,
+      "portability_limitation": "Original SQLite store is absent; run IDs come from committed receipt, metrics and parameters from committed reports/bundle. runs:/ URI is not resolvable in a clean clone."
+    }
+  ],
+  "sources": [
+    "team/waseem_demand/reports/mlflow_receipt.json",
+    "team/waseem_demand/reports/metrics.json",
+    "team/waseem_demand/reports/optuna.json",
+    "team/waseem_demand/bundle/v1/metadata.json",
+    "team/waseem_demand/demand/train.py"
+  ],
+  "represented_run_type": "ORIGINAL TRAINING RUN (portable receipt of historical run; no run recreated)",
+  "live_registration_type": "EVIDENCE-ONLY REGISTRATION"
+}

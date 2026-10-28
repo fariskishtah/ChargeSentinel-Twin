@@ -1,0 +1,82 @@
+{
+  "$defs": {
+    "SolarForecastPoint": {
+      "additionalProperties": false,
+      "properties": {
+        "timestamp": {
+          "format": "date-time",
+          "title": "Timestamp",
+          "type": "string"
+        },
+        "forecast_kw": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Forecast Kw",
+          "type": "number"
+        }
+      },
+      "required": [
+        "timestamp",
+        "forecast_kw"
+      ],
+      "title": "SolarForecastPoint",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "timestamp": {
+      "format": "date-time",
+      "title": "Timestamp",
+      "type": "string"
+    },
+    "horizon_hours": {
+      "enum": [
+        24,
+        48
+      ],
+      "title": "Horizon Hours",
+      "type": "integer"
+    },
+    "forecast_kw": {
+      "minimum": 0,
+      "title": "Forecast Kw",
+      "type": "number"
+    },
+    "model_version": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Model Version",
+      "type": "string"
+    },
+    "model_family": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Model Family"
+    },
+    "points": {
+      "items": {
+        "$ref": "#/$defs/SolarForecastPoint"
+      },
+      "title": "Points",
+      "type": "array"
+    }
+  },
+  "required": [
+    "timestamp",
+    "horizon_hours",
+    "forecast_kw",
+    "model_version"
+  ],
+  "title": "SolarForecastResponse",
+  "type": "object"
+}

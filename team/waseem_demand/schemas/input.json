@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["forecast_origin", "history"],
+  "additionalProperties": false,
+  "properties": {
+    "forecast_origin": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:00:00$", "description": "Naive source operational boundary starting the target hour; not UTC"},
+    "history": {"type": "array", "minItems": 192, "items": {
+      "type": "object", "required": ["timestamp", "energy_kwh", "sessions"], "additionalProperties": false,
+      "properties": {
+        "timestamp": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:00:00$"},
+        "energy_kwh": {"type": "number", "minimum": 0},
+        "sessions": {"type": "integer", "minimum": 0}
+      }
+    }}
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "data_version": "jiaxing-hourly-demand-v1",
+  "source_dataset": "Jiaxing Charging_Data.csv",
+  "source_rows": 441077,
+  "source_sha256": "6f3643db401327ec4f4a074109987706e421896869acac26a8ee1a5c6e3b45ee",
+  "aggregation_source_commit": "64eadd73175f1a063e134ecc7e346b628b8309cf",
+  "aggregation_method": "Completed session energy at End Time hour; arrivals at Start Time hour",
+  "output_rows": 17547,
+  "columns": [
+    "timestamp",
+    "energy_kwh",
+    "sessions"
+  ],
+  "first_hour": "2019-12-31T21:00:00",
+  "last_hour": "2021-12-31T23:00:00",
+  "timezone_policy": "Source timezone not independently verified; naive operational time preserved",
+  "zero_policy": "No recorded event => zero under complete source capture assumption; no forward filling",
+  "derived_sha256": "77dbbafa7430f3c02712c9fb3be02a8dcbcb3ae9bef302aa3c26386ac63071a3",
+  "file_size_bytes": 679720,
+  "earliest_forecast_origin": "2020-01-08T21:00:00",
+  "latest_forecast_origin": "2022-01-01T00:00:00"
+}

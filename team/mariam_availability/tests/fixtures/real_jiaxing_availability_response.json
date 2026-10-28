@@ -1,0 +1,16 @@
+{
+  "charger_id": "2",
+  "predicted_duration_minutes": 31.74,
+  "expected_free_time": "2021-10-15T12:44:10.307854220",
+  "expected_wait_minutes": 16.74,
+  "anomaly_risk": 0.4,
+  "model_version": "availability-duration-xgboost-default-v1@87ec74f0fbee",
+  "bundle_version": "availability-duration-xgboost-default-v1@87ec74f0fbee",
+  "config_version": "recommendation-score-v3",
+  "schema_version": "availability-output-v1",
+  "limitations": [
+    "Total duration is estimated at session start; remaining time subtracts elapsed time without re-estimating duration.",
+    "Historical Jiaxing model; no live charger telemetry or actual future End Time is supplied.",
+    "Reported test metrics focus on sessions later recorded as normal; abnormal early endings may differ."
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "component": "Mariam availability duration",
+  "source_commit": "28fc6e3",
+  "experiment_name": "chargesentinel-availability",
+  "owner_original_receipt": {
+    "run_id": "2bbe5e41509e4552b8aef4b1a11cca40",
+    "tracking_store": "local SQLite store absent from Git",
+    "selected_model": "xgboost_default",
+    "validation_mae_normal_minutes": 43.40372372646231,
+    "test_mae_normal_minutes": 34.94829826403939,
+    "test_rmse_normal_minutes": 83.04948102990728,
+    "optuna_trials_reported": 25,
+    "test_previously_scored_before_tuning": true,
+    "evidence": "team/mariam_availability/reports/availability_duration_mlflow_handoff.json",
+    "represented_run_type": "ORIGINAL TRAINING RUN (portable historical receipt; local store absent)"
+  },
+  "portable_rebuild": {
+    "run_id": "c4b2fb930ee94d938ef1a056426f16c9",
+    "run_store": "local, not portable",
+    "selected_model": "xgboost_default",
+    "validation_mae_normal_minutes": 43.4012505354,
+    "test_mae_normal_minutes": 34.98013858,
+    "test_rmse_normal_minutes": 82.83633488,
+    "bounded_optuna_trials": 1,
+    "raw_sha256": "6f3643db401327ec4f4a074109987706e421896869acac26a8ee1a5c6e3b45ee",
+    "cleaned_sha256": "87ec74f0fbeea994cf0795b2969a1ba228a64842e7f33e38f2558b82b904c394",
+    "bundle_sha256": "7ebd9b3c9d4300a7c6c7da2fef8efe9b3f9a93fe4d995ef7e9ad1a043a2c56aa",
+    "bundle_path": "team/mariam_availability/bundle/availability-v1/availability_duration.joblib",
+    "original_owner_artifact_available": false,
+    "note": "Rebuild metrics are separate from owner metrics; prior test exposure still applies.",
+    "represented_run_type": "REPRODUCTION RUN (local store, distinct from original)"
+  },
+  "live_registration_type": "EVIDENCE-ONLY REGISTRATION"
+}

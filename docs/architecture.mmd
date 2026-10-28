@@ -1,0 +1,26 @@
+flowchart LR
+  J[Jiaxing transactions] --> DH[Hourly demand history]
+  J --> SR[EV session risk pipeline]
+  J --> AV[Availability duration pipeline]
+  DH --> DM[Demand pipeline]
+  DH --> GL[Grid-load interval screen]
+  P[PVGIS reference PV] --> SO[Solar pipeline]
+  W[Open-Meteo prior runs] --> SO
+  DM --> DB[Portable demand bundle]
+  SR --> SB[Portable anomaly-v1 bundle]
+  SO --> PB[Portable solar bundles]
+  GL --> GB[Rule config + history checksum]
+  AV --> AB[Portable duration bundle + training risk table]
+  DB --> A[Integration adapters]
+  SB --> A
+  PB --> A
+  GB --> A
+  AB --> A
+  A --> API[FastAPI + Pydantic]
+  API --> UI[Streamlit]
+  API --> DT[Digital Twin]
+  API --> CS[Charging Station Simulator]
+  DM -. tracked runs .-> ML[MLflow]
+  SR -. tracked runs .-> ML
+  SO -. tracked runs .-> ML
+  RK[Deterministic charger ranker] --> A

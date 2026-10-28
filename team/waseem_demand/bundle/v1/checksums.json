@@ -1,0 +1,9 @@
+{
+  "xgboost_sessions.json": "0f029cf3972f6c2ecbb1e574a00dd748693da943a92efd082ac4a868a3d92d92",
+  "features.json": "dd5791696e784b8c51de9615bc24e8e39e237df414529d6ff53e66e72b270bb5",
+  "lstm.pt": "c58fc22e0e62881486ab0648037d212d15b94481f2ce1d0c0ec8d54074ed366b",
+  "metadata.json": "a5fba2f032ad3df5b02dbb269633fa69317131a344c19ee5b6003e72767881e4",
+  "baseline.json": "bed45d64fba825ef7062a71b3e90d5211ef42ef1b06ee8334c38eaf83b66edc6",
+  "xgboost_energy_kwh.json": "564c4003f7e53876aa6864af77e9521d5e48a35da2abd8e5cd9fc89b4c84e3e3",
+  "scaling.json": "ed3e6ac3624a9c44f2f4e66cd815d2a601fa037d0b738415b32e1bdb6ce32ca8"
+}

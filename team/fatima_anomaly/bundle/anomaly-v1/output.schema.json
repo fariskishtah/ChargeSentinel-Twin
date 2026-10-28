@@ -1,0 +1,58 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "charger_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Charger Id",
+      "type": "string"
+    },
+    "anomaly": {
+      "title": "Anomaly",
+      "type": "boolean"
+    },
+    "score": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Score",
+      "type": "number"
+    },
+    "threshold": {
+      "anyOf": [
+        {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Threshold"
+    },
+    "reason": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "title": "Reason",
+      "type": "array"
+    },
+    "model_version": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Model Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "charger_id",
+    "anomaly",
+    "score",
+    "reason",
+    "model_version"
+  ],
+  "title": "AnomalyResponse",
+  "type": "object"
+}

@@ -1,0 +1,21 @@
+FROM python:3.12-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+WORKDIR /mlflow
+
+COPY requirements/mlflow.txt /tmp/requirements.txt
+RUN python -m pip install --upgrade pip \
+    && python -m pip install -r /tmp/requirements.txt \
+    && groupadd --system chargesentinel \
+    && useradd --system --gid chargesentinel --home-dir /mlflow chargesentinel \
+    && mkdir -p /mlflow/artifacts \
+    && chown -R chargesentinel:chargesentinel /mlflow
+
+USER chargesentinel
+
+EXPOSE 5000
+
+CMD ["mlflow", "server", "--host", "0.0.0.0", "--port", "5000", "--backend-store-uri", "sqlite:////mlflow/mlflow.db", "--serve-artifacts", "--artifacts-destination", "/mlflow/artifacts"]

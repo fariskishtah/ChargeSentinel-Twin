@@ -1,0 +1,20 @@
+{
+  "experiment": "chargesentinel-demand",
+  "runs": {
+    "Baseline": {
+      "run_id": "3a9753a01ece44ddaf67472831d0c3f7",
+      "bundle_artifact_uri": "runs:/3a9753a01ece44ddaf67472831d0c3f7/bundle"
+    },
+    "XGBoost": {
+      "run_id": "93b9d57c77884a618b513c4ae08b1085",
+      "bundle_artifact_uri": "runs:/93b9d57c77884a618b513c4ae08b1085/bundle"
+    },
+    "LSTM": {
+      "run_id": "a34cf7e5426e4decaf3b750eb8ecc04c",
+      "bundle_artifact_uri": "runs:/a34cf7e5426e4decaf3b750eb8ecc04c/bundle"
+    }
+  },
+  "champion_artifact_uri": "runs:/93b9d57c77884a618b513c4ae08b1085/bundle",
+  "portable_artifact": "bundle/v1",
+  "tracking_store": "runtime/mlflow.db (local, excluded from git)"
+}

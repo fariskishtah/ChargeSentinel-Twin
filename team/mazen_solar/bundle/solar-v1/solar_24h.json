@@ -1,0 +1,16 @@
+{
+  "model_version": "solar-seasonal-persistence-24h-v1",
+  "family": "Seasonal Persistence",
+  "horizon_hours": 24,
+  "capacity_kw": 100.0,
+  "lag_rule": "h<24: target-24h; 24<=h<48: target-48h; h=48: target-72h; all < origin",
+  "history_file": "pvgis_h1_history.csv",
+  "history_sha256": "07cac6b546b22abe86d8bb32fc332436192f4599720cc2b1c256b73d2661b39c",
+  "source_commit": "bfc088839fce1229c9f3045ab44e6ffedc0d1c37",
+  "features": [
+    "pv_seasonal_persistence"
+  ],
+  "weather_required": false,
+  "validation_mae_kw": 1.622748094718194,
+  "test_mae_kw": 0.36056800652741733
+}

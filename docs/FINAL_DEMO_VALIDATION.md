@@ -1,0 +1,82 @@
+# Final historical demo validation
+
+## Final closeout gate — 2026-10-28
+
+Serving commit `777ccdafcd8bce4133036ae24e24512f4dd7af76` on `feature/faris-integration` remained frozen while this evidence-only closeout was prepared. API, UI and MLflow containers were healthy. The full `docs/DEMO_RUNBOOK.md` sequence was executed with historical requests:
+
+| Order | Check | Observed result |
+|---|---|---|
+| 1 | API health | HTTP 200, `status=ok`. |
+| 2–3 | Solar 24/48 h | HTTP 200; 24 Seasonal Persistence points and 48 Ridge Regression points. |
+| 4 | Demand | HTTP 200, `demand-completion-v1`, 670.3817 kWh expected completed-session energy. |
+| 5 | Session anomaly | HTTP 200, `anomaly-v1`, score 0.50585. |
+| 6 | Grid-load interval | HTTP 200, score 8.2143, `is_simulated=false`; `docs/assets/grid_load_anomaly_example.png` shows the recorded hour and earlier-week baseline. |
+| 7 | Availability | HTTP 200; real held-out Jiaxing charger 2, expected free time `2021-10-15T12:44:10.307854`. |
+| 8 | Recommendation | HTTP 200; charger 8, `mock_signals_used=true` for disclosed neutral demand/solar score inputs. |
+| 9 | Digital Twin | HTTP 200, `is_simulation=true`, HIGH scenario severity. |
+| 10 | Simulator | Reset, add EV, advance 15 minutes and reset all returned HTTP 200. |
+| 11 | UI and MLflow | Both health endpoints HTTP 200; five evidence-only registration runs present with `original_training_run=false`. |
+| 12 | Limits | Runbook presents historical/proxy, source-timezone, neutral-signal and non-production limits. |
+
+Final practical suites: **157 platform/Docker passed; 47 Mariam owner passed with six generated-data/notebook-dependent skips; 34 Waseem owner passed. Total 238 passed, six skipped, zero failed.** The frozen serving code and model artifacts were not changed in closeout. No live Egyptian grid or charger telemetry was claimed.
+
+### Independent re-verification — 2026-10-28, closeout handover
+
+The closeout gate above was re-run from scratch by a second reviewer at the same serving commit `777ccdafcd8bce4133036ae24e24512f4dd7af76`, before any closeout commit existed. No model, bundle or serving file was modified.
+
+| Check | Re-verified result |
+|---|---|
+| Containers | API, UI and MLflow all healthy (`docker compose ps`), API/UI/MLflow health endpoints HTTP 200. |
+| Solar 24 h | `solar-seasonal-persistence-24h-v1`, Seasonal Persistence, 24 points. |
+| Solar 48 h | `solar-ridge-regression-48h-v1`, Ridge Regression, 48 points — distinct artifact routing confirmed. |
+| Demand | `demand-completion-v1`, 670.3817138671875 kWh, 43.745 expected sessions. |
+| Session anomaly | `anomaly-v1`, score 0.5058535797814687, threshold 0.40, three SHAP reasons. |
+| Grid-load interval | `grid-load-seasonal-rule-v1`, score 8.214285714285714, threshold 5.827239498038368, `is_simulated=false`, 1165.13 kWh recorded. |
+| Availability | charger 2, 31.74 min predicted duration, expected free time `2021-10-15T12:44:10.307854`. |
+| Recommendation | charger 8, `recommendation-score-v3`, `mock_signals_used=true`, weights 0.45/0.25/0.20/0.10. |
+| Digital Twin | HTTP 200, `is_simulation=true`, severity HIGH. |
+| Charts | `docs/assets/grid_load_anomaly_example.png` and `solar_reference_week.png` regenerate **byte-identical** (same SHA-256) from committed data via `docs/tools/`. |
+
+Test suites re-run in a fresh Python 3.12 virtual environment built from the repository's own pins: **platform + Docker 157 passed, 0 skipped; Waseem owner 34 passed; Mariam owner 47 passed, 6 skipped. Total 244 collected, 238 passed, 6 skipped, 0 failed.** The six Mariam skips are absent generated-data cases (`data/processed/Charging_Data_clean.csv` is excluded from Git by design). The Waseem LSTM bundle-load test requires `torch==2.8.0` from `team/waseem_demand/requirements-training.txt`; it is not needed for serving, because the deployed demand champion is XGBoost.
+
+Metric spot-checks against cited sources all matched to the published precision: solar selection MAE (24 h 1.6227/1.6359/2.2361, test 0.36057; 48 h 1.7937/1.7562/2.2314, test 1.2567), demand `metrics.json`, session-risk `metrics.json` (0.2147/0.8879/0.3458/0.6423/0.2377), grid-load `comparison.json` (0.70% natural, 24/39 injected, threshold 5.8272) and availability selection (43.4037 validation, champion `xgboost_default`). No invented metric was found.
+
+## Prior candidate snapshot
+
+The availability/recommendation 503 statements below describe an earlier candidate. The later Mariam integration gate is recorded in [MARIAM_RELEASE_VALIDATION.md](MARIAM_RELEASE_VALIDATION.md).
+
+**Date:** 2026-10-28 (Africa/Cairo). **Candidate runtime commit:** `338c977e061df646717d4156182d2af3c399b003` on `feature/faris-integration`. This was a fresh temporary clone of the remote branch, with a new Python 3.12 virtual environment installed using `pip install --no-cache-dir -r requirements/dev.txt`. The documentation-only release gate commit follows this validation; no serving code or model artifact changed.
+
+## Reproduction commands and outcome
+
+| Step | Command / check | Result |
+|---|---|
+| Clean clone and dependencies | `git clone --branch feature/faris-integration --single-branch <remote> <temporary directory>`; Python 3.12 venv; `pip install --no-cache-dir -r requirements/dev.txt` | PASS. No existing project virtualenv used. |
+| Isolated practical suite | `python -m pytest tests -q` | PASS: 133 passed, 22 Docker-gated tests skipped before stack startup. |
+| Fresh Docker images | `docker compose build --no-cache` | PASS: API, UI and MLflow images built. An initial attempt stalled when Docker Desktop ran low on host space; after recovering Docker and clearing unused build artifacts, the new no-cache build completed. |
+| Start and health | `MLFLOW_HOST_PORT=5050 docker compose up -d`; `docker compose ps`; `curl -f` for `:8000/health`, `:8501/_stcore/health`, `:5050/health` | PASS: all three containers healthy and all health endpoints HTTP 200. |
+| Stack smoke | `DOCKER_MLFLOW_URL=http://localhost:5050 python deployment/smoke_test.py` | PASS: health, OpenAPI, UI import/logs and API connection, demand, both solar horizons, session risk, grid-load interval and Digital Twin. |
+| Docker-enabled suite | `RUN_DOCKER_TESTS=1 MLFLOW_HOST_PORT=5050 DOCKER_MLFLOW_URL=http://localhost:5050 python -m pytest tests -q --disable-warnings` | PASS: 155 passed, one warning, zero failures. |
+| Restored demand owner suite | `python -m pytest team/waseem_demand/tests -q --disable-warnings` in its separate training-dependency environment | PASS: 34 passed, zero failures. |
+| Evidence-only MLflow registration | `MLFLOW_TRACKING_URI=http://localhost:5050 python docs/experiment_evidence/register_metadata.py` from the working branch | PASS: four receipt runs; a second invocation reused all four without duplicates. |
+
+## Runbook sequence
+
+All POSTs used `Content-Type: application/json` and the payloads in `docs/DEMO_RUNBOOK.md`. The table records the actual clean-clone responses; it does not replace the source reports or claim live production input.
+
+| Order | Endpoint / input | Observed result |
+|---|---|---|
+| 1–2 | `POST /api/v1/solar/forecast`, origin `2024-06-15T00:00:00+00:00`, horizons 24 and 48 | HTTP 200; 24 points, `solar-seasonal-persistence-24h-v1`; 48 points, `solar-ridge-regression-48h-v1`. |
+| 3 | `POST /api/v1/demand/forecast`, origin `2021-10-01T00:00:00` | HTTP 200; `demand-completion-v1`; 670.3817 kWh and 43.7450 expected sessions. |
+| 4 | `POST /api/v1/anomaly/predict`, charger `12`, Financial Industrial Park / Nanhu, start `2021-10-16T12:02:44` | HTTP 200; `anomaly-v1`; score 0.50585, threshold 0.40, SHAP-based reasons. |
+| 5 | `POST /api/v1/anomaly/grid-load`, `2021-10-02T13:00:00` | HTTP 200; `grid-load-seasonal-rule-v1`; anomaly true, score 8.2143 versus threshold 5.8272, 1165.13 kWh/125 sessions, `is_simulated=false`. This is a recorded charging-load interval, not a confirmed fault. |
+| 6 | `POST /api/v1/digital-twin/simulate`, runbook scenario (60 kW solar, 100 kW demand, multipliers 0.5/1.3, one offline charger) | HTTP 200; `is_simulation=true`; 30 kW scenario solar, 130 kW demand, −100 kW balance, HIGH severity. |
+| 7 | `POST /api/v1/simulator/reset` `{}`, add `EV-DEMO` (20% to 80%, 60 kWh, 11 kW), advance 15 minutes, reset again | All HTTP 200; EV entered charging, received 2.75 kWh, reached 24.5833% SOC; final reset succeeded. |
+| 8 | `http://localhost:5050/health` and MLflow experiment `chargesentinel-release-evidence` | HTTP 200; the browser run list visibly showed four matching runs. Each has a receipt artifact, `run_kind=artifact/evidence registration` and `original_training_run=false`. These are **not** original training runs. |
+| 9 | `POST /api/v1/chargers/availability` and `/recommend` with valid schema inputs | Both HTTP 503, `model_not_ready`, as intended. |
+
+The UI health endpoint passed; Docker-enabled tests also exercised Streamlit rendering and API-client flows. The MLflow server belongs to this temporary Compose project and does not make the original local training stores portable. `docs/experiment_evidence/` remains the committed evidence source.
+
+## Presentation limits
+
+PVGIS is a modelled New Cairo solar reference. Jiaxing completed-session energy and arrivals are charging-demand proxies; the grid-load screen has no feeder telemetry, maintenance-confirmed fault labels or Egyptian grid validation. Injected anomalies are sensitivity cases, not observed production faults. Session risk estimates a later abnormal end cause, not an equipment fault. Solar, demand and anomaly inference use supported historical origins. Availability and recommendation remain intentionally unavailable. The grid-load UI card does not yet provide an in-UI historical time-series chart; `docs/SAMSUNG_COMPLIANCE_MATRIX.md` records this as partial.

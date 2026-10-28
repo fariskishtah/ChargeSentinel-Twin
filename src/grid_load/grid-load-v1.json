@@ -1,0 +1,10 @@
+{
+  "detector_version": "grid-load-seasonal-rule-v1",
+  "history_sha256": "77dbbafa7430f3c02712c9fb3be02a8dcbcb3ae9bef302aa3c26386ac63071a3",
+  "source": "Jiaxing completed-session energy proxy, not measured grid power",
+  "reference": "previous eight same hour-of-week observations only",
+  "threshold": 5.827239498038368,
+  "threshold_selection": "99th percentile of natural, unlabeled January-June 2021 validation scores",
+  "validation_end_exclusive": "2021-07-01T00:00:00",
+  "test_start": "2021-07-01T00:00:00"
+}

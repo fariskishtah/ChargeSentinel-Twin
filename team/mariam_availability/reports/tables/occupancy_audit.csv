@@ -1,0 +1,14 @@
+,value
+sessions,441064.0
+chargers,92.0
+hours_covered,17469.0
+busy_minutes,24127596.316666666
+session_duration_minutes,24127596.316666666
+max_busy_minutes_per_charger_hour,60.0
+end_not_after_start,0.0
+overlap_with_previous,0.0
+overlap_with_any_earlier,0.0
+chargers_not_sorted,0.0
+duplicate_charger_start,0.0
+missing_values,0.0
+negative_gaps,0.0

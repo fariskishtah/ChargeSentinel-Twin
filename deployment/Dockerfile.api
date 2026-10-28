@@ -1,0 +1,36 @@
+FROM python:3.12-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+WORKDIR /app
+
+ENV PYTHONPATH=/app
+RUN apt-get update && apt-get install -y --no-install-recommends libgomp1 \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+COPY requirements/api.txt /tmp/requirements.txt
+RUN python -m pip install --upgrade pip \
+    && python -m pip install -r /tmp/requirements.txt \
+    && groupadd --system chargesentinel \
+    && useradd --system --gid chargesentinel --home-dir /app chargesentinel
+
+COPY --chown=chargesentinel:chargesentinel app ./app
+COPY --chown=chargesentinel:chargesentinel src ./src
+COPY --chown=chargesentinel:chargesentinel team/waseem_demand/demand ./team/waseem_demand/demand
+COPY --chown=chargesentinel:chargesentinel team/waseem_demand/bundle/v1 ./team/waseem_demand/bundle/v1
+COPY --chown=chargesentinel:chargesentinel team/waseem_demand/runtime_data ./team/waseem_demand/runtime_data
+COPY --chown=chargesentinel:chargesentinel team/fatima_anomaly/integration ./team/fatima_anomaly/integration
+COPY --chown=chargesentinel:chargesentinel team/fatima_anomaly/bundle ./team/fatima_anomaly/bundle
+COPY --chown=chargesentinel:chargesentinel team/mazen_solar/integration ./team/mazen_solar/integration
+COPY --chown=chargesentinel:chargesentinel team/mazen_solar/bundle ./team/mazen_solar/bundle
+COPY --chown=chargesentinel:chargesentinel team/mariam_availability/src ./team/mariam_availability/src
+COPY --chown=chargesentinel:chargesentinel team/mariam_availability/config.yaml ./team/mariam_availability/config.yaml
+COPY --chown=chargesentinel:chargesentinel team/mariam_availability/bundle ./team/mariam_availability/bundle
+
+USER chargesentinel
+
+EXPOSE 8000
+
+CMD ["uvicorn", "app.api.main:app", "--host", "0.0.0.0", "--port", "8000"]

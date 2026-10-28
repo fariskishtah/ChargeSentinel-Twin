@@ -1,0 +1,66 @@
+{
+  "evidence_type": "portable historical experiment receipt, not a recreated training run",
+  "records": [
+    {
+      "experiment": "chargesentinel-anomaly",
+      "run_id": "b432d16f70624e649c1a98b5fb720604",
+      "model_family": "CatBoost",
+      "parameters": {
+        "train_end": "2021-07-30T14:43:40",
+        "depth": "6",
+        "test_start": "2021-10-16T12:02:44",
+        "class_weighting": "Balanced",
+        "model_family": "CatBoost",
+        "learning_rate": "0.06",
+        "dataset_version": "sha256:6f3643db401327ec4f4a074109987706e421896869acac26a8ee1a5c6e3b45ee",
+        "threshold": "0.4",
+        "feature_version": "start-safe-v1",
+        "validation_end": "2021-10-16T12:01:57",
+        "iterations": "450",
+        "validation_start": "2021-07-30T14:43:55",
+        "best_iteration": "10"
+      },
+      "validation_metrics": {
+        "threshold": 0.4,
+        "precision": 0.2839520093816246,
+        "recall": 0.8902007918552036,
+        "f1": 0.43056457955750094,
+        "fp": 31751,
+        "fn": 1553
+      },
+      "test_metrics": {
+        "precision": 0.21470437237956705,
+        "recall": 0.8879157820240623,
+        "f1": 0.34579342658306345,
+        "roc_auc": 0.6422893058619827,
+        "pr_auc": 0.23767244241746388,
+        "tn": 18147,
+        "fp": 36711,
+        "fn": 1267,
+        "tp": 10037
+      },
+      "tuning": "Model hyperparameters fixed; 37 validation-only threshold candidates evaluated, selected 0.40 before test.",
+      "tags": {
+        "owner": "Fatima",
+        "module": "anomaly",
+        "integration_hardening": "Faris",
+        "source_commit": "e9e953f3d206067d3eeb9dd9821edb3dbe4ac2f5"
+      },
+      "source_commit": "e9e953f3d206067d3eeb9dd9821edb3dbe4ac2f5",
+      "artifact_version": "anomaly-v1",
+      "artifact_reference": "team/fatima_anomaly/bundle/anomaly-v1/",
+      "artifact_sha256": "3492f063fd6b46ba1c511e67b8d3fa094bd40a2c2edeaf64d429358c716e006d",
+      "original_tracking_backend": "local MLflow file store, excluded from Git",
+      "original_run_live_verified": true,
+      "portability_limitation": "Original local run URI does not resolve in a clean clone; committed bundle, metrics and receipt are portable."
+    }
+  ],
+  "sources": [
+    "team/fatima_anomaly/reports/integration_hardening/mlflow_run.json",
+    "team/fatima_anomaly/reports/integration_hardening/metrics.json",
+    "team/fatima_anomaly/bundle/anomaly-v1/config.json",
+    "original local MLflow file store (read-only audit)"
+  ],
+  "represented_run_type": "ORIGINAL TRAINING RUN (portable receipt of historical run; no run recreated)",
+  "live_registration_type": "EVIDENCE-ONLY REGISTRATION"
+}

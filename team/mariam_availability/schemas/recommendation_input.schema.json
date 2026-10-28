@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chargesentinel.local/schemas/recommendation_input.schema.json",
+  "title": "Charger recommendation input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["location", "user_eta", "candidates"],
+  "properties": {
+    "location": {"type": "string", "minLength": 1},
+    "user_eta": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?([+-]\\d{2}:\\d{2}|Z)?$", "description": "ISO local timestamp; timezone suffix is optional because the source timezone is unresolved."},
+    "district": {"type": "string"},
+    "candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["charger_id", "busy"],
+        "properties": {
+          "charger_id": {"type": ["string", "integer"]},
+          "location": {"type": "string"},
+          "district": {"type": "string"},
+          "busy": {"type": "boolean"},
+          "session_start": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?([+-]\\d{2}:\\d{2}|Z)?$"},
+          "anomaly_risk": {"type": "number", "minimum": 0, "maximum": 1},
+          "anomaly_prediction": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "score": {"type": "number", "minimum": 0, "maximum": 1},
+              "anomaly": {"type": "boolean"},
+              "reason": {"type": "array", "items": {"type": "string"}},
+              "model_version": {"type": "string"}
+            }
+          },
+          "demand_pressure": {"type": "number", "minimum": 0, "maximum": 1},
+          "solar_benefit": {"type": "number", "minimum": 0, "maximum": 1},
+          "temp_c": {"type": "number"},
+          "humidity": {"type": "number"},
+          "precip_mm": {"type": "number", "minimum": 0},
+          "history_features": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "idle_before_min": {"type": ["number", "null"]},
+              "prev_duration_min": {"type": ["number", "null"], "minimum": 0},
+              "hist_median_normal": {"type": ["number", "null"], "minimum": 0},
+              "hist_mean_normal": {"type": ["number", "null"], "minimum": 0},
+              "hist_abnormal_rate": {"type": "number", "minimum": 0, "maximum": 1},
+              "sessions_before": {"type": "integer", "minimum": 0},
+              "has_history": {"type": "integer", "enum": [0, 1]},
+              "site_n_chargers": {"type": "integer", "minimum": 1},
+              "site_busy_others": {"type": "number", "minimum": 0},
+              "site_busy_share": {"type": "number", "minimum": 0, "maximum": 1},
+              "site_starts_last_60min": {"type": "number", "minimum": 0}
+            }
+          }
+        },
+        "allOf": [
+          {"if": {"properties": {"busy": {"const": true}}, "required": ["busy"]}, "then": {"required": ["session_start"]}},
+          {"anyOf": [
+            {"required": ["anomaly_risk"]},
+            {"properties": {"history_features": {"required": ["hist_abnormal_rate"]}}, "required": ["history_features"]},
+            {"not": {"anyOf": [
+              {"required": ["anomaly_risk"]},
+              {"properties": {"history_features": {"required": ["hist_abnormal_rate"]}}, "required": ["history_features"]}
+            ]}}
+          ]}
+        ]
+      }
+    }
+  }
+}

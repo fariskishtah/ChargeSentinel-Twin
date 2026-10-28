@@ -1,0 +1,10 @@
+{
+  "source": "Jiaxing Charging_Data.csv",
+  "raw_sha256": "6f3643db401327ec4f4a074109987706e421896869acac26a8ee1a5c6e3b45ee",
+  "cleaned_data_sha256": "87ec74f0fbeea994cf0795b2969a1ba228a64842e7f33e38f2558b82b904c394",
+  "cleaned_feature_row_index": 5530,
+  "session_start": "2021-10-15T12:12:26",
+  "charger_id": "2",
+  "target_duration_minutes_for_audit_only": 21.35,
+  "note": "The request includes only start-known and historical features; target and actual End Time are excluded."
+}

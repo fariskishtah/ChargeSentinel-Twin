@@ -1,0 +1,24 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "forecast_origin": {
+      "format": "date-time",
+      "title": "Forecast Origin",
+      "type": "string"
+    },
+    "horizon_hours": {
+      "enum": [
+        24,
+        48
+      ],
+      "title": "Horizon Hours",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "forecast_origin",
+    "horizon_hours"
+  ],
+  "title": "SolarForecastRequest",
+  "type": "object"
+}

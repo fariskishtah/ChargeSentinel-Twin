@@ -41,6 +41,7 @@ temp/
 mlruns/
 mlartifacts/
 .mlflow/
+mlflow.db
 
 # Local datasets; retain repository placeholders only
 data/raw/*
@@ -69,6 +70,7 @@ team/*/artifacts/*
 *.h5
 *.hdf5
 *.joblib
+!team/mariam_availability/bundle/availability-v1/availability_duration.joblib
 *.pkl
 *.pickle
 

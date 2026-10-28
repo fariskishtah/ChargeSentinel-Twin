@@ -1,0 +1,5 @@
+{
+  "experiment": "chargesentinel-anomaly",
+  "run_id": "b432d16f70624e649c1a98b5fb720604",
+  "tracking_store": "local file store; not required for inference"
+}

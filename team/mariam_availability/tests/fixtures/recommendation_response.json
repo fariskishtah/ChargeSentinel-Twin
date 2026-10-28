@@ -1,0 +1,105 @@
+{
+  "recommended_charger": "201005",
+  "location": "Technology Park",
+  "expected_free_time": "2021-10-15T12:30:00",
+  "expected_wait_minutes": 0.0,
+  "recommended_slot": "2021-10-15T12:30:00",
+  "model_version": "recommendation-score-v3",
+  "config_version": "recommendation-score-v3",
+  "schema_version": "recommendation-output-v1",
+  "risk_source": "historical_abnormal_rate",
+  "limitations": [
+    "Duration is predicted from the session start and is not adjusted for time already elapsed.",
+    "Demand and solar inputs are placeholders until Persons 1 and 2 deliver.",
+    "Anomaly risk is a historical abnormal rate, not a model prediction.",
+    "Labels are operator recorded, not verified hardware diagnoses."
+  ],
+  "score": 0.09542729424138838,
+  "score_components": {
+    "wait": 0.0,
+    "anomaly_risk": 0.181709,
+    "demand_pressure": 0.5,
+    "solar_benefit": 0.5
+  },
+  "explanation": {
+    "terms": {
+      "wait": 0.0,
+      "anomaly_risk": 0.1817091769655535,
+      "demand_pressure": 0.5,
+      "solar_benefit": 0.5
+    },
+    "weights": {
+      "wait": 0.45,
+      "anomaly_risk": 0.25,
+      "demand_pressure": 0.2,
+      "solar_benefit": 0.1
+    },
+    "weighted_terms": {
+      "wait": 0.0,
+      "anomaly_risk": 0.045427294241388375,
+      "demand_pressure": 0.1,
+      "solar_benefit": -0.05
+    },
+    "score": 0.09542729424138838,
+    "dominant_factor": "demand_pressure",
+    "reason": "Free now; Lowest fault risk at this site; Highest solar benefit; Demand pressure has the largest weighted contribution."
+  },
+  "mock_signals_used": true,
+  "free_pool_restricted": true,
+  "reason": [
+    "free_chargers_preferred",
+    "available_at_driver_eta"
+  ],
+  "alternatives": [
+    {
+      "charger_id": "201006",
+      "location": "Technology Park",
+      "expected_free_time": "2021-10-15T12:30:00",
+      "expected_wait_minutes": 0.0,
+      "recommended_slot": "2021-10-15T12:30:00",
+      "score": 0.09542729424138839,
+      "score_components": {
+        "wait": 0.0,
+        "anomaly_risk": 0.181709,
+        "demand_pressure": 0.4,
+        "solar_benefit": 0.3
+      },
+      "risk_source": "historical_abnormal_rate",
+      "mock_signals_used": false,
+      "free_pool_restricted": true,
+      "reason": [
+        "free_chargers_preferred",
+        "available_at_driver_eta"
+      ],
+      "explanation": {
+        "terms": {
+          "wait": 0.0,
+          "anomaly_risk": 0.1817091769655535,
+          "demand_pressure": 0.4,
+          "solar_benefit": 0.3
+        },
+        "weights": {
+          "wait": 0.45,
+          "anomaly_risk": 0.25,
+          "demand_pressure": 0.2,
+          "solar_benefit": 0.1
+        },
+        "weighted_terms": {
+          "wait": 0.0,
+          "anomaly_risk": 0.045427294241388375,
+          "demand_pressure": 0.08000000000000002,
+          "solar_benefit": -0.03
+        },
+        "score": 0.09542729424138839,
+        "dominant_factor": "demand_pressure",
+        "reason": "Free now; Lowest fault risk at this site; Demand pressure has the largest weighted contribution."
+      }
+    }
+  ],
+  "comparison": {
+    "second_charger_id": "201006",
+    "decisive_term": "demand_pressure",
+    "reason": "demand pressure and solar benefit contributed equally to the difference versus the second charger."
+  },
+  "bundle_version": "xgboost_default@e518e9c6d140"
+}

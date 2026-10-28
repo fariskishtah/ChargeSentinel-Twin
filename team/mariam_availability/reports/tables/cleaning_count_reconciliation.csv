@@ -1,0 +1,16 @@
+,value
+raw_rows,441077
+invalid_timestamp_rows_removed,0
+nonpositive_duration_rows_removed,5
+exact_duplicate_rows_removed,0
+valid_rows_before_overlap_filter,441072
+true_overlapping_sessions_removed,8
+first_sessions_retained_with_missing_prior_end,92
+first_sessions_missing_start,0
+first_sessions_missing_end,0
+clean_rows_current_pipeline,441064
+clean_rows_from_former_NaT_filter,440972
+count_difference_explained,92
+first_sessions_removed_for_missing_own_times,0
+clean_rows_reported_by_user,441064
+reported_count_matches_fixed_pipeline,True

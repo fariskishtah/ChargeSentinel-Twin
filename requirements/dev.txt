@@ -1,1 +1,2 @@
-# Add shared test, lint and notebook dependencies only after approval.
+-r base.txt
+pytest>=8.3,<9

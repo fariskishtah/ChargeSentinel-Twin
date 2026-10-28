@@ -1,0 +1,45 @@
+{
+  "location": "Technology Park",
+  "user_eta": "2021-10-15T12:30:00",
+  "candidates": [
+    {
+      "charger_id": "201001",
+      "busy": true,
+      "session_start": "2021-10-15T11:50:00",
+      "anomaly_prediction": {
+        "score": 0.99,
+        "anomaly": true
+      },
+      "history_features": {
+        "hist_abnormal_rate": 0.12,
+        "hist_median_normal": 41.0,
+        "sessions_before": 120,
+        "has_history": 1,
+        "site_n_chargers": 8,
+        "site_busy_others": 2,
+        "site_busy_share": 0.2857,
+        "site_starts_last_60min": 3
+      }
+    },
+    {
+      "charger_id": "201005",
+      "busy": false,
+      "history_features": {
+        "hist_abnormal_rate": 0.08,
+        "sessions_before": 100,
+        "has_history": 1
+      }
+    },
+    {
+      "charger_id": "201006",
+      "busy": false,
+      "history_features": {
+        "hist_abnormal_rate": 0.15,
+        "sessions_before": 80,
+        "has_history": 1
+      },
+      "demand_pressure": 0.4,
+      "solar_benefit": 0.3
+    }
+  ]
+}
