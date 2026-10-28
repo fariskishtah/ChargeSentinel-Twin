@@ -22,3 +22,7 @@ Every run logs `model_name`, hyperparameters, `dataset_version`, and `feature_ve
 ## Handoff
 
 Log the final pipeline with the appropriate MLflow model flavor and register it only when ready. Give Faris a real URI such as `runs:/<run_id>/model` or `models:/<registered_name>/<version>` plus the items in `docs/MODEL_HANDOFF_CONTRACT.md`. Never create placeholder URIs.
+
+## Portable release evidence
+
+The final portable receipts are in `docs/experiment_evidence/`. They preserve original run IDs, available parameters, metrics, tags, source commits and bundle references without copying local MLflow databases into Git. Demand's original SQLite store is absent from a clean checkout; solar and session-risk original file-store runs were audited locally but are not portable. Grid-load has comparison evidence and no original MLflow run. A new release-evidence registration, if present in a demo server, is labeled **artifact/evidence registration**, never an original training run. See `docs/TUNING_COVERAGE.md` for the exact tuning record and gaps.

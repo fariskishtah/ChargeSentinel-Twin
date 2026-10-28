@@ -1,0 +1,51 @@
+{
+  "evidence_type": "portable comparison receipt; no original MLflow training run",
+  "records": [
+    {
+      "experiment": "not portable / unavailable",
+      "run_id": "not portable / unavailable",
+      "model_family": "robust seasonal rule (selected), Isolation Forest (comparison)",
+      "parameters": {
+        "rule_threshold": 5.827239498038368,
+        "reference": "previous eight same hour-of-week observations",
+        "forest": {
+          "n_estimators": 100,
+          "max_samples": 256,
+          "contamination": "auto",
+          "random_state": 42
+        },
+        "forest_threshold": 0.5644235352356007
+      },
+      "validation_metrics": {
+        "natural_unlabeled_intervals": 4344,
+        "simulated_injected_hours": 36,
+        "rule_natural_alert_rate": 0.010128913443830571,
+        "forest_natural_alert_rate": 0.010128913443830571,
+        "rule_injected_detection_rate": 0.6944444444444444,
+        "forest_injected_detection_rate": 0.5833333333333334
+      },
+      "test_metrics": {
+        "natural_unlabeled_intervals": 4416,
+        "simulated_injected_hours": 39,
+        "rule_natural_alert_rate": 0.007019927536231884,
+        "forest_natural_alert_rate": 0.1428894927536232,
+        "rule_injected_detection_rate": 0.6153846153846154,
+        "forest_injected_detection_rate": 0.6923076923076923
+      },
+      "tuning": "Rule and forest parameters fixed; both thresholds calibrated to 99th percentile of natural, unlabeled validation scores. No Optuna run.",
+      "tags": "not portable / unavailable",
+      "source_commit": "1fc2565b93ba9ff176dc5943a629ba0d7808db8d",
+      "artifact_version": "grid-load-seasonal-rule-v1",
+      "artifact_reference": "src/grid_load/grid-load-v1.json",
+      "history_sha256": "77dbbafa7430f3c02712c9fb3be02a8dcbcb3ae9bef302aa3c26386ac63071a3",
+      "original_tracking_backend": "not portable / unavailable",
+      "original_run_live_verified": false,
+      "portability_limitation": "No MLflow run exists. Natural intervals have no real fault labels; injected cases test sensitivity only."
+    }
+  ],
+  "sources": [
+    "team/fatima_anomaly/reports/grid_load/comparison.json",
+    "src/grid_load/grid-load-v1.json",
+    "src/grid_load/train.py"
+  ]
+}

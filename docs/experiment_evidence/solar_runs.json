@@ -1,0 +1,84 @@
+{
+  "evidence_type": "portable historical experiment receipt, not a recreated training run",
+  "records": [
+    {
+      "experiment": "chargesentinel-solar",
+      "run_id": "32475574f9014e33a775fb3fce2786fb",
+      "model_family": "Seasonal Persistence",
+      "horizon_hours": 24,
+      "parameters": {
+        "horizon_hours": "24",
+        "model_family": "Seasonal Persistence",
+        "missing_target_handling": "exclude",
+        "selection": "May chronological validation MAE"
+      },
+      "validation_metrics": {
+        "mae_kw": 1.622748094718194
+      },
+      "test_metrics": {
+        "mae_kw": 0.36056800652741733
+      },
+      "candidate_validation_mae_kw": {
+        "Seasonal Persistence": 1.622748094718194,
+        "Ridge Regression": 1.6359178492974102,
+        "XGBoost": 2.236132797905716
+      },
+      "tuning": "No Optuna/hyperparameter search evidenced for frozen solar champions; fixed candidate settings, family chosen on May chronological validation MAE.",
+      "tags": {
+        "owner": "Mazen",
+        "module": "solar",
+        "integration_hardening": "Faris",
+        "source_commit": "bfc088839fce1229c9f3045ab44e6ffedc0d1c37"
+      },
+      "source_commit": "bfc088839fce1229c9f3045ab44e6ffedc0d1c37",
+      "artifact_version": "solar-seasonal-persistence-24h-v1",
+      "artifact_reference": "team/mazen_solar/bundle/solar-v1/solar_24h.json",
+      "artifact_sha256": "d6a3f76a818d525be1d817181997a64ef6dba0604ec27f9197a95aae2009f07e",
+      "original_tracking_backend": "local MLflow file store, excluded from Git",
+      "original_run_live_verified": true,
+      "portability_limitation": "Original local run ID and artifact URI do not resolve in a clean clone; committed JSON bundle and receipt are portable."
+    },
+    {
+      "experiment": "chargesentinel-solar",
+      "run_id": "1f231a8f7b984e26b3313c33c6fbe357",
+      "model_family": "Ridge Regression",
+      "horizon_hours": 48,
+      "parameters": {
+        "horizon_hours": "48",
+        "model_family": "Ridge Regression",
+        "missing_target_handling": "exclude",
+        "selection": "May chronological validation MAE"
+      },
+      "validation_metrics": {
+        "mae_kw": 1.7562040155134448
+      },
+      "test_metrics": {
+        "mae_kw": 1.2566504947713324
+      },
+      "candidate_validation_mae_kw": {
+        "Seasonal Persistence": 1.7936694924283736,
+        "Ridge Regression": 1.7562040155134448,
+        "XGBoost": 2.2314263394689546
+      },
+      "tuning": "No Optuna/hyperparameter search evidenced for frozen solar champions; fixed candidate settings, family chosen on May chronological validation MAE.",
+      "tags": {
+        "owner": "Mazen",
+        "module": "solar",
+        "integration_hardening": "Faris",
+        "source_commit": "bfc088839fce1229c9f3045ab44e6ffedc0d1c37"
+      },
+      "source_commit": "bfc088839fce1229c9f3045ab44e6ffedc0d1c37",
+      "artifact_version": "solar-ridge-regression-48h-v1",
+      "artifact_reference": "team/mazen_solar/bundle/solar-v1/solar_48h.json",
+      "artifact_sha256": "7ad9cfa2a8c8febc2cab0f5b3a11c2058fc9269743a3efa5cb55b399ed5a29ac",
+      "original_tracking_backend": "local MLflow file store, excluded from Git",
+      "original_run_live_verified": true,
+      "portability_limitation": "Original local run ID and artifact URI do not resolve in a clean clone; committed JSON bundle and receipt are portable."
+    }
+  ],
+  "sources": [
+    "team/mazen_solar/reports/integration_hardening/selection.json",
+    "team/mazen_solar/bundle/solar-v1/",
+    "original local MLflow file store (read-only audit)"
+  ]
+}

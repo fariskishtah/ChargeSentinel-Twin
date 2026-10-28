@@ -1,6 +1,6 @@
 # Waseem — repaired EV demand handoff
 
-Waseem owns the Jiaxing hourly aggregation, causal lag/rolling feature pipeline, chronological evaluation, baseline/XGBoost/LSTM comparison, bounded Optuna study, training code, reports, fixtures and portable bundle. His source history is on `feature/waseem-demand`; the older `person2-demand-forecasting` branch is superseded.
+Waseem owns the EV demand forecasting scope and contributed the original `450c11c` submission. Git history attributes the later leakage-safe Jiaxing aggregation, lag/rolling features, chronological evaluation, baseline/XGBoost/LSTM comparison, bounded Optuna study, reports and portable bundle to Faris's repair commits on `feature/waseem-demand`, which reuse Waseem's earlier concepts. The older `person2-demand-forecasting` branch is superseded and excluded from release merges.
 
 The integrated `demand-completion-v1` endpoint receives a naive whole-hour `forecast_origin` in source operational time and uses exactly 192 previous continuous recorded hours. Energy is credited at session completion; arrivals at session start. The source timezone is unverified. This is a completed-session energy demand proxy, not physical within-hour grid power. Missing or future history is rejected; no fabricated default is used. `expected_sessions` remains a nonnegative float.
 
