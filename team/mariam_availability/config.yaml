@@ -1,8 +1,8 @@
-# Recommendation rule v4. Every score input is normalized to [0, 1]. Lower
+# Recommendation rule v1. Every score input is normalized to [0, 1]. Lower
 # total scores are better. Wait, historical risk, and demand add cost; solar
-# benefit reduces cost. Configured demand/solar values apply only when neither
-# upstream forecasts nor candidate-level values are available.
-version: recommendation-score-v4
+# benefit reduces cost. Mock demand/solar values apply only when a candidate
+# omits those signals and are marked in the recommendation output.
+version: recommendation-score-v3
 weights:
   wait: 0.45
   anomaly_risk: 0.25
@@ -12,9 +12,6 @@ max_wait_minutes: 120
 alternatives_limit: 3
 prefer_free_if_available: true
 mock_signals:
-  source: neutral_placeholder_when_forecasts_are_missing_or_out_of_coverage
+  source: neutral_placeholder_no_candidate_level_demand_or_solar_context
   demand_pressure: 0.5
   solar_benefit: 0.5
-demand_pressure_saturation_sessions: 50.0
-solar_reference_capacity_kw: 100.0
-solar_reference_location: New Cairo

@@ -16,44 +16,6 @@
     "config_version": {"type": "string", "minLength": 1},
     "schema_version": {"const": "recommendation-output-v1"},
     "risk_source": {"enum": ["historical_abnormal_rate", "person3_score"]},
-    "signal_sources": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["demand_pressure", "solar_benefit", "anomaly_risk"],
-      "properties": {
-        "demand_pressure": {"type": "string"},
-        "solar_benefit": {"type": "string"},
-        "anomaly_risk": {"type": "string"}
-      }
-    },
-    "candidate_eligibility": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": ["candidate_index", "charger_id", "location", "eligible", "reason"],
-        "properties": {
-          "candidate_index": {"type": "integer", "minimum": 0},
-          "charger_id": {"type": "string"},
-          "location": {"type": ["string", "null"]},
-          "eligible": {"type": "boolean"},
-          "reason": {"type": "string", "minLength": 1},
-          "expected_wait_minutes": {"type": "number", "minimum": 0}
-        }
-      }
-    },
-    "decision_explanation": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["selected_charger_id", "selection_rule", "score_direction", "score_formula", "summary"],
-      "properties": {
-        "selected_charger_id": {"type": ["string", "null"]},
-        "selection_rule": {"type": "string", "minLength": 1},
-        "score_direction": {"const": "lower_is_better"},
-        "score_formula": {"type": "string", "minLength": 1},
-        "summary": {"type": "string", "minLength": 1}
-      }
-    },
     "limitations": {"type": "array", "items": {"type": "string", "minLength": 1}},
     "explanation": {"$ref": "#/$defs/scoreExplanation"},
     "comparison": {"$ref": "#/$defs/comparison"},
