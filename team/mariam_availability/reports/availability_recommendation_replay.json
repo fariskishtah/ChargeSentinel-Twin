@@ -6,8 +6,8 @@
   "arrival_window": "held-out real session starts during 11:00-14:59 and 19:00-22:59 local clock time",
   "arrival_count": 39204,
   "share_arrivals_with_any_free_charger": 1.0,
-  "model_version": "xgboost_default@e518e9c6d140",
-  "ranker_version": "recommendation-score-v2",
+  "model_version": "availability-duration-xgboost-default-v1@87ec74f0fbee",
+  "ranker_version": "recommendation-score-v4",
   "ranker_weights": {
     "wait": 0.45,
     "anomaly_risk": 0.25,

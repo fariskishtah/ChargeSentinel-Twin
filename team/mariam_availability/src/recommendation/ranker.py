@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 
-RANKER_VERSION = "recommendation-score-v3"
+RANKER_VERSION = "recommendation-score-v4"
 RECOMMENDATION_SCHEMA_VERSION = "recommendation-output-v1"
 DEFAULT_CONFIG = Path(__file__).resolve().parents[2] / "config.yaml"
 _WEIGHT_KEYS = ("wait", "anomaly_risk", "demand_pressure", "solar_benefit")
@@ -60,12 +60,19 @@ def _validate_config(config: Mapping[str, Any]) -> dict[str, Any]:
         raise ValueError("weights must sum to 1.0")
 
     max_wait = float(config.get("max_wait_minutes", 120))
+    demand_saturation = float(config.get("demand_pressure_saturation_sessions", 50.0))
+    solar_capacity = float(config.get("solar_reference_capacity_kw", 100.0))
+    solar_location = str(config.get("solar_reference_location", "New Cairo"))
     alternatives_limit = int(config.get("alternatives_limit", 3))
     prefer_free = config.get("prefer_free_if_available", True)
     use_person3_score = config.get("use_person3_score", False)
     mock = config.get("mock_signals", {})
     if not math.isfinite(max_wait) or max_wait <= 0:
         raise ValueError("max_wait_minutes must be finite and positive")
+    if not math.isfinite(demand_saturation) or demand_saturation <= 0:
+        raise ValueError("demand_pressure_saturation_sessions must be finite and positive")
+    if not math.isfinite(solar_capacity) or solar_capacity <= 0:
+        raise ValueError("solar_reference_capacity_kw must be finite and positive")
     if alternatives_limit < 0:
         raise ValueError("alternatives_limit must be non-negative")
     if not isinstance(prefer_free, bool):
@@ -87,6 +94,9 @@ def _validate_config(config: Mapping[str, Any]) -> dict[str, Any]:
         "use_person3_score": use_person3_score,
         "mock_signals": mock_signals,
         "mock_source": str(mock.get("source", "configured_mock")),
+        "demand_pressure_saturation_sessions": demand_saturation,
+        "solar_reference_capacity_kw": solar_capacity,
+        "solar_reference_location": solar_location,
     }
 
 
@@ -112,8 +122,8 @@ def recommend(payload: Mapping[str, Any], config: Mapping[str, Any] | None = Non
     - ``candidates``: charger records, all from the driver's location. Each
       record needs ``charger_id``, ``location``, ``expected_free_time`` and
       ``anomaly_risk``. ``demand_pressure`` and ``solar_benefit`` may be
-      omitted while upstream forecasts are unavailable; config mock values
-      then apply and the output records that they were used.
+      omitted; config mock values then apply and the output records that they
+      were used.
 
     Wait is derived from ``max(0, expected_free_time - user_eta)``. Ranking
     score: ``w_wait*wait + w_risk*risk + w_demand*demand - w_solar*solar``.
@@ -136,13 +146,32 @@ def recommend(payload: Mapping[str, Any], config: Mapping[str, Any] | None = Non
             raise ValueError("candidates must be from one location; provide payload.location to filter them")
         location = next(iter(locations), None)
     eligible = []
-    for item in candidates:
+    eligibility = []
+    matched_records = []
+    for index, item in enumerate(candidates):
         if not isinstance(item, Mapping):
             raise ValueError("each candidate must be a mapping")
         if location is None or str(item.get("location", "")) == str(location):
             eligible.append(item)
+            matched_records.append((index, item))
+            eligibility.append({
+                "candidate_index": index,
+                "charger_id": str(item.get("charger_id", "")),
+                "location": item.get("location", location),
+                "eligible": None,
+                "reason": "Eligibility pending free-charger policy",
+            })
+        else:
+            eligibility.append({
+                "candidate_index": index,
+                "charger_id": str(item.get("charger_id", "")),
+                "location": item.get("location"),
+                "eligible": False,
+                "reason": "Excluded: different location",
+            })
 
     free_pool_restricted = False
+    eligible_object_ids = {id(item) for item in eligible}
     if eligible and settings["prefer_free_if_available"]:
         free_candidates = []
         for item in eligible:
@@ -162,7 +191,30 @@ def recommend(payload: Mapping[str, Any], config: Mapping[str, Any] | None = Non
                 free_candidates.append(item)
         if free_candidates:
             eligible = free_candidates
+            eligible_object_ids = {id(item) for item in eligible}
             free_pool_restricted = True
+
+    eligibility_by_index = {record["candidate_index"]: record for record in eligibility}
+    for index, item in matched_records:
+        record = eligibility_by_index[index]
+        if "expected_free_time" in item:
+            candidate_free_time = _timestamp(item["expected_free_time"], f"candidate {item.get('charger_id', '<unknown>')}.expected_free_time")
+            if (eta.tzinfo is None) != (candidate_free_time.tzinfo is None):
+                raise ValueError("user_eta and expected_free_time must both include a timezone or both omit it")
+            record["expected_wait_minutes"] = round(
+                max(0.0, (candidate_free_time - eta).total_seconds() / 60.0), 2
+            )
+        is_eligible = id(item) in eligible_object_ids
+        record["eligible"] = is_eligible
+        if free_pool_restricted:
+            record["reason"] = (
+                "Eligible: free charger in preferred pool"
+                if is_eligible else "Excluded: busy while a free charger is available"
+            )
+        elif is_eligible and settings["prefer_free_if_available"]:
+            record["reason"] = "Eligible: no free chargers are available"
+        elif is_eligible:
+            record["reason"] = "Eligible: free-charger preference is disabled"
 
     if not eligible:
         return {
@@ -182,6 +234,14 @@ def recommend(payload: Mapping[str, Any], config: Mapping[str, Any] | None = Non
             "free_pool_restricted": False,
             "reason": ["no_candidates_at_location"],
             "alternatives": [],
+            "candidate_eligibility": eligibility,
+            "decision_explanation": {
+                "selected_charger_id": None,
+                "selection_rule": "No eligible candidates",
+                "score_direction": "lower_is_better",
+                "score_formula": _score_formula(settings["weights"]),
+                "summary": "No candidates matched the requested location.",
+            },
         }
 
     seen_ids: set[str] = set()
@@ -319,6 +379,7 @@ def recommend(payload: Mapping[str, Any], config: Mapping[str, Any] | None = Non
         "free_pool_restricted": free_pool_restricted,
         "reason": winner["reason"],
         "alternatives": ranked[1:1 + settings["alternatives_limit"]],
+        "candidate_eligibility": eligibility,
     }
     if len(ranked) > 1:
         second = ranked[1]
@@ -356,4 +417,26 @@ def recommend(payload: Mapping[str, Any], config: Mapping[str, Any] | None = Non
             "decisive_term": decisive_term,
             "reason": comparison_reason,
         }
+        decision_summary = comparison_reason
+    else:
+        decision_summary = "Only one eligible candidate remained after location and availability filtering."
+    result["decision_explanation"] = {
+        "selected_charger_id": winner["charger_id"],
+        "selection_rule": (
+            "Prefer free candidates, then select the lowest weighted score"
+            if free_pool_restricted else "Select the lowest weighted score; break ties by shorter wait, then charger ID"
+        ),
+        "score_direction": "lower_is_better",
+        "score_formula": _score_formula(weights),
+        "summary": decision_summary,
+    }
     return result
+
+
+def _score_formula(weights: Mapping[str, float]) -> str:
+    return (
+        f"{weights['wait']:g}*normalized_wait + "
+        f"{weights['anomaly_risk']:g}*anomaly_risk + "
+        f"{weights['demand_pressure']:g}*demand_pressure - "
+        f"{weights['solar_benefit']:g}*solar_benefit"
+    )
